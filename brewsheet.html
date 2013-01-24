@@ -56,6 +56,20 @@
             <button id="add_malt" class="pull-right">Add malt</button>
         </div>
 
+        <div id="mashing_section" class="section">
+            <h2>Mashing schedule</h2>
+            <table id="mashing" class="">
+                <thead>
+                <tr>
+                    <th class="medium">Duration (m)</th><th class="medium">Temp (&deg;C)</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            <button id="add_mash_time" class="pull-right">Add time</button>
+        </div>
+
         <div id="hops_section" class="section">
             <h2>Hops</h2>
             <table id="hops"  class="fullsize">
@@ -89,20 +103,16 @@
             <table class="bottom-border" id="water_table">
             </table>
         </div>
-        <div id="mashing_section" class="section">
-            <h2>Mashing schedule</h2>
-            <table id="mashing" class="">
-                <thead>
-                <tr>
-                    <th class="medium">Duration (m)</th><th class="medium">Temp (&deg;C)</th>
-                </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-            <button id="add_mash_time" class="pull-right">Add time</button>
 
+        <div id="boil_section" class="section">
+            <h2>Boiling</h2>
+            <div class="single-field underline"  style="width: 300px;">
+                <label for="total_boil_time">Total mash boil time:</label>
+                <input id="total_boil_time" type="text" class="no-border spaced small" value="">
+            </div>
         </div>
+
+
         <div id="fermentation_section" class="section">
             <h2>Fermentation</h2>
             <table id="fermentation" class="bottom-border">
