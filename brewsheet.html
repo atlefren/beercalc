@@ -66,11 +66,9 @@
 
                 <div id="malt_section" class="section span10">
 
-                    <form class="form-horizontal">
+                    <form>
                         <fieldset>
                             <legend>Malt</legend>
-
-
                             <table id="malts_table" class="table table-bordered">
                                 <thead>
                                 <tr>
@@ -96,19 +94,26 @@
             <div class="row">
 
                 <div id="mashing_section" class="section span10">
-                    <h2>Mashing schedule</h2>
-                    <table id="mashing" class="">
-                        <thead>
-                        <tr>
-                            <th class="medium">Duration (m)</th><th class="medium">Temp (&deg;C)</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-                    <button id="add_mash_time" class="pull-right">Add time</button>
+
+                    <form>
+                        <fieldset>
+                            <legend>Mashing schedule</legend>
+
+                            <table id="mashing" class="table table-bordered">
+                                <thead>
+                                <tr>
+                                    <th class="medium-td">Duration (m)</th>
+                                    <th class="medium-td">Temp (&deg;C)</th>
+                                    <th class="ex-small"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                            <button type="button" id="add_mash_time" class="btn pull-right">Add time</button>
+                        </fieldset>
+                    </form>
                 </div>
-            </div>
 
             <div class="row">
 
@@ -240,11 +245,12 @@
     <script type="text/template" id="mash_time_row_template">
 
         <td class="medium">
-            <input id="mash_time" type="text" class="no-border small spaced rightalign">
+            <input id="mash_time" type="text" class="input-mini">
         </td>
         <td class="medium">
-            <input id="mash_temperature" type="text" class="no-border small spaced rightalign">
+            <input id="mash_temperature" type="text" class="input-mini">
         </td>
+        <td class="remove"><i class="icon-remove-circle"></i></td>
     </script>
 
     <script type="text/template" id="fermentation_template">

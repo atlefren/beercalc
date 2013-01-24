@@ -66,7 +66,7 @@ var ol = {};
     });
 
     var MashSchedule = Backbone.Collection.extend({
-        model: MashTime,
+        model: MashTime
     });
 
     var Fermentation  = Backbone.Model.extend({
@@ -199,6 +199,7 @@ var ol = {};
     });
 
     ns.FermentationView = DynamicTableView.extend({
+
         listenOn: ["yeast_name", "primary_fermentation_days", "primary_fermentation_temp", "secondary_fermentation_days", "secondary_fermentation_temp", "storage_days", "storage_temp"],
 
         events:  {},
@@ -250,11 +251,12 @@ var ol = {};
         initialize: function() {
             _.bindAll(this, "add");
             this.collection.on("add", this.render, this);
-            this.collection.on("change:quantity", this.adjustPercentages, this);
-            this.collection.on("destroy", this.adjustPercentages, this);
+            this.collection.on("change:quantity", this.render, this);
+            this.collection.on("destroy", this.render, this);
         },
 
         render: function() {
+            this.adjustPercentages();
             var table = this.$el.find("#malts_table").find("tbody");
             table.html("");
             this.collection.each(function(malt) {
@@ -267,10 +269,12 @@ var ol = {};
             this.collection.each(function(malt) {
                 var percentage = (malt.get("quantity")/total) * 100;
                 var pow = Math.pow(10, 1);
-                malt.set({"percentage": Math.round(percentage * pow) / pow});
+                percentage = Math.round(percentage * pow) / pow;
+                if(!(isNaN(percentage))) {
+                    malt.set({"percentage": percentage});
+                }
             });
             this.collection.sort();
-            this.render();
         }
     });
 
@@ -334,6 +338,7 @@ var ol = {};
 
         initialize: function() {
             _.bindAll(this, "add");
+            this.collection.on("destroy", this.render, this);
             this.collection.on("add", this.render, this);
         },
 
@@ -351,7 +356,7 @@ var ol = {};
 
         tagName: "tr",
 
-        events:_.extend(DynamicTableView.prototype.events, {
+        events: _.extend(_.clone(DynamicTableView.prototype.events), {
             "blur #quantity": "qtyChange"
         }),
 
@@ -428,13 +433,14 @@ var ol = {};
 
         listenOn: ["mash_time", "mash_temperature"],
 
-        events:  {},
+        //events:  {},
 
         initialize: function() {
             DynamicTableView.prototype.initialize.apply(this, arguments);
         },
 
         render: function() {
+            console.log("render");
             this.$el.html(_.template($("#mash_time_row_template").html(), this.model.toJSON()));
             return this;
         }

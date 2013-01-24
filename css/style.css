@@ -3,16 +3,23 @@
     width: 80px;
 }
 
+.medium-td {
+    width: 100px;
+}
+
 .large-td {
     width: 340px;
 }
 
-.input-large {
+table .input-large {
     width: 318px;
 }
 
-.input-mini {
+table .input-mini {
     width: 64px;
+}
+table .input-medium {
+    width: 84px;
 }
 
 .table {width: auto;}
@@ -24,6 +31,11 @@
 .remove .icon-remove-circle {
     margin-top: 7px;
 }
+
+.table input {
+    margin-bottom: 0;
+}
+
 
 /*
 body {
