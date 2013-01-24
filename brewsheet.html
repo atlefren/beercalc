@@ -338,28 +338,28 @@
 
 <script type="text/template" id="ascii_template">
 [tt][size=10pt][b]Generell informasjon[/b]
-Navn på brygget: <%= orNa(generalInformation.beer_name) %>
-Øltype: <%= orNa(generalInformation.beer_style) %>
+Navn på brygget: <%= ol.templateFunc.orNa(generalInformation.beer_name) %>
+Øltype: <%= ol.templateFunc.orNa(generalInformation.beer_style) %>
 Antall poeng i konkurransen: ** av **
-OG: <%= rpad(orNa(generalInformation.actual_og), 3) %>
-FG: <%= rpad(orNa(generalInformation.fg), 3) %>
-Farve (beregnet): <%= rpad(orNa(generalInformation.computed_color), 3) %> EBC
-Beregnet bitter:  <%= rpad(orNa(generalInformation.computed_ibu), 3) %> IBU
-Vørtermengde: <%= rpad(orNa(generalInformation.wort_size), 3) %> l
-Sluttvolum:   <%= rpad(orNa(generalInformation.batch_size), 3) %> l
+OG: <%= ol.templateFunc.rpad(ol.templateFunc.orNa(generalInformation.actual_og), 3) %>
+FG: <%= ol.templateFunc.rpad(ol.templateFunc.orNa(generalInformation.fg), 3) %>
+Farve (beregnet): <%= ol.templateFunc.rpad(ol.templateFunc.orNa(generalInformation.computed_color), 3) %> EBC
+Beregnet bitter:  <%= ol.templateFunc.rpad(ol.templateFunc.orNa(generalInformation.computed_ibu), 3) %> IBU
+Vørtermengde: <%= ol.templateFunc.rpad(ol.templateFunc.orNa(generalInformation.wort_size), 3) %> l
+Sluttvolum:   <%= ol.templateFunc.rpad(ol.templateFunc.orNa(generalInformation.batch_size), 3) %> l
 
 [b]Malt & sukker[/b]
 <%
     if(malts.length > 0) {
         var iSpace = _.max(_.pluck(malts.reverse(), "ingredient"), function(i) {return i.length; }).length;
         _.each(malts, function(malt) {  
-            print(rpad(orNa(malt.quantity), 4) + " gram       " + rpad(orNa(malt.percentage), 4) + " %      " + rpad(orNa(malt.ingredient), iSpace) + "         " + rpad(orNa(malt.color), 4) + " EBC\n");
+            print(ol.templateFunc.rpad(ol.templateFunc.orNa(malt.quantity), 4) + " gram       " + ol.templateFunc.rpad(ol.templateFunc.orNa(malt.percentage), 4) + " %      " + ol.templateFunc.rpad(ol.templateFunc.orNa(malt.ingredient), iSpace) + "         " + ol.templateFunc.rpad(ol.templateFunc.orNa(malt.color), 4) + " EBC\n");
         }); 
     }
 %>
 [b]Vann[/b]
-<%= rpad(orNa(water.mashing_water), 3) %> liter til innmesking
-<%= rpad(orNa(water.sparging_water), 3) %> liter til skylling
+<%= ol.templateFunc.rpad(ol.templateFunc.orNa(water.mashing_water), 3) %> liter til innmesking
+<%= ol.templateFunc.rpad(ol.templateFunc.orNa(water.sparging_water), 3) %> liter til skylling
 
 [b]Meskeskjema[/b]
 *** min    *** gr C
@@ -380,7 +380,7 @@ Sluttvolum:   <%= rpad(orNa(generalInformation.batch_size), 3) %> l
 Total koketid vørter: *** min
 
 [b]Gjær[/b]
-Betegnelsen på gjæren:   <%= rpad(orNa(fermentation.yeast_name), 3) %>            flytende/tørr-/selvdyrket gjær
+Betegnelsen på gjæren:   <%= ol.templateFunc.rpad(ol.templateFunc.orNa(fermentation.yeast_name), 3) %>            flytende/tørr-/selvdyrket gjær
 
 [b]Gjæringstemperatur og -tid[/b]
 Gjæring/primærgjæring    *** dager ved *** gr C
@@ -388,12 +388,12 @@ Modning/sekundærgjæring  *** dager ved *** gr C
 lagring       *** dager ved *** gr C
 
 [b]Øvrig informasjon[/b]
-Filtrert: <%= yesNo(additionalInformation.filtered) %>
-CO2: <%= mapCo2(additionalInformation.co2) %>
-Bryggedato: <%= rpad(orNa(additionalInformation.brew_date), 10) %>
-Tappedato:  <%= rpad(orNa(additionalInformation.bottle_date), 10) %>
+Filtrert: <%= ol.templateFunc.yesNo(additionalInformation.filtered) %>
+CO2: <%= ol.templateFunc.mapCo2(additionalInformation.co2) %>
+Bryggedato: <%= ol.templateFunc.rpad(ol.templateFunc.orNa(additionalInformation.brew_date), 10) %>
+Tappedato:  <%= ol.templateFunc.rpad(ol.templateFunc.orNa(additionalInformation.bottle_date), 10) %>
 
-[b]Kommentar:[/b] <%= orNa(additionalInformation.comment) %>[/size][/tt]
+[b]Kommentar:[/b] <%= ol.templateFunc.orNa(additionalInformation.comment) %>[/size][/tt]
 </script>
 
     <script type="text/template" id="additional_information_template">

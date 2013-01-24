@@ -1,38 +1,4 @@
-function rpad(val, space) {
-    var str = String(val);
-    var add = space-str.length
-    if(add > 0){
-        var pad = ""
-        for(var i = 0; i<add; i++){
-            pad += " ";
-        }
-        str = pad + str;
-    }
-    return str;
-}
 
-function orNa(val){
-    if(val === ""){
-        return "-";
-    }
-    return val;
-}
-
-function yesNo(val){
-    if(val) {
-        return "ja";
-    }
-    return "nei";
-}
-
-function mapCo2(val) {
-    if(val === "natural") {
-        return "naturlig";
-    } else if(val === "added") {
-        return "tilsatt";
-    }
-    return "-";
-}
 
 var ol = {};
 (function(ns) {
@@ -506,7 +472,8 @@ var ol = {};
                 res[key] = d.toJSON();
                 return res;
             }, {});
-        }
+        };
+
         return {
             malts: data.malts,
             hops: data.hops,
@@ -521,3 +488,45 @@ var ol = {};
     };
 
 }(ol));
+
+ol.templateFunc = {};
+
+(function(ns){
+
+    ns.rpad = function(val, space) {
+        var str = String(val);
+        var add = space-str.length;
+        if(add > 0){
+            var pad = "";
+            for(var i = 0; i<add; i++){
+                pad += " ";
+            }
+            str = pad + str;
+        }
+        return str;
+    };
+
+    ns.orNa = function(val){
+        if(val === ""){
+            return "-";
+        }
+        return val;
+    };
+
+    ns.yesNo = function(val){
+        if(val) {
+            return "ja";
+        }
+        return "nei";
+    };
+
+    ns.mapCo2 = function(val) {
+        if(val === "natural") {
+            return "naturlig";
+        } else if(val === "added") {
+            return "tilsatt";
+        }
+        return "-";
+    };
+
+}(ol.templateFunc));
