@@ -117,6 +117,10 @@ var ol = {};
 
         listenOn: [],
 
+        events: {
+            "click .icon-remove-circle": "remove"
+        },
+
         initialize: function() {
             var changeHandleFunction = function(attributeName) {
                 return function () {
@@ -124,7 +128,7 @@ var ol = {};
                     vals[attributeName] = this.$el.find("#" + attributeName).val();
                     this.model.set(vals);
                 }
-            }
+            };
 
             _.extend(this.events, _.reduce(this.listenOn, function(events, attr){
                 events["blur #" + attr] = attr + "Change";
@@ -137,6 +141,12 @@ var ol = {};
             });
             funcs.unshift(this);
             _.bindAll.apply(funcs);
+            _.bindAll(this, "remove");
+        },
+
+        remove: function() {
+            console.log("remove", this.model);
+            this.model.destroy();
         }
 
     });
@@ -241,6 +251,7 @@ var ol = {};
             _.bindAll(this, "add");
             this.collection.on("add", this.render, this);
             this.collection.on("change:quantity", this.adjustPercentages, this);
+            this.collection.on("destroy", this.adjustPercentages, this);
         },
 
         render: function() {
@@ -332,7 +343,7 @@ var ol = {};
             this.collection.each(function(mashTime) {
                 table.prepend(new MashScheduleRowView({model: mashTime}).render().$el);
             });
-        },
+        }
     });
 
 
@@ -340,9 +351,9 @@ var ol = {};
 
         tagName: "tr",
 
-        events:  {
-            "blur #quantity": "qtyChange",
-        },
+        events:_.extend(DynamicTableView.prototype.events, {
+            "blur #quantity": "qtyChange"
+        }),
 
         listenOn: ["ingredient", "og", "color"],
 
@@ -450,8 +461,6 @@ var ol = {};
         },
 
         show_recipe: function() {
-            //this.$el.find("#content").html(new AsciiView({data: this.options.data}).render().$el);
-
             var modal = $('#recipeModal');
             modal.find(".modal-body").html(new AsciiView({data: this.options.data}).render().$el);
             modal.modal('show')

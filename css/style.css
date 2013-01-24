@@ -1,4 +1,31 @@
 
+.mini-td {
+    width: 80px;
+}
+
+.large-td {
+    width: 340px;
+}
+
+.input-large {
+    width: 318px;
+}
+
+.input-mini {
+    width: 64px;
+}
+
+.table {width: auto;}
+
+.ex-small {
+    width: 17px;
+}
+
+.remove .icon-remove-circle {
+    margin-top: 7px;
+}
+
+/*
 body {
     font-family: Verdana, sans-serif;
 }
@@ -22,7 +49,7 @@ table, tr, th, td {
 }
 
 .pull-right {
-    /* float: right; */
+
 }
 
 table.bottom-border, table.bottom-border td {
@@ -133,3 +160,5 @@ textarea {
     width: 800px;
     left: 40%;
 }
+
+*/

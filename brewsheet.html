@@ -36,116 +36,175 @@
     </head>
     <body>
     <div id="recepie">
-        <button id="show_recipe">Show recipe</button>
+        <button class="btn" id="show_recipe">Show recipe</button>
     </div>
 
-    <div id="container">
-        <div id="general_section" class="section">
-            <h2>General information</h2>
-            <table id="desc" class="bottom-border fullsize">
-            </table>
-        </div>
-        <div id="malt_section" class="section">
-            <h2>Malt</h2>
-            <table id="malts_table" class="fullsize">
-                <thead>
-                <tr>
-                    <th class="small">Qty (g)</th><th class="small">%</th><th>Malt/Sugar</th><th class="small">OG</th><th class="medium">Color (EBC)</th>
-                </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-            <button id="add_malt" class="pull-right">Add malt</button>
+<!--    <div id="container"> -->
+
+    <div class="row">
+
+        <div class="span2">
         </div>
 
-        <div id="mashing_section" class="section">
-            <h2>Mashing schedule</h2>
-            <table id="mashing" class="">
-                <thead>
-                <tr>
-                    <th class="medium">Duration (m)</th><th class="medium">Temp (&deg;C)</th>
-                </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-            <button id="add_mash_time" class="pull-right">Add time</button>
-        </div>
+        <div class="span12">
 
-        <div id="hops_section" class="section">
-            <h2>Hops</h2>
-            <table id="hops"  class="fullsize">
-                <thead>
-                <tr>
-                    <th class="small">Qty (g)</th><th>Hop name</th><th class="small">&alpha; Acid</th><th class="small">Form</th><th class="medium">Boil Time (m)</th>
-                </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-            <button id="add_hop" class="pull-right">Add hops</button>
-        </div>
+            <div class="row">
+                <h1>Brewsheet</h1>
 
-        <div id="additives_section" class="section">
-            <h2>Additives</h2>
-            <table id="additives" sclass="fullsize">
-                <thead>
-                <tr>
-                    <th class="small">Qty (g)</th><th>Additive name</th><th class="medium">Boil Time (m)</th>
-                </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-            <button id="add_additive" class="pull-right">Add Additives</button>
-        </div>
+                <div id="general_section" class="section span10">
+                    <form class="form-horizontal">
+                        <fieldset>
+                            <legend>General information</legend>
+                            <div id="desc"></div>
+                        </fieldset>
+                    </form>
+                </div>
 
-        <div id="water_section" class="section">
-            <h2>Water</h2>
-            <table class="bottom-border" id="water_table">
-            </table>
-        </div>
+            </div>
 
-        <div id="boil_section" class="section">
-            <h2>Boiling</h2>
-            <div class="single-field underline"  style="width: 300px;">
-                <label for="total_boil_time">Total mash boil time:</label>
-                <input id="total_boil_time" type="text" class="no-border spaced small" value="">
+            <div class="row">
+
+                <div id="malt_section" class="section span10">
+
+                    <form class="form-horizontal">
+                        <fieldset>
+                            <legend>Malt</legend>
+
+
+                            <table id="malts_table" class="table table-bordered">
+                                <thead>
+                                <tr>
+                                    <th class="mini-td">Qty (g)</th>
+                                    <th class="mini-td">%</th>
+                                    <th class="large-td">Malt/Sugar</th>
+                                    <th class="mini-td">OG</th>
+                                    <th class="mini-td">Color (EBC)</th>
+                                    <th class="ex-small"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                            <button type="button" id="add_malt" class="btn pull-right">Add malt</button>
+
+                        </fieldset>
+                    </form>
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div id="mashing_section" class="section span10">
+                    <h2>Mashing schedule</h2>
+                    <table id="mashing" class="">
+                        <thead>
+                        <tr>
+                            <th class="medium">Duration (m)</th><th class="medium">Temp (&deg;C)</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                    <button id="add_mash_time" class="pull-right">Add time</button>
+                </div>
+            </div>
+
+            <div class="row">
+
+                <div id="hops_section" class="section span10">
+                    <h2>Hops</h2>
+                    <table id="hops"  class="fullsize">
+                        <thead>
+                        <tr>
+                            <th class="small">Qty (g)</th><th>Hop name</th><th class="small">&alpha; Acid</th><th class="small">Form</th><th class="medium">Boil Time (m)</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                    <button id="add_hop" class="pull-right">Add hops</button>
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div id="additives_section" class="section span10">
+                    <h2>Additives</h2>
+                    <table id="additives" sclass="fullsize">
+                        <thead>
+                        <tr>
+                            <th class="small">Qty (g)</th><th>Additive name</th><th class="medium">Boil Time (m)</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                    <button id="add_additive" class="pull-right">Add Additives</button>
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div id="water_section" class="section span10">
+                    <h2>Water</h2>
+                    <table class="bottom-border" id="water_table">
+                    </table>
+                </div>
+            </div>
+
+            <div class="row">
+
+                <div id="boil_section" class="section span10">
+                    <h2>Boiling</h2>
+                    <div class="single-field underline"  style="width: 300px;">
+                        <label for="total_boil_time">Total mash boil time:</label>
+                        <input id="total_boil_time" type="text" class="no-border spaced small" value="">
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div id="fermentation_section" class="section span10">
+                    <h2>Fermentation</h2>
+                    <table id="fermentation" class="bottom-border">
+
+                    </table>
+                </div>
+            </div>
+
+            <div class="row">
+
+                <div id="other_section" class="section span10">
+                    <h2>Other information</h2>
+                    <table id="additional_desc" class="bottom-border fullsize">
+                    </table>
+                </div>
             </div>
         </div>
-
-
-        <div id="fermentation_section" class="section">
-            <h2>Fermentation</h2>
-            <table id="fermentation" class="bottom-border">
-
-            </table>
-        </div>
-        <div id="other_section" class="section">
-            <h2>Other information</h2>
-            <table id="additional_desc" class="bottom-border fullsize">
-            </table>
-        </div>
     </div>
-
 
 <script type="text/template" id="malt_table_row_template">
     <td>
-        <input id="quantity" type="text" class="no-border small" value="<%= quantity %>">
+        <input id="quantity" type="text" class="input-mini" value="<%= quantity %>">
     </td>
     <th>
-        <input id="percentage" type="text" class="no-border small" readonly="readonly" value="<%= percentage %>">
+        <input id="percentage" type="text" class="input-mini" readonly="readonly" value="<%= percentage %>">
     </th>
     <td>
-        <input id="ingredient" type="text" class="no-border" value="<%= ingredient %>">
+        <input id="ingredient" type="text" class="input-large" value="<%= ingredient %>">
     </td>
     <td>
-        <input id="og" type="text" class="no-border small" value="<%= og %>">
+        <input id="og" type="text" class="input-mini" value="<%= og %>">
     </td>
     <td>
-        <input id="color" type="text" class="no-border small" value="<%= color %>">
+        <input id="color" type="text" class="input-mini" value="<%= color %>">
     </td>
+    <td class="remove"><i class="icon-remove-circle"></i></td>
 </script>
 
     <script type="text/template" id="hop_table_row_template">
@@ -266,77 +325,103 @@
     </script>
 
     <script type="text/template" id="general_information_template">
-        <tr>
-            <td>
-                <div class="single-field">
-                    <label for="beer_name">Beer Name</label>
-                    <input type="text" id="beer_name" class="no-border" value="<%= beer_name %>">
-                </div>
-            </td>
-            <td >
-                <div class="single-field">
-                    <label for="brewer">Brewer</label>
-                    <input id="brewer" type="text" class="no-border" value="<%= brewer %>">
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <div class="single-field">
-                    <label for="beer_style">Beer Style</label>
-                    <input type="text" id="beer_style" class="no-border" value="<%= beer_style %>">
-                </div>
-            </td>
-            <td >
-                <div class="single-field">
-                    <label for="brew_date">Brew Date</label>
-                    <input id="brew_date" type="text" class="no-border" value="<%= brew_date %>">
-                </div>
-            </td>
 
-        </tr>
-        <tr>
-            <td>
-                <div class="single-field">
-                    <label for="wort_size">Wort Volume (l)</label>
-                    <input id="wort_size" type="text" class="no-border" value="<%= wort_size %>">
+        <div class="row">
+            <div class="span5">
+                <div class="control-group">
+                    <label for="beer_name" class="control-label">Beer Name</label>
+                    <div class="controls">
+                        <input type="text" id="beer_name" class="no-border" value="<%= beer_name %>">
+                    </div>
                 </div>
-            </td>
-            <td>
-                <div class="single-field">
-                    <label for="batch_size">Final Volume (l)</label>
-                    <input id="batch_size" type="text" class="no-border" value="<%= batch_size %>">
+
+            </div>
+            <div class="span5">
+                <div class="control-group">
+                    <label for="brewer" class="control-label">Brewer</label>
+                    <div class="controls">
+                        <input id="brewer" type="text" class="no-border" value="<%= brewer %>">
+                    </div>
                 </div>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <div class="single-field">
-                    <label for="computed_ibu">Bitterness (IBU)</label>
-                    <input id="computed_ibu" type="text" class="no-border" value="<%= computed_ibu %>">
+            </div>
+        </div>
+        <div class="row">
+            <div class="span5">
+                <div class="control-group">
+                    <label for="beer_style" class="control-label">Beer Style</label>
+                    <div class="controls">
+                        <input type="text" id="beer_style" class="no-border" value="<%= beer_style %>">
+                    </div>
                 </div>
-            </td>
-            <td>
-                <div class="single-field">
-                    <label for="computed_color">Color (EBC)</label>
-                    <input id="computed_color" type="text" class="no-border" value="<%= computed_color %>">
+
+            </div>
+            <div class="span5">
+                <div class="control-group">
+                    <label for="brew_date" class="control-label">Brew Date</label>
+                    <div class="controls">
+                        <input id="brew_date" type="text" class="no-border" value="<%= brew_date %>">
+                    </div>
                 </div>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <div class="single-field">
-                    <label for="actual_og">Actual OG</label>
-                    <input id="actual_og" type="text" class="no-border" value="<%= actual_og %>">
+            </div>
+        </div>
+        <div class="row">
+            <div class="span5">
+                <div class="control-group">
+                    <label for="wort_size" class="control-label">Wort Volume (l)</label>
+                    <div class="controls">
+                        <input id="wort_size" type="text" class="no-border" value="<%= wort_size %>">
+                    </div>
                 </div>
-            </td>
-            <td>
-                <div class="single-field">
-                    <label for="fg">FG</label>
-                    <input id="fg" type="text" class="no-border" value="<%= fg %>">
+
+            </div>
+            <div class="span5">
+                <div class="control-group">
+                    <label for="batch_size" class="control-label">Final Volume (l)</label>
+                    <div class="controls">
+                        <input id="batch_size" type="text" class="no-border" value="<%= batch_size %>">
+                    </div>
                 </div>
-            </td>
-        </tr>
+            </div>
+        </div>
+        <div class="row">
+            <div class="span5">
+                <div class="control-group">
+                    <label for="computed_ibu" class="control-label">Bitterness (IBU)</label>
+                    <div class="controls">
+                        <input id="computed_ibu" type="text" class="no-border" value="<%= computed_ibu %>">
+                    </div>
+                </div>
+
+            </div>
+            <div class="span5">
+                <div class="control-group">
+                    <label for="computed_color" class="control-label">Color (EBC)</label>
+                    <div class="controls">
+                        <input id="computed_color" type="text" class="no-border" value="<%= computed_color %>">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="span5">
+                <div class="control-group">
+                    <label for="actual_og" class="control-label">Actual OG</label>
+                    <div class="controls">
+                        <input id="actual_og" type="text" class="no-border" value="<%= actual_og %>">
+                    </div>
+                </div>
+
+            </div>
+            <div class="span5">
+                <div class="control-group">
+                    <label for="fg" class="control-label">FG</label>
+                    <div class="controls">
+                        <input id="fg" type="text" class="no-border" value="<%= fg %>">
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </script>
 
 <script type="text/template" id="ascii_template">
