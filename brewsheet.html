@@ -94,80 +94,98 @@
             <div class="row">
 
                 <div id="mashing_section" class="section span10">
-
                     <form>
                         <fieldset>
                             <legend>Mashing schedule</legend>
 
-                            <table id="mashing" class="table table-bordered">
+                            <div class="row">
+                                <div class="span4" style="width: 270px;">
+                                    <table id="mashing" class="table table-bordered">
+                                        <thead>
+                                        <tr>
+                                            <th class="medium-td">Duration (m)</th>
+                                            <th class="medium-td">Temp (&deg;C)</th>
+                                            <th class="ex-small"></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                    <button type="button" id="add_mash_time" class="btn pull-right">Add time</button>
+                                </div>
+                                <div class="span5">
+                                    graph here
+                                </div>
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+
+            <div class="row">
+                <div id="hops_section" class="section span10">
+                    <form>
+                        <fieldset>
+                            <legend>Hops</legend>
+                            <table id="hops"  class="fullsize">
                                 <thead>
                                 <tr>
-                                    <th class="medium-td">Duration (m)</th>
-                                    <th class="medium-td">Temp (&deg;C)</th>
-                                    <th class="ex-small"></th>
+                                    <th class="small">Qty (g)</th><th>Hop name</th><th class="small">&alpha; Acid</th><th class="small">Form</th><th class="medium">Boil Time (m)</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 </tbody>
                             </table>
-                            <button type="button" id="add_mash_time" class="btn pull-right">Add time</button>
+                            <button id="add_hop" class="pull-right">Add hops</button>
                         </fieldset>
                     </form>
                 </div>
-
-            <div class="row">
-
-                <div id="hops_section" class="section span10">
-                    <h2>Hops</h2>
-                    <table id="hops"  class="fullsize">
-                        <thead>
-                        <tr>
-                            <th class="small">Qty (g)</th><th>Hop name</th><th class="small">&alpha; Acid</th><th class="small">Form</th><th class="medium">Boil Time (m)</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-                    <button id="add_hop" class="pull-right">Add hops</button>
-                </div>
-
             </div>
 
             <div class="row">
-
                 <div id="additives_section" class="section span10">
-                    <h2>Additives</h2>
-                    <table id="additives" sclass="fullsize">
-                        <thead>
-                        <tr>
-                            <th class="small">Qty (g)</th><th>Additive name</th><th class="medium">Boil Time (m)</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-                    <button id="add_additive" class="pull-right">Add Additives</button>
+                    <form>
+                        <fieldset>
+                            <legend>Additives</legend>
+                            <table id="additives" sclass="fullsize">
+                                <thead>
+                                <tr>
+                                    <th class="small">Qty (g)</th><th>Additive name</th><th class="medium">Boil Time (m)</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                            <button id="add_additive" class="pull-right">Add Additives</button>
+                        </fieldset>
+                    </form>
                 </div>
-
             </div>
 
             <div class="row">
-
                 <div id="water_section" class="section span10">
-                    <h2>Water</h2>
-                    <table class="bottom-border" id="water_table">
-                    </table>
+                    <form>
+                        <fieldset>
+                            <legend>Water</legend>
+                            <table class="bottom-border" id="water_table">
+                            </table>
+                        </fieldset>
+                    </form>
                 </div>
             </div>
 
             <div class="row">
 
                 <div id="boil_section" class="section span10">
-                    <h2>Boiling</h2>
-                    <div class="single-field underline"  style="width: 300px;">
-                        <label for="total_boil_time">Total mash boil time:</label>
-                        <input id="total_boil_time" type="text" class="no-border spaced small" value="">
-                    </div>
+                    <form>
+                        <fieldset>
+                            <legend>Boiling</legend>
+                            <div class="single-field underline"  style="width: 300px;">
+                                <label for="total_boil_time">Total mash boil time:</label>
+                                <input id="total_boil_time" type="text" class="no-border spaced small" value="">
+                            </div>
+                        </fieldset>
+                    </form>
                 </div>
 
             </div>
@@ -175,19 +193,25 @@
             <div class="row">
 
                 <div id="fermentation_section" class="section span10">
-                    <h2>Fermentation</h2>
-                    <table id="fermentation" class="bottom-border">
-
-                    </table>
+                    <form>
+                        <fieldset>
+                            <legend>Fermentation</legend>
+                            <table id="fermentation" class="bottom-border">
+                            </table>
+                        </fieldset>
+                    </form>
                 </div>
             </div>
 
             <div class="row">
-
                 <div id="other_section" class="section span10">
-                    <h2>Other information</h2>
-                    <table id="additional_desc" class="bottom-border fullsize">
-                    </table>
+                    <form>
+                        <fieldset>
+                            <legend>Other information</legend>
+                            <table id="additional_desc" class="bottom-border fullsize">
+                            </table>
+                        </fieldset>
+                    </form>
                 </div>
             </div>
         </div>

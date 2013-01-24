@@ -24,6 +24,10 @@ table .input-medium {
 
 .table {width: auto;}
 
+.table-100 {
+    width: 100%
+}
+
 .ex-small {
     width: 17px;
 }
