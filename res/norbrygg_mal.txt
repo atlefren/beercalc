@@ -1,0 +1,53 @@
+[tt][size=10pt][b]Generell informasjon[/b]
+Navn på brygget: ***
+Øltype: ***
+Antall poeng i konkurransen: ** av **
+OG: ***
+FG: ***
+Farve (beregnet): *** EBC
+Beregnet bitter: *** IBU
+Vørtermengde: *** l
+Sluttvolum:   *** l
+
+[b]Malt & sukker[/b]
+*** gram       *** %      betegnelsen på maltsort/korn/sukker         *** EBC     
+*** gram       *** %      betegnelsen på maltsort/korn/sukker         *** EBC
+*** gram       *** %      betegnelsen på maltsort/korn/sukker         *** EBC    
+
+[b]Vann[/b]
+*** liter til innmesking
+*** liter til skylling
+
+[b]Meskeskjema[/b]
+*** min    *** gr C
+*** min    *** gr C
+*** min    *** gr C
+*** min    *** gr C
+
+[b]Humle[/b]
+*** gram    betegnelsen på humletype    *** % alfa  hel/pellets     koketid *** min
+*** gram    betegnelsen på humletype    *** % alfa  hel/pellets     koketid *** min
+
+[b]Krydder og andre tilsetninger[/b]
+*** gram    navn på krydder/tilsetning          koketid *** min
+*** gram    navn på krydder/tilsetning          koketid *** min
+*** gram    navn på krydder/tilsetning          koketid *** min
+
+[b]Koketid[/b]
+Total koketid vørter: *** min
+
+[b]Gjær[/b]
+Betegnelsen på gjæren:   ***            flytende/tørr-/selvdyrket gjær
+
+[b]Gjæringstemperatur og -tid[/b]
+Gjæring/primærgjæring    *** dager ved *** gr C
+Modning/sekundærgjæring  *** dager ved *** gr C
+lagring       *** dager ved *** gr C
+
+[b]Øvrig informasjon[/b]
+Filtrert: ja/nei
+CO2: naturlig/tilsatt
+Bryggedato: ***
+Tappedato:  ***
+
+[b]Kommentar:[/b] *** (maks 200 ord)[/size][/tt]
