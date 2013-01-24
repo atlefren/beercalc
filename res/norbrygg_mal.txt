@@ -1,18 +1,18 @@
 [tt][size=10pt][b]Generell informasjon[/b]
-Navn på brygget: ***
-Øltype: ***
+Navn pÃ¥ brygget: ***
+Ã¸ltype: ***
 Antall poeng i konkurransen: ** av **
 OG: ***
 FG: ***
 Farve (beregnet): *** EBC
 Beregnet bitter: *** IBU
-Vørtermengde: *** l
+VÃ¸rtermengde: *** l
 Sluttvolum:   *** l
 
 [b]Malt & sukker[/b]
-*** gram       *** %      betegnelsen på maltsort/korn/sukker         *** EBC     
-*** gram       *** %      betegnelsen på maltsort/korn/sukker         *** EBC
-*** gram       *** %      betegnelsen på maltsort/korn/sukker         *** EBC    
+*** gram       *** %      betegnelsen pÃ¥ maltsort/korn/sukker         *** EBC
+*** gram       *** %      betegnelsen pÃ¥ maltsort/korn/sukker         *** EBC
+*** gram       *** %      betegnelsen pÃ¥ maltsort/korn/sukker         *** EBC
 
 [b]Vann[/b]
 *** liter til innmesking
@@ -25,26 +25,26 @@ Sluttvolum:   *** l
 *** min    *** gr C
 
 [b]Humle[/b]
-*** gram    betegnelsen på humletype    *** % alfa  hel/pellets     koketid *** min
-*** gram    betegnelsen på humletype    *** % alfa  hel/pellets     koketid *** min
+*** gram    betegnelsen pÃ¥ humletype    *** % alfa  hel/pellets     koketid *** min
+*** gram    betegnelsen pÃ¥ humletype    *** % alfa  hel/pellets     koketid *** min
 
 [b]Krydder og andre tilsetninger[/b]
-*** gram    navn på krydder/tilsetning          koketid *** min
-*** gram    navn på krydder/tilsetning          koketid *** min
-*** gram    navn på krydder/tilsetning          koketid *** min
+*** gram    navn pÃ¥ krydder/tilsetning          koketid *** min
+*** gram    navn pÃ¥ krydder/tilsetning          koketid *** min
+*** gram    navn pÃ¥ krydder/tilsetning          koketid *** min
 
 [b]Koketid[/b]
-Total koketid vørter: *** min
+Total koketid vÃ¸rter: *** min
 
-[b]Gjær[/b]
-Betegnelsen på gjæren:   ***            flytende/tørr-/selvdyrket gjær
+[b]GjÃ¦r[/b]
+Betegnelsen pÃ¥ gjÃ¦ren:   ***            flytende/tÃ¸rr-/selvdyrket gjÃ¦r
 
-[b]Gjæringstemperatur og -tid[/b]
-Gjæring/primærgjæring    *** dager ved *** gr C
-Modning/sekundærgjæring  *** dager ved *** gr C
+[b]GjÃ¦ringstemperatur og -tid[/b]
+GjÃ¦ring/primÃ¦rgjÃ¦ring    *** dager ved *** gr C
+Modning/sekundÃ¦rgjÃ¦ring  *** dager ved *** gr C
 lagring       *** dager ved *** gr C
 
-[b]Øvrig informasjon[/b]
+[b]Ã˜vrig informasjon[/b]
 Filtrert: ja/nei
 CO2: naturlig/tilsatt
 Bryggedato: ***
