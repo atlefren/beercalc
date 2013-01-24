@@ -9,12 +9,10 @@
         <script type="text/javascript" src="script/underscore-min.js"></script>
         <script type="text/javascript" src="script/backbone-min.js"></script>
 
+
         <script type="text/javascript" src="script/brewsheet.js"></script>
 
         <script type="text/javascript">
-
-
-
             $(document).ready(function(){
                 var brew = ol.createBrew();
                 var general = new ol.GeneralInformationView({el: $("#desc"), model: brew.generalInformation}).render();
@@ -31,92 +29,92 @@
             });
         </script>
 
-</head>
-<body>
-<div id="recepie">
-    <button id="show_recepie">Show Recepie</button>
-    <div id="content"></div>
-</div> 
-
-<div id="container">
-    <div id="general_section" class="section">
-    <h2>General information</h2>
-    <table id="desc" class="bottom-border fullsize">
-    </table>
+    </head>
+    <body>
+    <div id="recepie">
+        <button id="show_recepie">Show Recepie</button>
+        <div id="content"></div>
     </div>
-    <div id="malt_section" class="section">
-        <h2>Malt</h2>
-        <table id="malts_table" class="fullsize">
-            <thead>
+
+    <div id="container">
+        <div id="general_section" class="section">
+            <h2>General information</h2>
+            <table id="desc" class="bottom-border fullsize">
+            </table>
+        </div>
+        <div id="malt_section" class="section">
+            <h2>Malt</h2>
+            <table id="malts_table" class="fullsize">
+                <thead>
                 <tr>
                     <th class="small">Qty (g)</th><th class="small">%</th><th>Malt/Sugar</th><th class="small">OG</th><th class="medium">Color (EBC)</th>
                 </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
-        <button id="add_malt" class="pull-right">Add malt</button>
-    </div>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            <button id="add_malt" class="pull-right">Add malt</button>
+        </div>
 
-    <div id="hops_section" class="section">
-        <h2>Hops</h2>
-        <table id="hops"  class="fullsize">
-            <thead>
+        <div id="hops_section" class="section">
+            <h2>Hops</h2>
+            <table id="hops"  class="fullsize">
+                <thead>
                 <tr>
                     <th class="small">Qty (g)</th><th>Hop name</th><th class="small">&alpha; Acid</th><th class="small">Form</th><th class="medium">Boil Time (m)</th>
                 </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
-        <button id="add_hop" class="pull-right">Add hops</button>
-    </div>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            <button id="add_hop" class="pull-right">Add hops</button>
+        </div>
 
-    <div id="additives_section" class="section">
-        <h2>Additives</h2>
-        <table id="additives" sclass="fullsize">
-            <thead>
+        <div id="additives_section" class="section">
+            <h2>Additives</h2>
+            <table id="additives" sclass="fullsize">
+                <thead>
                 <tr>
                     <th class="small">Qty (g)</th><th>Additive name</th><th class="medium">Boil Time (m)</th>
                 </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
-        <button id="add_additive" class="pull-right">Add Additives</button>
-    </div>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            <button id="add_additive" class="pull-right">Add Additives</button>
+        </div>
 
-    <div id="water_section" class="section">
-        <h2>Water</h2>
-        <table class="bottom-border" id="water_table">
-        </table>
-    </div>
-    <div id="mashing_section" class="section">
-        <h2>Mashing schedule</h2>
-        <table id="mashing" class="">
-            <thead>
+        <div id="water_section" class="section">
+            <h2>Water</h2>
+            <table class="bottom-border" id="water_table">
+            </table>
+        </div>
+        <div id="mashing_section" class="section">
+            <h2>Mashing schedule</h2>
+            <table id="mashing" class="">
+                <thead>
                 <tr>
                     <th class="medium">Duration (m)</th><th class="medium">Temp (&deg;C)</th>
                 </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
-        <button id="add_mash_time" class="pull-right">Add time</button>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            <button id="add_mash_time" class="pull-right">Add time</button>
 
-    </div>
-    <div id="fermentation_section" class="section">
-        <h2>Fermentation</h2>
-        <table id="fermentation" class="bottom-border">
+        </div>
+        <div id="fermentation_section" class="section">
+            <h2>Fermentation</h2>
+            <table id="fermentation" class="bottom-border">
 
-    </table>
+            </table>
+        </div>
+        <div id="other_section" class="section">
+            <h2>Other information</h2>
+            <table id="additional_desc" class="bottom-border fullsize">
+            </table>
+        </div>
     </div>
-    <div id="other_section" class="section">
-        <h2>Other information</h2>
-        <table id="additional_desc" class="bottom-border fullsize">
-        </table>
-    </div>
-</div>
 
 
 <script type="text/template" id="malt_table_row_template">
@@ -137,47 +135,47 @@
     </td>
 </script>
 
-<script type="text/template" id="hop_table_row_template">
-    <td>
-        <input id="quantity" type="text" class="no-border small" value="<%= quantity %>">
-    </td>   
-    <td>
-        <input id="name" type="text" class="no-border" value="<%= name %>">
-    </td>
-    <td>
-        <input id="alpha_acid" type="text" class="no-border small" value="<%= alpha_acid %>">
-    </td>
-    <td>
-        <input id="form" type="text" class="no-border small" value="<%= form %>">
-    </td>
-    <td>
-        <input id="boil_time" type="text" class="no-border small" value="<%= boil_time %>">
-    </td>
-</script>
+    <script type="text/template" id="hop_table_row_template">
+        <td>
+            <input id="quantity" type="text" class="no-border small" value="<%= quantity %>">
+        </td>
+        <td>
+            <input id="name" type="text" class="no-border" value="<%= name %>">
+        </td>
+        <td>
+            <input id="alpha_acid" type="text" class="no-border small" value="<%= alpha_acid %>">
+        </td>
+        <td>
+            <input id="form" type="text" class="no-border small" value="<%= form %>">
+        </td>
+        <td>
+            <input id="boil_time" type="text" class="no-border small" value="<%= boil_time %>">
+        </td>
+    </script>
 
-<script type="text/template" id="additive_table_row_template">
-    <td>
-        <input id="quantity" type="text" class="no-border small" value="<%= quantity %>">
-    </td>   
-    <td>
-        <input id="name" type="text" class="no-border" value="<%= name %>">
-    </td>
-    <td>
-        <input id="boil_time" type="text" class="no-border small" value="<%= boil_time %>">
-    </td>
-</script>
+    <script type="text/template" id="additive_table_row_template">
+        <td>
+            <input id="quantity" type="text" class="no-border small" value="<%= quantity %>">
+        </td>
+        <td>
+            <input id="name" type="text" class="no-border" value="<%= name %>">
+        </td>
+        <td>
+            <input id="boil_time" type="text" class="no-border small" value="<%= boil_time %>">
+        </td>
+    </script>
 
-<script type="text/template" id="mash_time_row_template">
+    <script type="text/template" id="mash_time_row_template">
 
-    <td class="medium">
-        <input id="mash_time" type="text" class="no-border small spaced rightalign">
-    </td>
-    <td class="medium">
-        <input id="mash_temperature" type="text" class="no-border small spaced rightalign">
-    </td>
-</script>
+        <td class="medium">
+            <input id="mash_time" type="text" class="no-border small spaced rightalign">
+        </td>
+        <td class="medium">
+            <input id="mash_temperature" type="text" class="no-border small spaced rightalign">
+        </td>
+    </script>
 
-<script type="text/template" id="fermentation_template">
+    <script type="text/template" id="fermentation_template">
         <tr>
             <td colspan="2">
                 <div class="single-field">
@@ -231,30 +229,30 @@
                 </div>
             </td>
         </tr>
-</script>
+    </script>
 
-<script type="text/template" id="water_table_template">
-            <tr>
-                <td>
-                    <div class="single-field">
-                        <label for="mashing_water" class="large">Mashing Water</label>
-                        <input id="mashing_water" type="text" class="no-border small spaced rightalign" value="<%= mashing_water %>">
-                        l
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <div class="single-field">
-                        <label for="sparging_water" class="large">Sparging Water</label>
-                        <input id="sparging_water" type="text" class="no-border small spaced rightalign" value="<%= sparging_water %>">
-                        l
-                    </div>
-                </td>
-            </tr>
-</script>
+    <script type="text/template" id="water_table_template">
+        <tr>
+            <td>
+                <div class="single-field">
+                    <label for="mashing_water" class="large">Mashing Water</label>
+                    <input id="mashing_water" type="text" class="no-border small spaced rightalign" value="<%= mashing_water %>">
+                    l
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div class="single-field">
+                    <label for="sparging_water" class="large">Sparging Water</label>
+                    <input id="sparging_water" type="text" class="no-border small spaced rightalign" value="<%= sparging_water %>">
+                    l
+                </div>
+            </td>
+        </tr>
+    </script>
 
-<script type="text/template" id="general_information_template">
+    <script type="text/template" id="general_information_template">
         <tr>
             <td>
                 <div class="single-field">
@@ -326,7 +324,7 @@
                 </div>
             </td>
         </tr>
-</script>
+    </script>
 
 <script type="text/template" id="ascii_template">
 [tt][size=10pt][b]Generell informasjon[/b]
@@ -341,7 +339,7 @@ Vørtermengde: <%= rpad(orNa(generalInformation.wort_size), 3) %> l
 Sluttvolum:   <%= rpad(orNa(generalInformation.batch_size), 3) %> l
 
 [b]Malt & sukker[/b]
-<% 
+<%
     if(malts.length > 0) {
         var iSpace = _.max(_.pluck(malts.reverse(), "ingredient"), function(i) {return i.length; }).length;
         _.each(malts, function(malt) {  
@@ -388,47 +386,47 @@ Tappedato:  <%= rpad(orNa(additionalInformation.bottle_date), 10) %>
 [b]Kommentar:[/b] <%= orNa(additionalInformation.comment) %>[/size][/tt]
 </script>
 
-<script type="text/template" id="additional_information_template">
-            <tr>
-                <td>
-                    <div class="single-field">
-                        <label for="brew_date">Brew Date</label>
-                        <input id="brew_date" type="text" class="no-border" value="<%= brew_date %>">
-                    </div>
-                </td>
-                <td>
-                    <div class="single-field">
-                        <label for="bottle_date">Bottle Date</label>
-                        <input type="text" id="bottle_date" class="no-border" value="<%= bottle_date %>">
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <div class="single-field">
-                        <label for="filtered">Filtered</label>
-                        <input type="checkbox" id="filtered" <% if( filtered) { %> checked  <% } %> >
-                    </div>
-                </td>
-                <td>
-                    <div class="single-field">
-                        <label for="co2">CO<sub>2</sub></label>
-                        <!--<input type="text" id="co2" class="no-border">-->
-                        <select id="co2">
-                            <option value="none" <% if( co2 == 'none') { %> selected  <% } %>></option>
-                            <option value="natural" <% if( co2 == 'natural') { %> selected  <% } %>>Natural</option>
-                            <option value="added" <% if( co2 == 'added') { %> selected  <% } %>>Added</option>
-                        </select>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <label for="comment">Additional comments</label>
-                    <textarea id="comment"><%= comment %></textarea>
-                </td>
-            </tr>
-</script>
+    <script type="text/template" id="additional_information_template">
+        <tr>
+            <td>
+                <div class="single-field">
+                    <label for="brew_date">Brew Date</label>
+                    <input id="brew_date" type="text" class="no-border" value="<%= brew_date %>">
+                </div>
+            </td>
+            <td>
+                <div class="single-field">
+                    <label for="bottle_date">Bottle Date</label>
+                    <input type="text" id="bottle_date" class="no-border" value="<%= bottle_date %>">
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div class="single-field">
+                    <label for="filtered">Filtered</label>
+                    <input type="checkbox" id="filtered" <% if( filtered) { %> checked  <% } %> >
+                </div>
+            </td>
+            <td>
+                <div class="single-field">
+                    <label for="co2">CO<sub>2</sub></label>
+                    <!--<input type="text" id="co2" class="no-border">-->
+                    <select id="co2">
+                        <option value="none" <% if( co2 == 'none') { %> selected  <% } %>></option>
+                        <option value="natural" <% if( co2 == 'natural') { %> selected  <% } %>>Natural</option>
+                        <option value="added" <% if( co2 == 'added') { %> selected  <% } %>>Added</option>
+                    </select>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <label for="comment">Additional comments</label>
+                <textarea id="comment"><%= comment %></textarea>
+            </td>
+        </tr>
+    </script>
 
-</body>
+    </body>
 </html>
