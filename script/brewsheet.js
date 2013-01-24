@@ -452,7 +452,7 @@ var ol = {};
         show_recipe: function() {
             //this.$el.find("#content").html(new AsciiView({data: this.options.data}).render().$el);
 
-            var modal = $('#myModal');
+            var modal = $('#recipeModal');
             modal.find(".modal-body").html(new AsciiView({data: this.options.data}).render().$el);
             modal.modal('show')
         }
