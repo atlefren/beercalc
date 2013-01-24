@@ -442,15 +442,19 @@ var ol = {};
     ns.RecepieView = Backbone.View.extend({
 
         events: {
-            "click #show_recepie": "show_recepie"
+            "click #show_recipe": "show_recipe"
         },
 
         initialize: function() {
-            _.bindAll(this, "show_recepie");
+            _.bindAll(this, "show_recipe");
         },
 
-        show_recepie: function() {
-            this.$el.find("#content").html(new AsciiView({data: this.options.data}).render().$el);
+        show_recipe: function() {
+            //this.$el.find("#content").html(new AsciiView({data: this.options.data}).render().$el);
+
+            var modal = $('#myModal');
+            modal.find(".modal-body").html(new AsciiView({data: this.options.data}).render().$el);
+            modal.modal('show')
         }
 
     });

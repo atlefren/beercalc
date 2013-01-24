@@ -3,11 +3,15 @@
     <head>
         <meta http-equiv="X-UA-Compatible" content="IE=8">
         <meta charset="UTF-8">
+
+        <link rel="stylesheet" type="text/css" media="all" href="css/bootstrap/css/bootstrap.min.css" />
+
         <link rel="stylesheet" type="text/css" media="all" href="css/style.css" />
 
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
         <script type="text/javascript" src="script/underscore-min.js"></script>
         <script type="text/javascript" src="script/backbone-min.js"></script>
+        <script type="text/javascript" src="css/bootstrap/js/bootstrap.min.js"></script>
 
 
         <script type="text/javascript" src="script/brewsheet.js"></script>
@@ -32,8 +36,7 @@
     </head>
     <body>
     <div id="recepie">
-        <button id="show_recepie">Show Recepie</button>
-        <div id="content"></div>
+        <button id="show_recipe">Show recipe</button>
     </div>
 
     <div id="container">
@@ -437,6 +440,15 @@ Tappedato:  <%= ol.templateFunc.rpad(ol.templateFunc.orNa(additionalInformation.
             </td>
         </tr>
     </script>
+
+    <div id="myModal" class="modal hide fade">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            &nbsp;
+        </div>
+        <div class="modal-body">
+        </div>
+    </div>
 
     </body>
 </html>
