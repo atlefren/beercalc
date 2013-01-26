@@ -286,6 +286,7 @@ var ol = {};
 
         initialize: function() {
             _.bindAll(this, "add");
+            this.collection.on("destroy", this.render, this);
             this.collection.on("add", this.render, this);
             this.collection.on("change:boil_time", this.changeBoilTime, this);
         },
@@ -398,12 +399,12 @@ var ol = {};
 
         listenOn: ["quantity", "name", "form", "alpha_acid", "boil_time"],
 
-        events: {},
         initialize: function() {
             DynamicTableView.prototype.initialize.apply(this, arguments);
         },
 
         render: function() {
+            console.log("render")
             this.$el.html(_.template($("#hop_table_row_template").html(), this.model.toJSON()));
             return this;
         }

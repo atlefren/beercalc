@@ -127,16 +127,21 @@
                     <form>
                         <fieldset>
                             <legend>Hops</legend>
-                            <table id="hops"  class="fullsize">
+                            <table id="hops"  class="table table-bordered">
                                 <thead>
                                 <tr>
-                                    <th class="small">Qty (g)</th><th>Hop name</th><th class="small">&alpha; Acid</th><th class="small">Form</th><th class="medium">Boil Time (m)</th>
+                                    <th class="mini-td">Qty (g)</th>
+                                    <th class="large-td">Hop name</th>
+                                    <th class="mini-td">&alpha; Acid</th>
+                                    <th class="mini-td">Form</th>
+                                    <th class="medium-td">Boil Time (m)</th>
+                                    <th class="ex-small"></th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 </tbody>
                             </table>
-                            <button id="add_hop" class="pull-right">Add hops</button>
+                            <button type="button" id="add_hop" class="btn pull-right">Add hop</button>
                         </fieldset>
                     </form>
                 </div>
@@ -238,20 +243,26 @@
 
     <script type="text/template" id="hop_table_row_template">
         <td>
-            <input id="quantity" type="text" class="no-border small" value="<%= quantity %>">
+            <input id="quantity" type="text" class="input-mini" value="<%= quantity %>">
         </td>
         <td>
-            <input id="name" type="text" class="no-border" value="<%= name %>">
+            <input id="name" type="text" class="input-large" value="<%= name %>">
         </td>
         <td>
-            <input id="alpha_acid" type="text" class="no-border small" value="<%= alpha_acid %>">
+            <input id="alpha_acid" type="text" class="input-mini" value="<%= alpha_acid %>">
         </td>
         <td>
-            <input id="form" type="text" class="no-border small" value="<%= form %>">
+            <!--<input id="form" type="text" class="input-mini" value="<%= form %>">-->
+            <select id="form" class="small">
+                <option value="">--</option>
+                <option value="pellets">Pellets</option>
+                <option value="cones">Cones</option>
+            </select>
         </td>
         <td>
-            <input id="boil_time" type="text" class="no-border small" value="<%= boil_time %>">
+            <input id="boil_time" type="text" class="input-medium" value="<%= boil_time %>">
         </td>
+        <td class="remove"><i class="icon-remove-circle"></i></td>
     </script>
 
     <script type="text/template" id="additive_table_row_template">

@@ -18,6 +18,11 @@ table .input-large {
 table .input-mini {
     width: 64px;
 }
+
+select.small {
+    width: 80px;
+}
+
 table .input-medium {
     width: 84px;
 }
@@ -34,6 +39,7 @@ table .input-medium {
 
 .remove .icon-remove-circle {
     margin-top: 7px;
+    cursor: pointer;
 }
 
 .table input {
