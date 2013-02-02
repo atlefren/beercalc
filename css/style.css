@@ -46,6 +46,15 @@ table .input-medium {
     margin-bottom: 0;
 }
 
+#water label.control-label {
+    text-align: left;
+    width: 110px;
+}
+
+#water .controls {
+    margin-left: 110px;
+}
+
 
 /*
 body {

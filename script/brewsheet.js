@@ -364,7 +364,11 @@ var ol = {};
         },
 
         render: function() {
-            this.$el.html(_.template($("#water_table_template").html(), this.model.toJSON()));
+            //this.$el.html();
+
+            this.$el.find("#water").html(_.template($("#water_form_template").html(), this.model.toJSON()));
+
+
             DynamicTableView.prototype.render.apply(this, arguments);
             return this;
         }

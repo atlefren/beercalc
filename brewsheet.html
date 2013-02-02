@@ -23,7 +23,7 @@
                 var maltView = new ol.MaltSectionView({el: $("#malt_section"), collection: brew.malts}).render();
                 var hopView = new ol.HopSectionView({el: $("#hops_section"), collection: brew.hops}).render();
                 var additivesView = new ol.AdditiveSectionView({el: $("#additives_section"), collection: brew.additives}).render();
-                var waterView = new ol.WaterView({el: $("#water_table"), model: brew.water}).render();
+                var waterView = new ol.WaterView({el: $("#water_section"), model: brew.water}).render();
                 var mashTimeView = new ol.MashTimeView({el: $("#mashing_section"), collection: brew.mashSchedule}).render();
                 var fermentationView = new ol.FermentationView({el: $("#fermentation"), model: brew.fermentation}).render();
                 var additionalInformationView = new ol.AdditionalInformationView({el: $("#additional_desc"), model: brew.additionalInformation}).render();
@@ -173,11 +173,12 @@
 
             <div class="row">
                 <div id="water_section" class="section span10">
-                    <form>
+                    <form class="form-horizontal">
                         <fieldset>
                             <legend>Water</legend>
-                            <table class="bottom-border" id="water_table">
-                            </table>
+                            <div id="water">
+
+                            </div>
                         </fieldset>
                     </form>
                 </div>
@@ -349,25 +350,22 @@
         </tr>
     </script>
 
-    <script type="text/template" id="water_table_template">
-        <tr>
-            <td>
-                <div class="single-field">
-                    <label for="mashing_water" class="large">Mashing Water</label>
-                    <input id="mashing_water" type="text" class="no-border small spaced rightalign" value="<%= mashing_water %>">
-                    l
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <div class="single-field">
-                    <label for="sparging_water" class="large">Sparging Water</label>
-                    <input id="sparging_water" type="text" class="no-border small spaced rightalign" value="<%= sparging_water %>">
-                    l
-                </div>
-            </td>
-        </tr>
+    <script type="text/template" id="water_form_template">
+        <div class="control-group">
+            <label class="control-label" for="mashing_water">Mashing Water</label>
+            <div class="controls">
+                <input type="text" id="mashing_water"  class="input-mini" value="<%= mashing_water %>">
+                <span class="help-inline">l</span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="inputPassword">Sparging Water</label>
+            <div class="controls">
+                <input type="text" id="sparging_water" class="input-mini" value="<%= sparging_water %>">
+                <span class="help-inline">l</span>
+            </div>
+        </div>
+
     </script>
 
     <script type="text/template" id="general_information_template">
