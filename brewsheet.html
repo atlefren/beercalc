@@ -253,9 +253,9 @@
         </td>
         <td>
             <select id="form" class="small">
-                <option value="">--</option>
-                <option value="pellets">Pellets</option>
-                <option value="cones">Cones</option>
+                <option value="none" <% if( form == 'none') { %> selected  <% } %>>--</option>
+                <option value="pellets" <% if( form == 'pellets') { %> selected  <% } %>>Pellets</option>
+                <option value="cones" <% if( form == 'cones') { %> selected  <% } %>>Cones</option>
             </select>
         </td>
         <td>
@@ -289,9 +289,7 @@
     </script>
 
     <script type="text/template" id="fermentation_form_template">
-
         <div>
-
             <label for="yeast_name">Yeast Name
                 <input type="text" id="yeast_name" class="input-xlarge" value="<%= yeast_name %>">
             </label>

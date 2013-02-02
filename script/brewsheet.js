@@ -229,7 +229,7 @@ var ol = {};
         "defaults": {
             "quantity": "",
             "name": "",
-            "form": "",
+            "form": "none",
             "alpha_acid": "",
             "boil_time": ""
         }
