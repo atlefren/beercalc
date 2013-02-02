@@ -37,6 +37,7 @@
     <body>
     <div id="recepie">
         <button class="btn" id="show_recipe">Show recipe</button>
+        <button class="btn" id="show_json">Show JSON</button>
     </div>
 
 <!--    <div id="container"> -->
@@ -152,16 +153,19 @@
                     <form>
                         <fieldset>
                             <legend>Additives</legend>
-                            <table id="additives" sclass="fullsize">
+                            <table id="additives" class="table table-bordered">
                                 <thead>
                                 <tr>
-                                    <th class="small">Qty (g)</th><th>Additive name</th><th class="medium">Boil Time (m)</th>
+                                    <th class="mini-td">Qty (g)</th>
+                                    <th class="large-td">Additive name</th>
+                                    <th class="medium-td">Boil Time (m)</th>
+                                    <th class="ex-small"></th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 </tbody>
                             </table>
-                            <button id="add_additive" class="pull-right">Add Additives</button>
+                            <button type="button" id="add_additive" class="btn pull-right">Add Additive</button>
                         </fieldset>
                     </form>
                 </div>
@@ -267,23 +271,24 @@
 
     <script type="text/template" id="additive_table_row_template">
         <td>
-            <input id="quantity" type="text" class="no-border small" value="<%= quantity %>">
+            <input id="quantity" type="text" class="input-mini" value="<%= quantity %>">
         </td>
         <td>
-            <input id="name" type="text" class="no-border" value="<%= name %>">
+            <input id="name" type="text" class="input-large" value="<%= name %>">
         </td>
         <td>
-            <input id="boil_time" type="text" class="no-border small" value="<%= boil_time %>">
+            <input id="boil_time" type="text" class="input-medium" value="<%= boil_time %>">
         </td>
+        <td class="remove"><i class="icon-remove-circle"></i></td>
     </script>
 
     <script type="text/template" id="mash_time_row_template">
 
         <td class="medium">
-            <input id="mash_time" type="text" class="input-mini">
+            <input id="mash_time" type="text" class="input-mini" value="<%= mash_time %>">
         </td>
         <td class="medium">
-            <input id="mash_temperature" type="text" class="input-mini">
+            <input id="mash_temperature" type="text" class="input-mini" value="<%= mash_temperature %>">
         </td>
         <td class="remove"><i class="icon-remove-circle"></i></td>
     </script>
