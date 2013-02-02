@@ -24,6 +24,7 @@
                 var hopView = new ol.HopSectionView({el: $("#hops_section"), collection: brew.hops}).render();
                 var additivesView = new ol.AdditiveSectionView({el: $("#additives_section"), collection: brew.additives}).render();
                 var waterView = new ol.WaterView({el: $("#water_section"), model: brew.water}).render();
+                var boiltimeView = new ol.BoiltimeView({el: $("#boiling_section"), model: brew.boil}).render();
                 var mashTimeView = new ol.MashTimeView({el: $("#mashing_section"), collection: brew.mashSchedule}).render();
                 var fermentationView = new ol.FermentationView({el: $("#fermentation"), model: brew.fermentation}).render();
                 var additionalInformationView = new ol.AdditionalInformationView({el: $("#additional_desc"), model: brew.additionalInformation}).render();
@@ -176,7 +177,7 @@
                     <form class="form-horizontal">
                         <fieldset>
                             <legend>Water</legend>
-                            <div id="water">
+                            <div id="water" class="simple_form">
 
                             </div>
                         </fieldset>
@@ -186,14 +187,20 @@
 
             <div class="row">
 
-                <div id="boil_section" class="section span10">
-                    <form>
+                <div id="boiling_section" class="section span10">
+                    <form class="form-horizontal">
                         <fieldset>
                             <legend>Boiling</legend>
+
+                            <div id="boiling" class="simple_form">
+
+                            </div>
+                            <!--
                             <div class="single-field underline"  style="width: 300px;">
                                 <label for="total_boil_time">Total mash boil time:</label>
                                 <input id="total_boil_time" type="text" class="no-border spaced small" value="">
                             </div>
+                            -->
                         </fieldset>
                     </form>
                 </div>
@@ -257,7 +264,6 @@
             <input id="alpha_acid" type="text" class="input-mini" value="<%= alpha_acid %>">
         </td>
         <td>
-            <!--<input id="form" type="text" class="input-mini" value="<%= form %>">-->
             <select id="form" class="small">
                 <option value="">--</option>
                 <option value="pellets">Pellets</option>
@@ -366,6 +372,17 @@
             </div>
         </div>
 
+    </script>
+
+
+    <script type="text/template" id="boil_time_form_template">
+        <div class="control-group">
+            <label class="control-label" for="boil_time">Boil Time</label>
+            <div class="controls">
+                <input type="text" id="boil_time"  class="input-mini" value="<%= boil_time %>">
+                <span class="help-inline">minutes</span>
+            </div>
+        </div>
     </script>
 
     <script type="text/template" id="general_information_template">

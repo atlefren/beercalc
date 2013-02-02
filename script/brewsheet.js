@@ -359,16 +359,25 @@ var ol = {};
 
         listenOn: ["mashing_water", "sparging_water"],
 
-        initialize: function() {
-            DynamicTableView.prototype.initialize.apply(this, arguments);
-        },
+        render: function() {
+            this.$el.find("#water").html(_.template($("#water_form_template").html(), this.model.toJSON()));
+            DynamicTableView.prototype.render.apply(this, arguments);
+            return this;
+        }
+    });
+
+    var Boil = Backbone.Model.extend({
+        "defaults": {
+            "boil_time": ""
+        }
+    });
+
+    ns.BoiltimeView = DynamicTableView.extend({
+
+        listenOn: ["boil_time"],
 
         render: function() {
-            //this.$el.html();
-
-            this.$el.find("#water").html(_.template($("#water_form_template").html(), this.model.toJSON()));
-
-
+            this.$el.find("#boiling").html(_.template($("#boil_time_form_template").html(), this.model.toJSON()));
             DynamicTableView.prototype.render.apply(this, arguments);
             return this;
         }
@@ -491,12 +500,14 @@ var ol = {};
         var data = {};
         data.generalInformation = new GeneralInformation();
         data.malts = new Malts();
+        data.mashSchedule = new MashSchedule();
         data.hops = new Hops();
         data.additives = new Additives();
         data.water = new Water();
-        data.mashSchedule = new MashSchedule();
+        data.boil = new Boil();
         data.fermentation = new Fermentation();
         data.additionalInformation = new AdditionalInformation();
+
 
         var serialize = function() {
             return _.reduce(data, function(res, d, key) {
@@ -511,6 +522,7 @@ var ol = {};
             generalInformation: data.generalInformation,
             additives: data.additives,
             water: data.water,
+            boil: data.boil,
             mashSchedule: data.mashSchedule,
             fermentation: data.fermentation,
             additionalInformation: data.additionalInformation,

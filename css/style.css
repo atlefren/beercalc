@@ -46,12 +46,12 @@ table .input-medium {
     margin-bottom: 0;
 }
 
-#water label.control-label {
+.simple_form label.control-label {
     text-align: left;
     width: 110px;
 }
 
-#water .controls {
+.simple_form .controls {
     margin-left: 110px;
 }
 
