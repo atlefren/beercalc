@@ -68,6 +68,11 @@ table .input-medium {
     width: 160px;
 }
 
+#additional_desc textarea {
+    width: 600px;
+    height: 200px;
+}
+
 /*
 body {
     font-family: Verdana, sans-serif;

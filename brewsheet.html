@@ -210,11 +210,11 @@
 
             <div class="row">
                 <div id="other_section" class="section span10">
-                    <form>
+                    <form class="form-horizontal">
                         <fieldset>
                             <legend>Other information</legend>
-                            <table id="additional_desc" class="bottom-border fullsize">
-                            </table>
+                            <div id="additional_desc">
+                            </div>
                         </fieldset>
                     </form>
                 </div>
@@ -472,6 +472,60 @@
 
     </script>
 
+
+    <script type="text/template" id="additional_information_template">
+        <div class="row">
+            <div class="span5">
+                <div class="control-group">
+                    <label for="brew_date" class="control-label">Brew Date</label>
+                    <div class="controls">
+                        <input id="brew_date" type="text" class="no-border" value="<%= brew_date %>">
+                    </div>
+                </div>
+            </div>
+            <div class="span5">
+                <div class="control-group">
+                    <label for="bottle_date" class="control-label">Bottle Date</label>
+                    <div class="controls">
+                        <input type="text" id="bottle_date" class="no-border" value="<%= bottle_date %>">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="span5">
+                <div class="control-group">
+                    <label for="co2" class="control-label">CO<sub>2</sub></label>
+                    <div class="controls">
+                        <select id="co2">
+                            <option value="none" <% if( co2 == 'none') { %> selected  <% } %>></option>
+                            <option value="natural" <% if( co2 == 'natural') { %> selected  <% } %>>Natural</option>
+                            <option value="added" <% if( co2 == 'added') { %> selected  <% } %>>Added</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="span5">
+                <div class="control-group">
+                    <label for="filtered" class="control-label">Filtered</label>
+                    <div class="controls">
+                        <input type="checkbox" id="filtered" <% if( filtered) { %> checked  <% } %> >
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="span10">
+                <div class="control-group">
+                    <label for="comment">Additional comments (max 200 words)</label>
+                    <div class="controls">
+                        <textarea id="comment"><%= comment %></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </script>
+
 <script type="text/template" id="ascii_template">
 [tt][size=10pt][b]Generell informasjon[/b]
 Navn på brygget: <%= ol.templateFunc.orNa(generalInformation.beer_name) %>
@@ -532,46 +586,6 @@ Tappedato:  <%= ol.templateFunc.rpad(ol.templateFunc.orNa(additionalInformation.
 [b]Kommentar:[/b] <%= ol.templateFunc.orNa(additionalInformation.comment) %>[/size][/tt]
 </script>
 
-    <script type="text/template" id="additional_information_template">
-        <tr>
-            <td>
-                <div class="single-field">
-                    <label for="brew_date">Brew Date</label>
-                    <input id="brew_date" type="text" class="no-border" value="<%= brew_date %>">
-                </div>
-            </td>
-            <td>
-                <div class="single-field">
-                    <label for="bottle_date">Bottle Date</label>
-                    <input type="text" id="bottle_date" class="no-border" value="<%= bottle_date %>">
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <div class="single-field">
-                    <label for="filtered">Filtered</label>
-                    <input type="checkbox" id="filtered" <% if( filtered) { %> checked  <% } %> >
-                </div>
-            </td>
-            <td>
-                <div class="single-field">
-                    <label for="co2">CO<sub>2</sub></label>
-                    <select id="co2">
-                        <option value="none" <% if( co2 == 'none') { %> selected  <% } %>></option>
-                        <option value="natural" <% if( co2 == 'natural') { %> selected  <% } %>>Natural</option>
-                        <option value="added" <% if( co2 == 'added') { %> selected  <% } %>>Added</option>
-                    </select>
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td colspan="2">
-                <label for="comment">Additional comments</label>
-                <textarea id="comment"><%= comment %></textarea>
-            </td>
-        </tr>
-    </script>
 
     <div id="recipeModal" class="modal hide fade">
         <div class="modal-header">
