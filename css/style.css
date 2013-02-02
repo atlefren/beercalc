@@ -55,6 +55,18 @@ table .input-medium {
     margin-left: 110px;
 }
 
+#fermentation label.control-label {
+    text-align: left;
+    width: 150px;
+}
+
+#fermentation .controls {
+    margin-left: 150px;
+}
+
+#fermentation .ferm-label {
+    width: 160px;
+}
 
 /*
 body {

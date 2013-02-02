@@ -386,6 +386,7 @@ var ol = {};
     var Fermentation  = Backbone.Model.extend({
         "defaults": {
             "yeast_name": "",
+            "yeast_type": "none",
             "primary_fermentation_days": "",
             "primary_fermentation_temp": "",
             "secondary_fermentation_days": "",
@@ -399,14 +400,20 @@ var ol = {};
 
         listenOn: ["yeast_name", "primary_fermentation_days", "primary_fermentation_temp", "secondary_fermentation_days", "secondary_fermentation_temp", "storage_days", "storage_temp"],
 
-        initialize: function() {
-            DynamicTableView.prototype.initialize.apply(this, arguments);
+
+        events: {
+            "change #yeast_type": "changeYeastType"
         },
 
         render: function() {
-            this.$el.html(_.template($("#fermentation_template").html(), this.model.toJSON()));
+            this.$el.find("#fermentation").html(_.template($("#fermentation_form_template").html(), this.model.toJSON()));
             DynamicTableView.prototype.render.apply(this, arguments);
             return this;
+        },
+
+        changeYeastType: function() {
+           var yeast_type = this.$el.find("#yeast_type").val();
+           this.model.set({"yeast_type": yeast_type});
         }
     });
 

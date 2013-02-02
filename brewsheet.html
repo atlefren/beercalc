@@ -26,7 +26,7 @@
                 var waterView = new ol.WaterView({el: $("#water_section"), model: brew.water}).render();
                 var boiltimeView = new ol.BoiltimeView({el: $("#boiling_section"), model: brew.boil}).render();
                 var mashTimeView = new ol.MashTimeView({el: $("#mashing_section"), collection: brew.mashSchedule}).render();
-                var fermentationView = new ol.FermentationView({el: $("#fermentation"), model: brew.fermentation}).render();
+                var fermentationView = new ol.FermentationView({el: $("#fermentation_section"), model: brew.fermentation}).render();
                 var additionalInformationView = new ol.AdditionalInformationView({el: $("#additional_desc"), model: brew.additionalInformation}).render();
                 window.brew = brew;
 
@@ -177,9 +177,7 @@
                     <form class="form-horizontal">
                         <fieldset>
                             <legend>Water</legend>
-                            <div id="water" class="simple_form">
-
-                            </div>
+                            <div id="water" class="simple_form"></div>
                         </fieldset>
                     </form>
                 </div>
@@ -191,16 +189,7 @@
                     <form class="form-horizontal">
                         <fieldset>
                             <legend>Boiling</legend>
-
-                            <div id="boiling" class="simple_form">
-
-                            </div>
-                            <!--
-                            <div class="single-field underline"  style="width: 300px;">
-                                <label for="total_boil_time">Total mash boil time:</label>
-                                <input id="total_boil_time" type="text" class="no-border spaced small" value="">
-                            </div>
-                            -->
+                            <div id="boiling" class="simple_form"></div>
                         </fieldset>
                     </form>
                 </div>
@@ -211,10 +200,9 @@
 
                 <div id="fermentation_section" class="section span10">
                     <form>
-                        <fieldset>
+                        <fieldset  class="form-inline">
                             <legend>Fermentation</legend>
-                            <table id="fermentation" class="bottom-border">
-                            </table>
+                            <div id="fermentation"></div>
                         </fieldset>
                     </form>
                 </div>
@@ -300,60 +288,59 @@
         <td class="remove"><i class="icon-remove-circle"></i></td>
     </script>
 
-    <script type="text/template" id="fermentation_template">
-        <tr>
-            <td colspan="2">
-                <div class="single-field">
-                    <label for="yeast_name">Yeast name</label>
-                    <input id="yeast_name" type="text" class="no-border spaced" value="<%= yeast_name %>">
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <div class="single-field">
-                    <label for="primary_fermentation_days" class="large">Primary Fermentation</label>
-                    <input id="primary_fermentation_days" type="text" class="no-border small spaced rightalign" value="<%= primary_fermentation_days %>">
-                </div>
-            </td>
-            <td>
-                <div class="single-field">
-                    <label for="primary_fermentation_temp">days at</label>
-                    <input id="primary_fermentation_temp" type="text" class="no-border small spaced rightalign" value="<%= primary_fermentation_temp %>">
-                    &deg;C
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <div class="single-field">
-                    <label for="secondary_fermentation_days" class="large">Secondary Fermentation</label>
-                    <input id="secondary_fermentation_days" type="text" class="no-border small spaced rightalign" value="<%= secondary_fermentation_days %>">
-                </div>
-            </td>
-            <td>
-                <div class="single-field">
-                    <label for="secondary_fermentation_temp">days at</label>
-                    <input id="secondary_fermentation_temp" type="text" class="no-border small spaced rightalign" value="<%= secondary_fermentation_temp %>">
-                    &deg;C
-                </div>
-            </td>
-        </tr> 
-        <tr>
-            <td>
-                <div class="single-field">
-                    <label for="storage_days" class="large">Storage</label>
-                    <input id="storage_days" type="text" class="no-border small spaced rightalign" value="<%= storage_days %>">
-                </div>
-            </td>
-            <td>
-                <div class="single-field">
-                    <label for="storage_temp">days at</label>
-                    <input id="storage_temp" type="text" class="no-border small spaced rightalign" value="<%= storage_temp %>">
-                    &deg;C
-                </div>
-            </td>
-        </tr>
+    <script type="text/template" id="fermentation_form_template">
+
+        <div>
+
+            <label for="yeast_name">Yeast Name
+                <input type="text" id="yeast_name" class="input-xlarge" value="<%= yeast_name %>">
+            </label>
+            &nbsp;
+            <label for="yeast_type">Yeast Type
+                <select id="yeast_type" class="input-medium">
+                    <option value="none" <% if( yeast_type == 'none') { %> selected  <% } %>></option>
+                    <option value="liquid" <% if( yeast_type == 'liquid') { %> selected  <% } %>>Liquid</option>
+                    <option value="dry" <% if( yeast_type == 'dry') { %> selected  <% } %>>Dry</option>
+                    <option value="homegrown" <% if( yeast_type == 'homegrown') { %> selected  <% } %>>Homegrown</option>
+                </select>
+            </label>
+        </div>
+        <div>
+            <label for="primary_fermentation_days" class="ferm-label">
+                Primary fermentation
+            </label>
+            <input type="text" id="primary_fermentation_days" class="input-mini" value="<%= primary_fermentation_days %>">
+            days
+            <label for="primary_fermentation_temp">
+                at
+                <input type="text" id="primary_fermentation_temp" class="input-mini" value="<%= primary_fermentation_temp %>">
+                &deg;C
+            </label>
+        </div>
+        <div>
+            <label for="secondary_fermentation_days" class="ferm-label">
+                Secondary fermentation
+            </label>
+            <input type="text" id="secondary_fermentation_days" class="input-mini" value="<%= secondary_fermentation_days %>">
+            days
+            <label for="secondary_fermentation_temp">
+                at
+                <input type="text" id="secondary_fermentation_temp" class="input-mini" value="<%= secondary_fermentation_temp %>">
+                &deg;C
+            </label>
+        </div>
+        <div>
+            <label for="storage_days" class="ferm-label">
+                Storage
+            </label>
+            <input type="text" id="storage_days" class="input-mini" value="<%= storage_days %>">
+            days
+            <label for="storage_temp">
+                at
+                <input type="text" id="storage_temp" class="input-mini" value="<%= storage_temp %>">
+                &deg;C
+            </label>
+        </div>
     </script>
 
     <script type="text/template" id="water_form_template">
@@ -570,7 +557,6 @@ Tappedato:  <%= ol.templateFunc.rpad(ol.templateFunc.orNa(additionalInformation.
             <td>
                 <div class="single-field">
                     <label for="co2">CO<sub>2</sub></label>
-                    <!--<input type="text" id="co2" class="no-border">-->
                     <select id="co2">
                         <option value="none" <% if( co2 == 'none') { %> selected  <% } %>></option>
                         <option value="natural" <% if( co2 == 'natural') { %> selected  <% } %>>Natural</option>
