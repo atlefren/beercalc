@@ -68,16 +68,24 @@ var ol = {};
 
     ns.GeneralInformationView = DynamicTableView.extend({
 
-        listenOn: ["beer_name", "brewer", "beer_style", "brew_date", "wort_size", "batch_size", "computed_color", "computed_ibu", "actual_og", "fg"],
+        listenOn: ["beer_name", "brew_date", "brewer", "beer_style", "wort_size", "batch_size", "computed_color", "computed_ibu", "actual_og", "fg"],
+
 
         initialize: function() {
             DynamicTableView.prototype.initialize.apply(this, arguments);
+            _.bindAll(this, "brewDateChanged");
         },
 
         render: function() {
             this.$el.html(_.template($("#general_information_template").html(), this.model.toJSON()));
             DynamicTableView.prototype.render.apply(this, arguments);
+
+            this.$el.find("#brew_date").parent().datepicker().on('changeDate', this.brewDateChanged);
             return this;
+        },
+
+        brewDateChanged: function(e) {
+            this.model.set({"brew_date": this.$el.find("#brew_date").val()});
         }
     });
 
@@ -322,6 +330,8 @@ var ol = {};
             this.collection.each(function(additive) {
                 table.append(new AdditiveTableRowView({model: additive}).render().$el);
             });
+
+            return this;
         },
 
         changeBoilTime: function() {
@@ -438,13 +448,25 @@ var ol = {};
 
         initialize: function() {
             DynamicTableView.prototype.initialize.apply(this, arguments);
-            _.bindAll(this, "changeFiltered", "changeCo2");
+            _.bindAll(this, "changeFiltered", "changeCo2", "brewDateChanged", "bottleDateChanged");
         },
 
         render: function() {
             this.$el.html(_.template($("#additional_information_template").html(), this.model.toJSON()));
             DynamicTableView.prototype.render.apply(this, arguments);
+
+            this.$el.find("#brew_date").parent().datepicker().on('changeDate', this.brewDateChanged);
+            this.$el.find("#bottle_date").parent().datepicker().on('changeDate', this.bottleDateChanged);
+
             return this;
+        },
+
+        brewDateChanged: function(e) {
+            this.model.set({"brew_date": this.$el.find("#brew_date").val()});
+        },
+
+        bottleDateChanged: function(e) {
+            this.model.set({"bottle_date": this.$el.find("#bottle_date").val()});
         },
 
         changeFiltered: function(){
