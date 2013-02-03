@@ -52,7 +52,7 @@
         , select: function () {
             var val = this.$menu.find('.active').attr('data-value');
             var item = _.find(this.items, function(item) {
-                return item.id = val;
+                return item.id == val;
             });
             this.options.selectCallback(item);
             return this.hide()

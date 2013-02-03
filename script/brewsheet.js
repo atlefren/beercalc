@@ -1,6 +1,21 @@
 var ol = {};
 (function(ns) {
 
+
+    //thinseth equation, p 58 "how to brew"
+    var calculateUtilization = function(G, T) {
+
+        var fG = function(g) {
+            return 1.65 * Math.pow(0.000125, (g-1));
+        };
+
+        var fT = function(t) {
+            return (1 - Math.pow(Math.E, (-0.04 * t)))/ 4.15;
+        };
+
+        return fG(G)*fT(T);
+    };
+
     var maltSearch = function(query, callback) {
         var res = [
                 {"id": 1, "name": "Marris Otter", "max_ppg": 38, "color": 6},
@@ -33,6 +48,7 @@ var ol = {};
             {"id": 17, "name": "Whitbread Goldings Variety", "alpha_acid": 4.5},
             {"id": 18, "name": "Challenger", "alpha_acid": 8.5},
             {"id": 19, "name": "Summit", "alpha_acid": 18.5},
+            {"id": 20, "name": "Centennial", "alpha_acid": 7.8}
         ];
         callback(res);
     };
@@ -126,7 +142,8 @@ var ol = {};
         listenOn: ["beer_name", "brewer", "beer_style", "wort_size", "batch_size", "computed_color", "computed_ibu", "actual_og", "fg"],
 
         events: {
-            "click #calculate_abv": "calculate_abv"
+            "click #calculate_abv": "calculate_abv",
+            "click #calculate_ibu": "calculate_ibu"
         },
 
         initialize: function() {
@@ -134,7 +151,7 @@ var ol = {};
 
             this.model.on("change:actual_og", this.toggleABV, this);
             this.model.on("change:fg", this.toggleABV, this);
-            _.bindAll(this, "calculate_abv");
+            _.bindAll(this, "calculate_abv", "calculate_ibu");
         },
 
         render: function() {
@@ -151,6 +168,40 @@ var ol = {};
                 btn.removeAttr("disabled");
             } else {
                 btn.attr("disabled", "disabled");
+            }
+        },
+
+        calculate_ibu: function() {
+            var brew = this.options.brew;
+
+            var og = brew.generalInformation.get("actual_og");
+            var volume = brew.generalInformation.get("wort_size");
+
+            try {
+                if(og !== "" && !isNaN(og) && volume !== "" && !isNaN(volume) && brew.hops.length > 0) {
+                    var ibu = brew.hops.reduce(function(total_ibu, hop) {
+
+                        var quantity = hop.get("quantity");
+                        var alpha_acid = hop.get("alpha_acid");
+                        var boil_time = hop.get("boil_time");
+                        if(quantity !== "" && alpha_acid !== "" && boil_time !== ""){
+                            var aau = parseFloat(quantity) * parseFloat(alpha_acid);
+                            var utilization = calculateUtilization(og, parseFloat(boil_time));
+                            var ibu = aau * utilization * (10 / volume );
+                            return total_ibu + ibu;
+                        } else {
+                            throw new Error("missing params");
+                        }
+
+                    }, 0);
+
+                    this.$el.find("#computed_ibu").val(Math.round(ibu));
+
+                } else {
+                    throw new Error("missing params");
+                }
+            } catch(error) {
+                alert(error);
             }
         },
 
