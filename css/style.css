@@ -73,6 +73,11 @@ table .input-medium {
     height: 200px;
 }
 
+.modal {
+    width: 800px;
+    left: 40%;
+}
+
 /*
 body {
     font-family: Verdana, sans-serif;
@@ -204,9 +209,6 @@ textarea {
     height: 200px;
 }
 
-.modal {
-    width: 800px;
-    left: 40%;
-}
+
 
 */

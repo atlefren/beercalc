@@ -94,11 +94,20 @@
                         </fieldset>
                     </form>
                 </div>
-
             </div>
 
             <div class="row">
+                <div id="water_section" class="section span10">
+                    <form class="form-horizontal">
+                        <fieldset>
+                            <legend>Water</legend>
+                            <div id="water" class="simple_form"></div>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
 
+            <div class="row">
                 <div id="mashing_section" class="section span10">
                     <form>
                         <fieldset>
@@ -176,16 +185,7 @@
                 </div>
             </div>
 
-            <div class="row">
-                <div id="water_section" class="section span10">
-                    <form class="form-horizontal">
-                        <fieldset>
-                            <legend>Water</legend>
-                            <div id="water" class="simple_form"></div>
-                        </fieldset>
-                    </form>
-                </div>
-            </div>
+
 
             <div class="row">
 
@@ -541,7 +541,6 @@
 [tt][size=10pt][b]Generell informasjon[/b]
 Navn på brygget: <%= ol.templateFunc.orNa(generalInformation.beer_name) %>
 Øltype: <%= ol.templateFunc.orNa(generalInformation.beer_style) %>
-Antall poeng i konkurransen: ** av **
 OG: <%= ol.templateFunc.rpad(ol.templateFunc.orNa(generalInformation.actual_og), 3) %>
 FG: <%= ol.templateFunc.rpad(ol.templateFunc.orNa(generalInformation.fg), 3) %>
 Farve (beregnet): <%= ol.templateFunc.rpad(ol.templateFunc.orNa(generalInformation.computed_color), 3) %> EBC
@@ -549,12 +548,18 @@ Beregnet bitter:  <%= ol.templateFunc.rpad(ol.templateFunc.orNa(generalInformati
 Vørtermengde: <%= ol.templateFunc.rpad(ol.templateFunc.orNa(generalInformation.wort_size), 3) %> l
 Sluttvolum:   <%= ol.templateFunc.rpad(ol.templateFunc.orNa(generalInformation.batch_size), 3) %> l
 
-[b]Malt & sukker[/b]
 <%
     if(malts.length > 0) {
-        var iSpace = _.max(_.pluck(malts.reverse(), "ingredient"), function(i) {return i.length; }).length;
+
+        print("[b]Malt & sukker[/b]\n");
+
+        var iSpace = _.max(_.pluck(malts, "ingredient"), function(i) {return i.length; }).length;
         _.each(malts, function(malt) {  
-            print(ol.templateFunc.rpad(ol.templateFunc.orNa(malt.quantity), 4) + " gram       " + ol.templateFunc.rpad(ol.templateFunc.orNa(malt.percentage), 4) + " %      " + ol.templateFunc.rpad(ol.templateFunc.orNa(malt.ingredient), iSpace) + "         " + ol.templateFunc.rpad(ol.templateFunc.orNa(malt.color), 4) + " EBC\n");
+            print(ol.templateFunc.rpad(ol.templateFunc.orNa(malt.quantity), 4) + " gram       ");
+            print(ol.templateFunc.rpad(ol.templateFunc.orNa(malt.percentage), 4) + " %      ");
+            print(ol.templateFunc.lpad(ol.templateFunc.orNa(malt.ingredient), iSpace) + "         ");
+            print(ol.templateFunc.rpad(ol.templateFunc.orNa(malt.color), 4) + " EBC");
+            print("\n");
         }); 
     }
 %>
@@ -562,31 +567,52 @@ Sluttvolum:   <%= ol.templateFunc.rpad(ol.templateFunc.orNa(generalInformation.b
 <%= ol.templateFunc.rpad(ol.templateFunc.orNa(water.mashing_water), 3) %> liter til innmesking
 <%= ol.templateFunc.rpad(ol.templateFunc.orNa(water.sparging_water), 3) %> liter til skylling
 
-[b]Meskeskjema[/b]
-*** min    *** gr C
-*** min    *** gr C
-*** min    *** gr C
-*** min    *** gr C
+<%
+    if(mashSchedule.length > 0) {
+        print("[b]Meskeskjema[/b]\n");
+        _.each(mashSchedule, function(time) {
+            print(ol.templateFunc.rpad(ol.templateFunc.orNa(time.mash_time), 3) + " min    ");
+            print(ol.templateFunc.rpad(ol.templateFunc.orNa(time.mash_temperature), 3) + " gr C");
+            print("\n");
+        });
+    }
 
-[b]Humle[/b]
-*** gram    betegnelsen på humletype    *** % alfa  hel/pellets     koketid *** min
-*** gram    betegnelsen på humletype    *** % alfa  hel/pellets     koketid *** min
+    if(hops.length > 0) {
+        print("\n");
+        print("[b]Humle[/b]\n");
+        var iSpace = _.max(_.pluck(hops, "name"), function(i) {return i.length; }).length;
+        _.each(hops, function(hop) {
+            print(ol.templateFunc.rpad(ol.templateFunc.orNa(hop.quantity), 3)+ " gram    ");
+            print(ol.templateFunc.lpad(ol.templateFunc.orNa(hop.name), iSpace) + "    ");
+            print(ol.templateFunc.rpad(hop.alpha_acid , 3) + " % alfa  ");
+            print(ol.templateFunc.lpad(ol.templateFunc.mapHopForm(hop.form), 7) + "     ");
+            print("koketid " + ol.templateFunc.rpad(hop.boil_time, 3) + " min");
+            print("\n");
+        });
+    }
 
-[b]Krydder og andre tilsetninger[/b]
-*** gram    navn på krydder/tilsetning          koketid *** min
-*** gram    navn på krydder/tilsetning          koketid *** min
-*** gram    navn på krydder/tilsetning          koketid *** min
-
+    if(additives.length > 0) {
+        print("\n");
+        print("[b]Krydder og andre tilsetninger[/b]\n");
+        var iSpace = _.max(_.pluck(additives, "name"), function(i) {return i.length; }).length;
+        _.each(additives, function(additive) {
+            print(ol.templateFunc.rpad(ol.templateFunc.orNa(additive.quantity), 3)+ " gram    ");
+            print(ol.templateFunc.lpad(ol.templateFunc.orNa(additive.name), iSpace) + "          ");
+            print("koketid " + ol.templateFunc.rpad(additive.boil_time, 3) + " min");
+            print("\n");
+        });
+    }
+%>
 [b]Koketid[/b]
-Total koketid vørter: *** min
+Total koketid vørter: <%= ol.templateFunc.rpad(ol.templateFunc.orNa(boil.boil_time), 3) %> min
 
 [b]Gjær[/b]
-Betegnelsen på gjæren:   <%= ol.templateFunc.rpad(ol.templateFunc.orNa(fermentation.yeast_name), 3) %>            flytende/tørr-/selvdyrket gjær
+Betegnelsen på gjæren:   <%= ol.templateFunc.rpad(ol.templateFunc.orNa(fermentation.yeast_name), 3) %>            <%= ol.templateFunc.mapYeast(fermentation.yeast_type) %>
 
 [b]Gjæringstemperatur og -tid[/b]
-Gjæring/primærgjæring    *** dager ved *** gr C
-Modning/sekundærgjæring  *** dager ved *** gr C
-lagring       *** dager ved *** gr C
+Gjæring/primærgjæring    <%= ol.templateFunc.rpad(ol.templateFunc.orNa(fermentation.primary_fermentation_days), 3) %> dager ved <%= ol.templateFunc.rpad(ol.templateFunc.orNa(fermentation.primary_fermentation_temp), 3) %> gr C
+Modning/sekundærgjæring  <%= ol.templateFunc.rpad(ol.templateFunc.orNa(fermentation.secondary_fermentation_days), 3) %> dager ved <%= ol.templateFunc.rpad(ol.templateFunc.orNa(fermentation.secondary_fermentation_temp), 3) %> gr C
+lagring       <%= ol.templateFunc.rpad(ol.templateFunc.orNa(fermentation.storage_days), 3) %> dager ved <%= ol.templateFunc.rpad(ol.templateFunc.orNa(fermentation.storage_temp), 3) %> gr C
 
 [b]Øvrig informasjon[/b]
 Filtrert: <%= ol.templateFunc.yesNo(additionalInformation.filtered) %>

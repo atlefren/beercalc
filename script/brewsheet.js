@@ -578,6 +578,19 @@ ol.templateFunc = {};
         return str;
     };
 
+    ns.lpad = function(val, space) {
+        var str = String(val);
+        var add = space-str.length;
+        if(add > 0){
+            var pad = "";
+            for(var i = 0; i<add; i++){
+                pad += " ";
+            }
+            str = str + pad;
+        }
+        return str;
+    };
+
     ns.orNa = function(val){
         if(val === ""){
             return "-";
@@ -600,5 +613,25 @@ ol.templateFunc = {};
         }
         return "-";
     };
+
+    ns.mapHopForm = function(val) {
+        if(val === "pellets") {
+            return "pellets";
+        } else if(val === "cones") {
+            return "hel";
+        }
+        return "-";
+    };
+
+    ns.mapYeast = function(val) {
+        if(val === "liquid") {
+            return "flytende gjær";
+        } else if(val === "dry") {
+            return "tørrgjær";
+        } else if(val === "homgegrown") {
+            return "selvdyrket gjær";
+        }
+        return "-";
+    }
 
 }(ol.templateFunc));
