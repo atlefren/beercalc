@@ -1,8 +1,7 @@
 var ol = {};
 (function(ns) {
 
-
-    //thinseth equation, Palmer "How to brew" p 58
+    //Thinseth equation, Palmer "How to brew" p 58
     var calculateUtilization = function(G, T) {
 
         var fG = function(g) {
@@ -16,6 +15,7 @@ var ol = {};
         return fG(G) * fT(T);
     };
 
+    //TODO: Add more here
     var maltSearch = function(query, callback) {
         var res = [
                 {"id": 1, "name": "Marris Otter", "max_ppg": 38, "color": 6},
@@ -140,7 +140,6 @@ var ol = {};
         listenOn: ["beer_name", "brewer", "beer_style", "wort_size", "batch_size", "computed_color", "computed_ibu", "actual_og", "fg"],
 
         events: {
-            "click #calculate_abv": "calculate_abv",
             "click #calculate_ibu": "calculate_ibu",
             "click #calculate_color": "calculate_color"
         },
@@ -150,7 +149,15 @@ var ol = {};
 
             this.model.on("change:actual_og", this.toggleABV, this);
             this.model.on("change:fg", this.toggleABV, this);
+
+            this.model.on("change:actual_og", this.toggleIBU, this);
+            this.model.on("change:wort_size", this.toggleIBU, this);
+            this.options.brew.hops.on("add", this.toggleIBU, this);
+            this.options.brew.hops.on("remove", this.toggleIBU, this);
+            this.options.brew.hops.on("change", this.toggleIBU, this);
+
             _.bindAll(this, "calculate_abv", "calculate_ibu");
+
         },
 
         render: function() {
@@ -160,13 +167,34 @@ var ol = {};
         },
 
         toggleABV: function() {
-            var btn = this.$el.find("#calculate_abv");
             var og = this.model.get("actual_og");
             var fg = this.model.get("fg");
             if(!isNaN(og) && og !== "" && !isNaN(fg) && fg !== "" ) {
-                btn.removeAttr("disabled");
+                this.calculate_abv();
             } else {
-                btn.attr("disabled", "disabled");
+                this.$el.find("#abv").val("");
+            }
+        },
+
+        calculate_abv: function() {
+            var og = this.model.get("actual_og");
+            var fg = this.model.get("fg");
+            var abv =(76.08 * (og - fg) / (1.775 - og)) * (fg / 0.794); //taken from http://www.brewersfriend.com/2011/06/16/alcohol-by-volume-calculator-updated/
+            abv = Math.round( abv * 10 ) / 10;
+            this.$el.find("#abv").val(abv);
+        },
+
+        toggleIBU: function() {
+            var og = this.model.get("actual_og");
+            var wort_size = this.model.get("wort_size");
+            var hops = this.options.brew.hops;
+            if(!isNaN(og) && og !== "" && !isNaN(wort_size) && wort_size !== "" && hops.length > 0 ) {
+
+                 if(hops.reduce(function(state, hop) { return hop.validate(); }, true)) {
+                     this.calculate_ibu();
+                 } else {
+                     this.$el.find("#computed_ibu").val("");
+                 }
             }
         },
 
@@ -174,28 +202,20 @@ var ol = {};
             var brew = this.options.brew;
             var og = brew.generalInformation.get("actual_og");
             var volume = brew.generalInformation.get("wort_size");
-            if(og !== "" && !isNaN(og) && volume !== "" && !isNaN(volume) && brew.hops.length > 0) {
-                try {
-                    var ibu = brew.hops.reduce(function(total_ibu, hop) {
-
-                        var quantity = hop.get("quantity");
-                        var alpha_acid = hop.get("alpha_acid");
-                        var boil_time = hop.get("boil_time");
-                        if(quantity !== "" && alpha_acid !== "" && boil_time !== ""){
-                            var aau = parseFloat(quantity) * parseFloat(alpha_acid);
-                            var utilization = calculateUtilization(og, parseFloat(boil_time));
-                            var ibu = aau * utilization * (10 / volume );
-                            return total_ibu + ibu;
-                        } else {
-                            throw new Error("missing params");
-                        }
-                    }, 0);
-                    this.$el.find("#computed_ibu").val(Math.round(ibu));
-
-                } catch(error) {
-                    alert(error);
+            var ibu = brew.hops.reduce(function(total_ibu, hop) {
+                var quantity = hop.get("quantity");
+                var alpha_acid = hop.get("alpha_acid");
+                var boil_time = hop.get("boil_time");
+                if(quantity !== "" && alpha_acid !== "" && boil_time !== ""){
+                    var aau = parseFloat(quantity) * parseFloat(alpha_acid);
+                    var utilization = calculateUtilization(og, parseFloat(boil_time));
+                    var ibu = aau * utilization * (10 / volume );
+                    return total_ibu + ibu;
+                } else {
+                    throw new Error("missing params");
                 }
-            }
+            }, 0);
+            this.$el.find("#computed_ibu").val(Math.round(ibu));
         },
 
         //based on Palmer, "how to brew" p. 271, and
@@ -225,15 +245,8 @@ var ol = {};
                     alert(error);
                 }
             }
-        },
-
-        calculate_abv: function() {
-            var og = this.model.get("actual_og");
-            var fg = this.model.get("fg");
-            var abv =(76.08 * (og - fg) / (1.775 - og)) * (fg / 0.794); //taken from http://www.brewersfriend.com/2011/06/16/alcohol-by-volume-calculator-updated/
-            abv = Math.round( abv * 10 ) / 10;
-            this.$el.find("#abv").val(abv);
         }
+
     });
 
     var Malt = Backbone.Model.extend({
@@ -396,6 +409,16 @@ var ol = {};
             "form": "none",
             "alpha_acid": "",
             "boil_time": ""
+        },
+
+        validate: function() {
+            return _.reduce(["quantity", "alpha_acid", "boil_time"], function(ok, attr) {
+                if(this.get(attr) === "" || isNaN(this.get(attr))) {
+                    return false;
+                }
+                return true;
+            }, true, this);
+
         }
     });
 
