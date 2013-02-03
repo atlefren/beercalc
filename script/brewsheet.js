@@ -1,7 +1,23 @@
 var ol = {};
 (function(ns) {
 
-    var DynamicTableView = Backbone.View.extend({
+    var ToggleView = Backbone.View.extend({
+
+        initialize: function() {
+            _.bindAll(this, "toggle");
+        },
+
+        render: function() {
+            this.$el.find(".toggle").on("click", this.toggle);
+        },
+
+        toggle: function() {
+            this.$el.find(".content").toggle();
+            this.$el.find(".toggle").toggleClass("icon-plus").toggleClass("icon-minus");
+        }
+    });
+
+    var DynamicTableView = ToggleView.extend({
 
         listenOn: [],
 
@@ -10,10 +26,12 @@ var ol = {};
         },
 
         initialize: function() {
+            ToggleView.prototype.initialize.apply(this, arguments);
             _.bindAll(this, "remove", "change");
         },
 
         render: function() {
+            ToggleView.prototype.render.apply(this, arguments);
             _.each(this.listenOn, function(name) {
                 this.$el.find("#" + name).on("blur", this.change);
             }, this);
@@ -33,14 +51,16 @@ var ol = {};
 
     });
 
-    var BaseSectionView = Backbone.View.extend({
+    var BaseSectionView = ToggleView.extend({
 
         initialize: function() {
+            ToggleView.prototype.initialize.apply(this, arguments);
             this.collection.on("add", this.render, this);
             this.collection.on("destroy", this.render, this);
         },
 
         render: function() {
+            ToggleView.prototype.render.apply(this, arguments);
             return this;
         },
 
@@ -48,6 +68,8 @@ var ol = {};
             this.collection.add(new this.collection.model());
         }
     });
+
+
 
     var GeneralInformation = Backbone.Model.extend({
         "defaults": {
@@ -137,6 +159,7 @@ var ol = {};
         },
 
         render: function() {
+            BaseSectionView.prototype.render.apply(this, arguments);
             this.adjustPercentages();
             var table = this.$el.find("#malts_table").find("tbody");
             table.html("");
@@ -219,11 +242,13 @@ var ol = {};
 
         initialize: function() {
             _.bindAll(this, "add");
+            BaseSectionView.prototype.initialize.apply(this, arguments);
             this.collection.on("destroy", this.render, this);
             this.collection.on("add", this.render, this);
         },
 
         render: function() {
+            BaseSectionView.prototype.render.apply(this, arguments);
             var table = this.$el.find("#mashing").find("tbody");
             table.html("");
             this.collection.each(function(mashTime) {
@@ -281,6 +306,7 @@ var ol = {};
         },
 
         render: function() {
+            BaseSectionView.prototype.render.apply(this, arguments);
             var table = this.$el.find("#hops").find("tbody");
             table.html("");
             this.collection.each(function(hop) {
@@ -341,6 +367,7 @@ var ol = {};
         },
 
         render: function() {
+            BaseSectionView.prototype.render.apply(this, arguments);
             var table = this.$el.find("#additives").find("tbody");
             table.html("");
             this.collection.each(function(additive) {

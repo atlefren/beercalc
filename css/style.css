@@ -78,6 +78,10 @@ table .input-medium {
     left: 40%;
 }
 
+.toggle {
+    margin-top: 7px;
+}
+
 /*
 body {
     font-family: Verdana, sans-serif;
