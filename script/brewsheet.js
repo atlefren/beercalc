@@ -1,5 +1,3 @@
-
-
 var ol = {};
 (function(ns) {
 
@@ -56,7 +54,6 @@ var ol = {};
             "beer_name": "",
             "brewer": "",
             "beer_style": "",
-            "brew_date": "",
             "wort_size": "",
             "batch_size": "",
             "computed_color": "",
@@ -68,23 +65,43 @@ var ol = {};
 
     ns.GeneralInformationView = DynamicTableView.extend({
 
-        listenOn: ["beer_name", "brew_date", "brewer", "beer_style", "wort_size", "batch_size", "computed_color", "computed_ibu", "actual_og", "fg"],
+        listenOn: ["beer_name", "brewer", "beer_style", "wort_size", "batch_size", "computed_color", "computed_ibu", "actual_og", "fg"],
+
+        events: {
+            "click #calculate_abv": "calculate_abv"
+        },
 
         initialize: function() {
             DynamicTableView.prototype.initialize.apply(this, arguments);
-            _.bindAll(this, "brewDateChanged");
+
+            this.model.on("change:actual_og", this.toggleABV, this);
+            this.model.on("change:fg", this.toggleABV, this);
+            _.bindAll(this, "calculate_abv");
         },
 
         render: function() {
             this.$el.find("#desc").html(_.template($("#general_information_template").html(), this.model.toJSON()));
             DynamicTableView.prototype.render.apply(this, arguments);
-
-            this.$el.find("#brew_date").parent().datepicker().on('changeDate', this.brewDateChanged);
             return this;
         },
 
-        brewDateChanged: function(e) {
-            this.model.set({"brew_date": this.$el.find("#brew_date").val()});
+        toggleABV: function() {
+            var btn = this.$el.find("#calculate_abv");
+            var og = this.model.get("actual_og");
+            var fg = this.model.get("fg");
+            if(!isNaN(og) && og !== "" && !isNaN(fg) && fg !== "" ) {
+                btn.removeAttr("disabled");
+            } else {
+                btn.attr("disabled", "disabled");
+            }
+        },
+
+        calculate_abv: function() {
+            var og = this.model.get("actual_og");
+            var fg = this.model.get("fg");
+            var abv =(76.08 * (og - fg) / (1.775 - og)) * (fg / 0.794); //taken from http://www.brewersfriend.com/2011/06/16/alcohol-by-volume-calculator-updated/
+            abv = Math.round( abv * 10 ) / 10;
+            this.$el.find("#abv").val(abv);
         }
     });
 
