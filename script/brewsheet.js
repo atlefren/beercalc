@@ -2,7 +2,7 @@ var ol = {};
 (function(ns) {
 
 
-    //thinseth equation, p 58 "how to brew"
+    //thinseth equation, Palmer "How to brew" p 58
     var calculateUtilization = function(G, T) {
 
         var fG = function(g) {
@@ -13,7 +13,7 @@ var ol = {};
             return (1 - Math.pow(Math.E, (-0.04 * t)))/ 4.15;
         };
 
-        return fG(G)*fT(T);
+        return fG(G) * fT(T);
     };
 
     var maltSearch = function(query, callback) {
@@ -121,8 +121,6 @@ var ol = {};
         }
     });
 
-
-
     var GeneralInformation = Backbone.Model.extend({
         "defaults": {
             "beer_name": "",
@@ -143,7 +141,8 @@ var ol = {};
 
         events: {
             "click #calculate_abv": "calculate_abv",
-            "click #calculate_ibu": "calculate_ibu"
+            "click #calculate_ibu": "calculate_ibu",
+            "click #calculate_color": "calculate_color"
         },
 
         initialize: function() {
@@ -173,12 +172,10 @@ var ol = {};
 
         calculate_ibu: function() {
             var brew = this.options.brew;
-
             var og = brew.generalInformation.get("actual_og");
             var volume = brew.generalInformation.get("wort_size");
-
-            try {
-                if(og !== "" && !isNaN(og) && volume !== "" && !isNaN(volume) && brew.hops.length > 0) {
+            if(og !== "" && !isNaN(og) && volume !== "" && !isNaN(volume) && brew.hops.length > 0) {
+                try {
                     var ibu = brew.hops.reduce(function(total_ibu, hop) {
 
                         var quantity = hop.get("quantity");
@@ -192,16 +189,41 @@ var ol = {};
                         } else {
                             throw new Error("missing params");
                         }
-
                     }, 0);
-
                     this.$el.find("#computed_ibu").val(Math.round(ibu));
 
-                } else {
-                    throw new Error("missing params");
+                } catch(error) {
+                    alert(error);
                 }
-            } catch(error) {
-                alert(error);
+            }
+        },
+
+        //based on Palmer, "how to brew" p. 271, and
+        //http://en.wikipedia.org/wiki/Standard_Reference_Method
+        //Moreys method used
+        calculate_color: function() {
+            var malts = this.options.brew.malts;
+            var volume =  this.options.brew.generalInformation.get("wort_size");
+            if(volume !== "" && malts.length > 0) {
+                try {
+                    var total_mcu = malts.reduce(function(sum, malt) {
+                        var amount = malt.get("quantity");
+                        var ebc = malt.get("color");
+                        if(amount !== "" && ebc !== "") {
+                            var mcu = (amount * 0.0022) * (ebc * 0.508);
+                            return sum + mcu;
+                        } else {
+                            throw new Error("Missing params");
+                        }
+                    }, 0) / (volume * 0.2642);
+
+                    //Moreys Formula
+                    var srm = 1.49 * Math.pow(total_mcu, 0.69);
+                    var ebc = srm * 1.97;
+                    this.$el.find("#computed_color").val(Math.round(ebc));
+                } catch (error) {
+                    alert(error);
+                }
             }
         },
 
