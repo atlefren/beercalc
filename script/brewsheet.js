@@ -4,10 +4,36 @@ var ol = {};
     var maltSearch = function(query, callback) {
         var res = [
                 {"id": 1, "name": "Marris Otter", "max_ppg": 38, "color": 6},
-                {"id": 1, "name": "Crystal Rye", "max_ppg": 29, "color": 150},
-                {"id": 1, "name": "Pale Chocolate", "max_ppg": 28, "color": 690}
+                {"id": 2, "name": "Crystal Rye", "max_ppg": 29, "color": 150},
+                {"id": 3, "name": "Pale Chocolate", "max_ppg": 28, "color": 690}
             ];
+        callback(res);
+    };
 
+
+    //todo: update with data from http://www.brewersfriend.com/2010/02/27/hops-alpha-acid-table-2009/
+    var hopSearch = function(query, callback) {
+        var res = [
+            {"id": 1, "name": "British Columbia Goldings", "alpha_acid": 5},
+            {"id": 2, "name": "Cascade", "alpha_acid": 5.5},
+            {"id": 3, "name": "Crystal", "alpha_acid": 3.5},
+            {"id": 4, "name": "East Kent Goldings", "alpha_acid": 5},
+            {"id": 5, "name": "Fuggles", "alpha_acid": 4},
+            {"id": 6, "name": "Glacier", "alpha_acid": 5.5},
+            {"id": 7, "name": "Hallertauer Hersbrucker", "alpha_acid": 3.5},
+            {"id": 8, "name": "Hallertauer Mittelfrüh", "alpha_acid": 4},
+            {"id": 9, "name": "Liberty", "alpha_acid": 4},
+            {"id": 10, "name": "Mt. Hood", "alpha_acid": 6},
+            {"id": 11, "name": "Progress", "alpha_acid": 5.5},
+            {"id": 12, "name": "Saaz", "alpha_acid": 3.5},
+            {"id": 13, "name": "Spalt", "alpha_acid": 4.5},
+            {"id": 14, "name": "Styrian Goldings", "alpha_acid": 6},
+            {"id": 15, "name": "Tettnang", "alpha_acid": 4.5},
+            {"id": 16, "name": "Willamette", "alpha_acid": 5},
+            {"id": 17, "name": "Whitbread Goldings Variety", "alpha_acid": 4.5},
+            {"id": 18, "name": "Challenger", "alpha_acid": 8.5},
+            {"id": 19, "name": "Summit", "alpha_acid": 18.5},
+        ];
         callback(res);
     };
 
@@ -343,13 +369,22 @@ var ol = {};
         listenOn: ["quantity", "name", "form", "alpha_acid", "boil_time"],
 
         initialize: function() {
+            _.bindAll(this, "setHop");
             DynamicTableView.prototype.initialize.apply(this, arguments);
         },
 
         render: function() {
             this.$el.html(_.template($("#hop_table_row_template").html(), this.model.toJSON()));
+
+            this.$el.find("#name").typeahead({source: hopSearch, selectCallback: this.setHop});
+
             DynamicTableView.prototype.render.apply(this, arguments);
             return this;
+        },
+
+        setHop: function(hop) {
+            this.model.set({"name": hop.name, "alpha_acid": hop.alpha_acid});
+            this.render();
         }
     });
 
