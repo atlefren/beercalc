@@ -70,14 +70,13 @@ var ol = {};
 
         listenOn: ["beer_name", "brew_date", "brewer", "beer_style", "wort_size", "batch_size", "computed_color", "computed_ibu", "actual_og", "fg"],
 
-
         initialize: function() {
             DynamicTableView.prototype.initialize.apply(this, arguments);
             _.bindAll(this, "brewDateChanged");
         },
 
         render: function() {
-            this.$el.html(_.template($("#general_information_template").html(), this.model.toJSON()));
+            this.$el.find("#desc").html(_.template($("#general_information_template").html(), this.model.toJSON()));
             DynamicTableView.prototype.render.apply(this, arguments);
 
             this.$el.find("#brew_date").parent().datepicker().on('changeDate', this.brewDateChanged);
@@ -452,7 +451,7 @@ var ol = {};
         },
 
         render: function() {
-            this.$el.html(_.template($("#additional_information_template").html(), this.model.toJSON()));
+            this.$el.find("#additional_desc").html(_.template($("#additional_information_template").html(), this.model.toJSON()));
             DynamicTableView.prototype.render.apply(this, arguments);
 
             this.$el.find("#brew_date").parent().datepicker().on('changeDate', this.brewDateChanged);

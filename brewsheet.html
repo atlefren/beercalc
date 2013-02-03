@@ -21,7 +21,7 @@
         <script type="text/javascript">
             $(document).ready(function(){
                 var brew = ol.createBrew();
-                var general = new ol.GeneralInformationView({el: $("#desc"), model: brew.generalInformation}).render();
+                var general = new ol.GeneralInformationView({el: $("#general_section"), model: brew.generalInformation}).render();
                 var maltView = new ol.MaltSectionView({el: $("#malt_section"), collection: brew.malts}).render();
                 var hopView = new ol.HopSectionView({el: $("#hops_section"), collection: brew.hops}).render();
                 var additivesView = new ol.AdditiveSectionView({el: $("#additives_section"), collection: brew.additives}).render();
@@ -29,12 +29,10 @@
                 var boiltimeView = new ol.BoiltimeView({el: $("#boiling_section"), model: brew.boil}).render();
                 var mashTimeView = new ol.MashTimeView({el: $("#mashing_section"), collection: brew.mashSchedule}).render();
                 var fermentationView = new ol.FermentationView({el: $("#fermentation_section"), model: brew.fermentation}).render();
-                var additionalInformationView = new ol.AdditionalInformationView({el: $("#additional_desc"), model: brew.additionalInformation}).render();
+                var additionalInformationView = new ol.AdditionalInformationView({el: $("#other_section"), model: brew.additionalInformation}).render();
                 window.brew = brew;
 
                 var recepieView = new ol.RecepieView({el: $("#recepie"), data: brew});
-
-
             });
         </script>
 
