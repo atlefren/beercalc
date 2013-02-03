@@ -1,6 +1,16 @@
 var ol = {};
 (function(ns) {
 
+    var maltSearch = function(query, callback) {
+        var res = [
+                {"id": 1, "name": "Marris Otter", "max_ppg": 38, "color": 6},
+                {"id": 1, "name": "Crystal Rye", "max_ppg": 29, "color": 150},
+                {"id": 1, "name": "Pale Chocolate", "max_ppg": 28, "color": 690}
+            ];
+
+        callback(res);
+    };
+
     var ToggleView = Backbone.View.extend({
 
         initialize: function() {
@@ -132,7 +142,7 @@ var ol = {};
             "quantity": "",
             "percentage": "",
             "ingredient": "",
-            "og": "",
+            "max_ppg": "",
             "color": ""
         }
     });
@@ -190,18 +200,24 @@ var ol = {};
             "blur #quantity": "qtyChange"
         }),
 
-        listenOn: ["ingredient", "og", "color"],
+        listenOn: ["ingredient", "max_ppg", "color"],
 
         initialize: function() {
             DynamicTableView.prototype.initialize.apply(this, arguments);
-            _.bindAll(this, "qtyChange");
+            _.bindAll(this, "qtyChange", "setMalt");
             this.model.on("change:percentage", this.percentageChange, this);
         },
 
         render: function() {
             this.$el.html(_.template($("#malt_table_row_template").html(), this.model.toJSON()));
+            this.$el.find("#ingredient").typeahead({source: maltSearch, selectCallback: this.setMalt});
             DynamicTableView.prototype.render.apply(this, arguments);
             return this;
+        },
+
+        setMalt: function(malt) {
+            this.model.set({"ingredient": malt.name, "max_ppg": malt.max_ppg, "color": malt.color});
+            this.render();
         },
 
         qtyChange: function(e) {
