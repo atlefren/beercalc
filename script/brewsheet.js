@@ -85,16 +85,14 @@ var ol = {};
         render: function() {
             ToggleView.prototype.render.apply(this, arguments);
             _.each(this.listenOn, function(name) {
-                this.$el.find("#" + name).on("blur", this.change);
+                this.$el.find("#" + name).on("change", this.change);
             }, this);
             return this;
         },
 
         change: function(e){
             var target = $(e.currentTarget);
-            var vals = {};
-            vals[target.attr("id")] = target.val();
-            this.model.set(vals);
+            this.model.set(target.attr("id"), target.val());
         },
 
         remove: function() {
@@ -218,7 +216,6 @@ var ol = {};
         },
 
         toggleColor: function() {
-            console.log("toggle color!");
             var malts = this.options.brew.malts;
             var volume =  this.options.brew.generalInformation.get("wort_size");
             if(volume !== "" && !isNaN(volume) && malts.length > 0) {
@@ -309,7 +306,7 @@ var ol = {};
         },
 
         adjustPercentages: function() {
-            var total = this.collection.reduce(function(total, malt) {return total += malt.get("quantity");}, 0);
+            var total = this.collection.reduce(function(total, malt) {return total += parseFloat(malt.get("quantity"));}, 0);
             this.collection.each(function(malt) {
                 var percentage = (malt.get("quantity")/total) * 100;
                 var pow = Math.pow(10, 1);
@@ -326,15 +323,11 @@ var ol = {};
 
         tagName: "tr",
 
-        events: _.extend(_.clone(DynamicTableView.prototype.events), {
-            "blur #quantity": "qtyChange"
-        }),
-
-        listenOn: ["name", "max_ppg", "color"],
+        listenOn: ["quantity", "name", "max_ppg", "color"],
 
         initialize: function() {
             DynamicTableView.prototype.initialize.apply(this, arguments);
-            _.bindAll(this, "qtyChange", "setMalt");
+            _.bindAll(this,  "setMalt");
             this.model.on("change:percentage", this.percentageChange, this);
         },
 
@@ -346,22 +339,9 @@ var ol = {};
         },
 
         setMalt: function(malt) {
-            this.model.set({"name": malt.name, "max_ppg": malt.max_ppg, "color": malt.color});
-            this.render();
-        },
-
-        qtyChange: function(e) {
-            var el = this.$el.find("#quantity");
-            var qty = parseFloat(el.val());
-            if(!isNaN(qty)) {
-                this.model.set({"quantity": qty});
-            } else {
-                var old = this.model.get("quantity");
-                if(old === 0.0) {
-                    old = "";
-                }
-                el.val(old);
-            }
+            _.each(_.omit(malt, "id"), function(value, key) {
+                this.$el.find("#" + key).val(value).change();
+            }, this);
         },
 
         percentageChange: function() {
@@ -494,8 +474,9 @@ var ol = {};
         },
 
         setHop: function(hop) {
-            this.model.set({"name": hop.name, "alpha_acid": hop.alpha_acid});
-            this.render();
+            _.each(_.omit(hop, "id"), function(value, key) {
+                this.$el.find("#" + key).val(value).change();
+            }, this);
         }
     });
 
