@@ -5,7 +5,7 @@
         "beer_style": "Porter",
         "wort_size": "5",
         "batch_size": "4",
-        "computed_color": "58",
+        "computed_color": "47",
         "computed_ibu": "33",
         "actual_og": "1.056",
         "fg": "1.012"
@@ -16,14 +16,14 @@
             "percentage": 83.3,
             "name": "Marris Otter",
             "max_ppg": "38",
-            "color": "6"
+            "color": "8"
         },
         {
             "quantity": "100",
             "percentage": 8.3,
             "name": "Pale Chocolate",
             "max_ppg": "28",
-            "color": "690"
+            "color": "423"
         },
         {
             "quantity": "100",

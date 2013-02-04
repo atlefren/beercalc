@@ -18,9 +18,9 @@ var ol = {};
     //TODO: Add more here
     var maltSearch = function(query, callback) {
         var res = [
-                {"id": 1, "name": "Marris Otter", "max_ppg": 38, "color": 6},
+                {"id": 1, "name": "Marris Otter", "max_ppg": 38, "color": 8},
                 {"id": 2, "name": "Crystal Rye", "max_ppg": 29, "color": 150},
-                {"id": 3, "name": "Pale Chocolate", "max_ppg": 28, "color": 690}
+                {"id": 3, "name": "Pale Chocolate", "max_ppg": 28, "color": 423}
             ];
         callback(res);
     };
