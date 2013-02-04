@@ -137,8 +137,6 @@ var ol = {};
 
         listenOn: ["beer_name", "brewer", "beer_style", "wort_size", "batch_size", "computed_color", "computed_ibu", "actual_og", "fg"],
 
-
-
         initialize: function() {
             DynamicTableView.prototype.initialize.apply(this, arguments);
 
@@ -191,6 +189,7 @@ var ol = {};
                      this.calculate_ibu();
                  } else {
                      this.$el.find("#computed_ibu").val("");
+                     this.model.set("computed_ibu", "");
                  }
             }
         },
@@ -203,16 +202,13 @@ var ol = {};
                 var quantity = hop.get("quantity");
                 var alpha_acid = hop.get("alpha_acid");
                 var boil_time = hop.get("boil_time");
-                if(quantity !== "" && alpha_acid !== "" && boil_time !== ""){
-                    var aau = parseFloat(quantity) * parseFloat(alpha_acid);
-                    var utilization = calculateUtilization(og, parseFloat(boil_time));
-                    var ibu = aau * utilization * (10 / volume );
-                    return total_ibu + ibu;
-                } else {
-                    throw new Error("missing params");
-                }
+                var aau = parseFloat(quantity) * parseFloat(alpha_acid);
+                var utilization = calculateUtilization(og, parseFloat(boil_time));
+                var ibu = aau * utilization * (10 / volume );
+                return total_ibu + ibu;
             }, 0);
             this.$el.find("#computed_ibu").val(Math.round(ibu));
+            this.model.set("computed_ibu", Math.round(ibu));
         },
 
         toggleColor: function() {
@@ -222,6 +218,7 @@ var ol = {};
                 if(malts.reduce(function(state, malt) { return malt.validate(); }, true)) {
                     this.calculate_color();
                 } else {
+                    this.model.set("computed_color", "");
                     this.$el.find("#computed_color").val("");
                 }
             }
@@ -233,27 +230,19 @@ var ol = {};
         calculate_color: function() {
             var malts = this.options.brew.malts;
             var volume =  this.options.brew.generalInformation.get("wort_size");
-            if(volume !== "" && malts.length > 0) {
-                try {
-                    var total_mcu = malts.reduce(function(sum, malt) {
-                        var amount = malt.get("quantity");
-                        var ebc = malt.get("color");
-                        if(amount !== "" && ebc !== "") {
-                            var mcu = (amount * 0.0022) * (ebc * 0.508);
-                            return sum + mcu;
-                        } else {
-                            throw new Error("Missing params");
-                        }
-                    }, 0) / (volume * 0.2642);
 
-                    //Moreys Formula
-                    var srm = 1.49 * Math.pow(total_mcu, 0.69);
-                    var ebc = srm * 1.97;
-                    this.$el.find("#computed_color").val(Math.round(ebc));
-                } catch (error) {
-                    alert(error);
-                }
-            }
+            var total_mcu = malts.reduce(function(sum, malt) {
+                var amount = malt.get("quantity");
+                var ebc = malt.get("color");
+                var mcu = (amount * 0.0022) * (ebc * 0.508);
+                return sum + mcu;
+            }, 0) / (volume * 0.2642);
+
+            //Moreys Formula
+            var srm = 1.49 * Math.pow(total_mcu, 0.69);
+            var ebc = srm * 1.97;
+            this.$el.find("#computed_color").val(Math.round(ebc));
+            this.model.set("computed_color", Math.round(ebc));
         }
 
     });
@@ -711,17 +700,22 @@ var ol = {};
 
     });
 
-    ns.createBrew = function() {
+
+
+    ns.createBrew = function(initial) {
+
+        console.log(initial);
+
         var data = {};
-        data.generalInformation = new GeneralInformation();
-        data.malts = new Malts();
-        data.mashSchedule = new MashSchedule();
-        data.hops = new Hops();
-        data.additives = new Additives();
-        data.water = new Water();
-        data.boil = new Boil();
-        data.fermentation = new Fermentation();
-        data.additionalInformation = new AdditionalInformation();
+        data.generalInformation = new GeneralInformation(initial.generalInformation);
+        data.malts = new Malts(initial.malts);
+        data.mashSchedule = new MashSchedule(initial.mashSchedule);
+        data.hops = new Hops(initial.hops);
+        data.additives = new Additives(initial.additives);
+        data.water = new Water(initial.water);
+        data.boil = new Boil(initial.boil);
+        data.fermentation = new Fermentation(initial.fermentation);
+        data.additionalInformation = new AdditionalInformation(initial.additionalInformation);
 
 
         var serialize = function() {
@@ -744,6 +738,36 @@ var ol = {};
             serialize: serialize
         };
     };
+
+    ns.BrewSheet = Backbone.View.extend({
+
+        initialize: function() {
+
+        },
+
+        render: function() {
+
+            var initial = {};
+            if(this.options.brew) {
+                initial = JSON.parse(this.options.brew);
+            }
+
+            var brew = ns.createBrew(initial);
+            var general = new ns.GeneralInformationView({el: $("#general_section"), model: brew.generalInformation, brew: brew}).render();
+            var maltView = new ns.MaltSectionView({el: $("#malt_section"), collection: brew.malts}).render();
+            var hopView = new ns.HopSectionView({el: $("#hops_section"), collection: brew.hops}).render();
+            var additivesView = new ns.AdditiveSectionView({el: $("#additives_section"), collection: brew.additives}).render();
+            var waterView = new ns.WaterView({el: $("#water_section"), model: brew.water}).render();
+            var boiltimeView = new ns.BoiltimeView({el: $("#boiling_section"), model: brew.boil}).render();
+            var mashTimeView = new ns.MashTimeView({el: $("#mashing_section"), collection: brew.mashSchedule}).render();
+            var fermentationView = new ns.FermentationView({el: $("#fermentation_section"), model: brew.fermentation}).render();
+            var additionalInformationView = new ns.AdditionalInformationView({el: $("#other_section"), model: brew.additionalInformation}).render();
+            var recepieView = new ns.RecepieView({el: $("#recepie"), data: brew});
+
+            return this;
+        }
+
+    });
 
 }(ol));
 

@@ -20,18 +20,8 @@
 
         <script type="text/javascript">
             $(document).ready(function(){
-                var brew = ol.createBrew();
-                var general = new ol.GeneralInformationView({el: $("#general_section"), model: brew.generalInformation, brew: brew}).render();
-                var maltView = new ol.MaltSectionView({el: $("#malt_section"), collection: brew.malts}).render();
-                var hopView = new ol.HopSectionView({el: $("#hops_section"), collection: brew.hops}).render();
-                var additivesView = new ol.AdditiveSectionView({el: $("#additives_section"), collection: brew.additives}).render();
-                var waterView = new ol.WaterView({el: $("#water_section"), model: brew.water}).render();
-                var boiltimeView = new ol.BoiltimeView({el: $("#boiling_section"), model: brew.boil}).render();
-                var mashTimeView = new ol.MashTimeView({el: $("#mashing_section"), collection: brew.mashSchedule}).render();
-                var fermentationView = new ol.FermentationView({el: $("#fermentation_section"), model: brew.fermentation}).render();
-                var additionalInformationView = new ol.AdditionalInformationView({el: $("#other_section"), model: brew.additionalInformation}).render();
-                window.brew = brew;
-                var recepieView = new ol.RecepieView({el: $("#recepie"), data: brew});
+                var brew = "{\"generalInformation\":{\"beer_name\":\"Svarte Faen #2\",\"brewer\":\"Atle Sveen\",\"beer_style\":\"Porter\",\"wort_size\":\"5\",\"batch_size\":\"4\",\"computed_color\":\"58\",\"computed_ibu\":\"33\",\"actual_og\":\"1.056\",\"fg\":\"1.012\"},\"malts\":[{\"quantity\":\"1000\",\"percentage\":83.3,\"name\":\"Marris Otter\",\"max_ppg\":\"38\",\"color\":\"6\"},{\"quantity\":\"100\",\"percentage\":8.3,\"name\":\"Pale Chocolate\",\"max_ppg\":\"28\",\"color\":\"690\"},{\"quantity\":\"100\",\"percentage\":8.3,\"name\":\"Crystal Rye\",\"max_ppg\":\"29\",\"color\":\"150\"}],\"mashSchedule\":[{\"mash_time\":\"60\",\"mash_temperature\":\"68\"}],\"hops\":[{\"quantity\":\"5\",\"name\":\"Centennial\",\"form\":\"pellets\",\"alpha_acid\":\"7.8\",\"boil_time\":\"60\"},{\"quantity\":\"5\",\"name\":\"Summit\",\"form\":\"pellets\",\"alpha_acid\":\"18.5\",\"boil_time\":\"10\"}],\"additives\":[],\"water\":{\"mashing_water\":\"4\",\"sparging_water\":\"4\"},\"boil\":{\"boil_time\":\"60\"},\"fermentation\":{\"yeast_name\":\"Safeale S4\",\"yeast_type\":\"dry\",\"primary_fermentation_days\":\"14\",\"primary_fermentation_temp\":\"30\",\"secondary_fermentation_days\":\"\",\"secondary_fermentation_temp\":\"\",\"storage_days\":\"10\",\"storage_temp\":\"30\"},\"additionalInformation\":{\"brew_date\":\"19.01.2013\",\"bottle_date\":\"02.02.2013\",\"filtered\":false,\"co2\":\"natural\",\"comment\":\"\"}}";
+                var brewSheet = new ol.BrewSheet({brew: brew}).render();
             });
         </script>
 
