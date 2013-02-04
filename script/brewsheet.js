@@ -154,17 +154,21 @@ var ol = {};
             this.options.brew.malts.on("remove", this.toggleColor, this);
             this.options.brew.malts.on("change", this.toggleColor, this);
 
+
+
         },
 
         render: function() {
             this.$el.find("#desc").html(_.template($("#general_information_template").html(), this.model.toJSON()));
             DynamicTableView.prototype.render.apply(this, arguments);
+            this.toggleABV();
             return this;
         },
 
         toggleABV: function() {
             var og = this.model.get("actual_og");
             var fg = this.model.get("fg");
+
             if(!isNaN(og) && og !== "" && !isNaN(fg) && fg !== "" ) {
                 this.calculate_abv();
             } else {
