@@ -139,10 +139,7 @@ var ol = {};
 
         listenOn: ["beer_name", "brewer", "beer_style", "wort_size", "batch_size", "computed_color", "computed_ibu", "actual_og", "fg"],
 
-        events: {
-            "click #calculate_ibu": "calculate_ibu",
-            "click #calculate_color": "calculate_color"
-        },
+
 
         initialize: function() {
             DynamicTableView.prototype.initialize.apply(this, arguments);
@@ -156,7 +153,10 @@ var ol = {};
             this.options.brew.hops.on("remove", this.toggleIBU, this);
             this.options.brew.hops.on("change", this.toggleIBU, this);
 
-            _.bindAll(this, "calculate_abv", "calculate_ibu");
+            this.model.on("change:wort_size", this.toggleColor, this);
+            this.options.brew.malts.on("add", this.toggleColor, this);
+            this.options.brew.malts.on("remove", this.toggleColor, this);
+            this.options.brew.malts.on("change", this.toggleColor, this);
 
         },
 
@@ -189,7 +189,6 @@ var ol = {};
             var wort_size = this.model.get("wort_size");
             var hops = this.options.brew.hops;
             if(!isNaN(og) && og !== "" && !isNaN(wort_size) && wort_size !== "" && hops.length > 0 ) {
-
                  if(hops.reduce(function(state, hop) { return hop.validate(); }, true)) {
                      this.calculate_ibu();
                  } else {
@@ -216,6 +215,19 @@ var ol = {};
                 }
             }, 0);
             this.$el.find("#computed_ibu").val(Math.round(ibu));
+        },
+
+        toggleColor: function() {
+            console.log("toggle color!");
+            var malts = this.options.brew.malts;
+            var volume =  this.options.brew.generalInformation.get("wort_size");
+            if(volume !== "" && !isNaN(volume) && malts.length > 0) {
+                if(malts.reduce(function(state, malt) { return malt.validate(); }, true)) {
+                    this.calculate_color();
+                } else {
+                    this.$el.find("#computed_color").val("");
+                }
+            }
         },
 
         //based on Palmer, "how to brew" p. 271, and
@@ -253,9 +265,15 @@ var ol = {};
         "defaults": {
             "quantity": "",
             "percentage": "",
-            "ingredient": "",
+            "name": "",
             "max_ppg": "",
             "color": ""
+        },
+
+        validate: function() {
+            return _.reduce(["quantity", "color"], function(ok, attr) {
+                return (this.get(attr) !== "" && !isNaN(this.get(attr)));
+            }, true, this);
         }
     });
 
@@ -312,7 +330,7 @@ var ol = {};
             "blur #quantity": "qtyChange"
         }),
 
-        listenOn: ["ingredient", "max_ppg", "color"],
+        listenOn: ["name", "max_ppg", "color"],
 
         initialize: function() {
             DynamicTableView.prototype.initialize.apply(this, arguments);
@@ -322,13 +340,13 @@ var ol = {};
 
         render: function() {
             this.$el.html(_.template($("#malt_table_row_template").html(), this.model.toJSON()));
-            this.$el.find("#ingredient").typeahead({source: maltSearch, selectCallback: this.setMalt});
+            this.$el.find("#name").typeahead({source: maltSearch, selectCallback: this.setMalt});
             DynamicTableView.prototype.render.apply(this, arguments);
             return this;
         },
 
         setMalt: function(malt) {
-            this.model.set({"ingredient": malt.name, "max_ppg": malt.max_ppg, "color": malt.color});
+            this.model.set({"name": malt.name, "max_ppg": malt.max_ppg, "color": malt.color});
             this.render();
         },
 
@@ -413,10 +431,7 @@ var ol = {};
 
         validate: function() {
             return _.reduce(["quantity", "alpha_acid", "boil_time"], function(ok, attr) {
-                if(this.get(attr) === "" || isNaN(this.get(attr))) {
-                    return false;
-                }
-                return true;
+                return (this.get(attr) !== "" && !isNaN(this.get(attr)));
             }, true, this);
 
         }

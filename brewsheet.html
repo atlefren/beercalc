@@ -65,7 +65,7 @@
 
             <div class="row">
                 <div id="malt_section" class="section span10">
-                    <form>
+                    <form autocomplete="off">
                         <fieldset>
                             <legend>(<i class="toggle icon-minus"></i>) Malt</legend>
                             <div class="content">
@@ -228,10 +228,10 @@
         <input id="percentage" type="text" class="input-mini" readonly="readonly" value="<%= percentage %>">
     </th>
     <td>
-        <input id="ingredient" type="text" class="input-large" value="<%= ingredient %>">
+        <input id="name" type="text" class="input-large" value="<%= name %>">
     </td>
     <td>
-        <input id="max-ppg" type="text" class="input-mini" value="<%= max_ppg %>">
+        <input id="max_ppg" type="text" class="input-mini" value="<%= max_ppg %>">
     </td>
     <td>
         <input id="color" type="text" class="input-mini" value="<%= color %>">
@@ -427,10 +427,7 @@
                 <div class="control-group">
                     <label for="computed_ibu" class="control-label">Bitterness (IBU)</label>
                     <div class="controls">
-                        <div class="input-append">
-                            <input id="computed_ibu" type="text" class="span2" value="<%= computed_ibu %>">
-                            <button id="calculate_ibu" class="btn" type="button">Calculate</button>
-                        </div>
+                        <input id="computed_ibu" type="text" value="<%= computed_ibu %>">
                     </div>
                 </div>
 
@@ -439,11 +436,7 @@
                 <div class="control-group">
                     <label for="computed_color" class="control-label">Color (EBC)</label>
                     <div class="controls">
-
-                        <div class="input-append">
-                            <input id="computed_color" type="text" class="span2" value="<%= computed_color %>">
-                            <button id="calculate_color" class="btn" type="button">Calculate</button>
-                        </div>
+                        <input id="computed_color" type="text" value="<%= computed_color %>">
                     </div>
                 </div>
             </div>
@@ -554,11 +547,11 @@ Sluttvolum:   <%= ol.templateFunc.rpad(ol.templateFunc.orNa(generalInformation.b
 
         print("[b]Malt & sukker[/b]\n");
 
-        var iSpace = _.max(_.pluck(malts, "ingredient"), function(i) {return i.length; }).length;
+        var iSpace = _.max(_.pluck(malts, "name"), function(i) {return i.length; }).length;
         _.each(malts, function(malt) {  
             print(ol.templateFunc.rpad(ol.templateFunc.orNa(malt.quantity), 4) + " gram       ");
             print(ol.templateFunc.rpad(ol.templateFunc.orNa(malt.percentage), 4) + " %      ");
-            print(ol.templateFunc.lpad(ol.templateFunc.orNa(malt.ingredient), iSpace) + "         ");
+            print(ol.templateFunc.lpad(ol.templateFunc.orNa(malt.name), iSpace) + "         ");
             print(ol.templateFunc.rpad(ol.templateFunc.orNa(malt.color), 4) + " EBC");
             print("\n");
         }); 
