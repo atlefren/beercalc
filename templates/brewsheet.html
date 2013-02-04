@@ -1,18 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta http-equiv="X-UA-Compatible" content="IE=8">
-        <meta charset="UTF-8">
-
+{% extends "layout.html" %}
+        {% block css %}
+        {{ super() }}
         <link rel="stylesheet" type="text/css" media="all" href="{{ url_for('static', filename='css/bootstrap/css/bootstrap.min.css') }}" />
-
         <link rel="stylesheet" type="text/css" media="all" href="{{ url_for('static', filename='css/style.css') }}" />
         <link rel="stylesheet" type="text/css" media="all" href="{{ url_for('static', filename='css/datepicker.css') }}" />
+        {% endblock %}
 
-        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-        <script type="text/javascript" src="{{ url_for('static', filename='script/underscore-min.js') }}"></script>
-        <script type="text/javascript" src="{{ url_for('static', filename='script/backbone-min.js') }}"></script>
-        <script type="text/javascript" src="{{ url_for('static', filename='css/bootstrap/js/bootstrap.min.js') }}"></script>
+        {% block js %}
+        {{ super() }}
         <script type="text/javascript" src="{{ url_for('static', filename='script/bootstrap-datepicker.js') }}"></script>
         <script type="text/javascript" src="{{ url_for('static', filename='script/typeahead.js') }}"></script>
         <script type="text/javascript" src="{{ url_for('static', filename='script/jquery.flot.js') }}"></script>
@@ -20,30 +15,27 @@
 
         <script type="text/javascript" src="{{ url_for('static', filename='script/brewsheet.js') }}"></script>
 
+
         <script type="text/javascript">
             $(document).ready(function(){
-                var brew = "{\"generalInformation\":{\"beer_name\":\"Svarte Faen #2\",\"brewer\":\"Atle Sveen\",\"beer_style\":\"Porter\",\"wort_size\":\"5\",\"batch_size\":\"4\",\"computed_color\":\"47\",\"computed_ibu\":\"33\",\"actual_og\":\"1.056\",\"fg\":\"1.012\"},\"malts\":[{\"quantity\":\"1000\",\"percentage\":83.3,\"name\":\"Marris Otter\",\"max_ppg\":\"38\",\"color\":\"8\"},{\"quantity\":\"100\",\"percentage\":8.3,\"name\":\"Pale Chocolate\",\"max_ppg\":\"28\",\"color\":\"423\"},{\"quantity\":\"100\",\"percentage\":8.3,\"name\":\"Crystal Rye\",\"max_ppg\":\"29\",\"color\":\"150\"}],\"mashSchedule\":[{\"mash_time\":\"60\",\"mash_temperature\":\"68\"}],\"hops\":[{\"quantity\":\"5\",\"name\":\"Centennial\",\"form\":\"pellets\",\"alpha_acid\":\"7.8\",\"boil_time\":\"60\"},{\"quantity\":\"5\",\"name\":\"Summit\",\"form\":\"pellets\",\"alpha_acid\":\"18.5\",\"boil_time\":\"10\"}],\"additives\":[],\"water\":{\"mashing_water\":\"4\",\"sparging_water\":\"4\"},\"boil\":{\"boil_time\":\"60\"},\"fermentation\":{\"yeast_name\":\"Safeale S4\",\"yeast_type\":\"dry\",\"primary_fermentation_days\":\"14\",\"primary_fermentation_temp\":\"30\",\"secondary_fermentation_days\":\"\",\"secondary_fermentation_temp\":\"\",\"storage_days\":\"10\",\"storage_temp\":\"30\"},\"additionalInformation\":{\"brew_date\":\"19.01.2013\",\"bottle_date\":\"02.02.2013\",\"filtered\":false,\"co2\":\"natural\",\"comment\":\"\"}}";
+                {% if brew %}
+                    var brew = {{ brew|safe }};
+                {% else %}
+                    var brew;
+                {% endif %}
+                console.log(brew);
                 var brewSheet = new ol.BrewSheet({brew: brew}).render();
             });
         </script>
+        {% endblock %}
 
-    </head>
-    <body>
-
-    <div class="row">
-
-        <div class="span2">
+        {% block body %}
+            <h2>Brewsheet</h2>
             <div id="recepie">
-                <ul>
-                    <li><button class="btn" id="show_recipe">Show recipe</button></li>
-                    <li><button class="btn" id="show_json">Show JSON</button></li>
-                </ul>
+                <button class="btn" id="show_recipe">Show recipe</button>
+                <button class="btn" id="show_json">Show JSON</button>
+                <button class="btn" id="save">Save recipe</button>
             </div>
-        </div>
-
-        <div class="span12">
-            <h1>Brewsheet</h1>
-
             <div class="row">
                 <div id="general_section" class="section span10">
                     <form class="form-horizontal">
@@ -207,11 +199,13 @@
                     </form>
                 </div>
             </div>
+        {% endblock %}
+                <!--
         </div>
     </div>
-
+-->
     <!-- TEMPLATES: -->
-
+        {% block templates %}
 <script type="text/template" id="malt_table_row_template">
     <td>
         <input id="quantity" type="text" class="input-mini" value="<%= quantity %>">
@@ -618,6 +612,4 @@ Tappedato:  <%= ol.templateFunc.rpad(ol.templateFunc.orNa(additionalInformation.
         <div class="modal-body">
         </div>
     </div>
-
-    </body>
-</html>
+{% endblock %}

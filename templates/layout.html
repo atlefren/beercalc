@@ -1,0 +1,45 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+
+    <title>BeerCalc</title>
+
+    {% block css %}
+    <link rel="stylesheet" type="text/css" media="all" href="{{ url_for('static', filename='css/bootstrap/css/bootstrap.min.css') }}" />
+    <link rel="stylesheet" type="text/css" media="all" href="{{ url_for('static', filename='css/style.css') }}" />
+    {% endblock %}
+
+    {% block js %}
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='script/underscore-min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='script/backbone-min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='css/bootstrap/js/bootstrap.min.js') }}"></script>
+    {% endblock %}
+</head>
+<body>
+
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="span12"><h1>BeerCalc</h1></div>
+    </div>
+    <div class="row-fluid">
+        <div class="span2 sidebar">
+           <ul>
+               <li><a href="/">Home</a></li>
+               <li><a href="/brews/">Brews</a></li>
+               <li><a href="/brewsheet/">Add Brew</a></li>
+               <li><a href="/ingredients/malts/list/">Malt list</a></li>
+               <li><a href="/ingredients/hops/list/">Hop list</a></li>
+           </ul>
+        </div>
+        <div class="span10 main">
+        {% block body %}{% endblock %}
+        </div>
+    </div>
+</div>
+
+{% block templates %}{% endblock %}
+
+</body>
+</html>

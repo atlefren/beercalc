@@ -1,0 +1,10 @@
+{% extends "layout.html" %}
+{% block body %}
+
+        <h2>Malts</h2>
+        <ul>
+        {% for malt in malts %}
+            <li>{{ malt.name }}</li>
+        {% endfor %}
+        </ul>
+{% endblock %}

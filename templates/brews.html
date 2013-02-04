@@ -1,0 +1,10 @@
+{% extends "layout.html" %}
+{% block body %}
+
+<h2>Brews</h2>
+<ul>
+    {% for brew in brews %}
+    <li><a href="/brewsheet/{{ brew.id}}">{{ brew.name }}</a></li>
+    {% endfor %}
+</ul>
+{% endblock %}

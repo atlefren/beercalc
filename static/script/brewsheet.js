@@ -788,7 +788,7 @@ var ol = {};
 
             var initial = {};
             if(this.options.brew) {
-                initial = JSON.parse(this.options.brew);
+                initial = this.options.brew;
             }
 
             var brew = ns.createBrew(initial);
