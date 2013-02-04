@@ -4,21 +4,21 @@
         <meta http-equiv="X-UA-Compatible" content="IE=8">
         <meta charset="UTF-8">
 
-        <link rel="stylesheet" type="text/css" media="all" href="css/bootstrap/css/bootstrap.min.css" />
+        <link rel="stylesheet" type="text/css" media="all" href="{{ url_for('static', filename='css/bootstrap/css/bootstrap.min.css') }}" />
 
-        <link rel="stylesheet" type="text/css" media="all" href="css/style.css" />
-        <link rel="stylesheet" type="text/css" media="all" href="css/datepicker.css" />
+        <link rel="stylesheet" type="text/css" media="all" href="{{ url_for('static', filename='css/style.css') }}" />
+        <link rel="stylesheet" type="text/css" media="all" href="{{ url_for('static', filename='css/datepicker.css') }}" />
 
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-        <script type="text/javascript" src="script/underscore-min.js"></script>
-        <script type="text/javascript" src="script/backbone-min.js"></script>
-        <script type="text/javascript" src="css/bootstrap/js/bootstrap.min.js"></script>
-        <script type="text/javascript" src="script/bootstrap-datepicker.js"></script>
-        <script type="text/javascript" src="script/typeahead.js"></script>
-        <script type="text/javascript" src="script/jquery.flot.js"></script>
-        <script type="text/javascript" src="script/jquery.flot.axislabels.js"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='script/underscore-min.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='script/backbone-min.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='css/bootstrap/js/bootstrap.min.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='script/bootstrap-datepicker.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='script/typeahead.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='script/jquery.flot.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='script/jquery.flot.axislabels.js') }}"></script>
 
-        <script type="text/javascript" src="script/brewsheet.js"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='script/brewsheet.js') }}"></script>
 
         <script type="text/javascript">
             $(document).ready(function(){
