@@ -82,6 +82,11 @@ table .input-medium {
     margin-top: 7px;
 }
 
+.graph {
+    width: 300px;
+    height: 300px;
+}
+
 /*
 body {
     font-family: Verdana, sans-serif;

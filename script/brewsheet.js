@@ -369,7 +369,40 @@ var ol = {};
             this.collection.each(function(mashTime) {
                 table.append(new MashScheduleRowView({model: mashTime}).render().$el);
             });
+
+            this.mashGraph = new MashGraph({collection: this.collection, el: this.$el.find("#mash_graph")}).render();
         }
+    });
+
+    var MashGraph = Backbone.View.extend({
+
+        initialize: function () {
+            this.collection.on("change", this.render, this);
+        },
+
+        render: function() {
+
+            var data = this.collection.reduce(function(res, time) {
+                if(!isNaN(parseFloat(time.get("mash_time"))) && !isNaN(parseFloat(time.get("mash_temperature")))) {
+                    var start = res.prev;
+                    var stop = start + parseFloat(time.get("mash_time"));
+                    res.prev = stop;
+                    res.arr.push([start, parseFloat(time.get("mash_temperature"))]);
+                    res.arr.push([stop, parseFloat(time.get("mash_temperature"))]);
+                }
+                return res;
+            }, {arr: [], "prev": 0}).arr;
+            $.plot(
+                this.$el,
+                [{data: data}],
+                {
+                    xaxis: {min: 0, axisLabel: 'Minutes'},
+                    yaxis: {min: 0, max: 100, axisLabel: '&deg;C'}
+                }
+            );
+            return this;
+        }
+
     });
 
     var MashScheduleRowView = DynamicTableView.extend({
@@ -703,8 +736,6 @@ var ol = {};
 
 
     ns.createBrew = function(initial) {
-
-        console.log(initial);
 
         var data = {};
         data.generalInformation = new GeneralInformation(initial.generalInformation);
