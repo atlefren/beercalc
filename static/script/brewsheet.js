@@ -720,11 +720,12 @@ var ol = {};
 
         events: {
             "click #show_recipe": "show_recipe",
-            "click #show_json": "show_json"
+            "click #show_json": "show_json",
+            "click #save": "save"
         },
 
         initialize: function() {
-            _.bindAll(this, "show_recipe", "show_json");
+            _.bindAll(this, "show_recipe", "show_json", "saved");
         },
 
         show_recipe: function() {
@@ -737,6 +738,34 @@ var ol = {};
             var modal = $('#recipeModal');
             modal.find(".modal-body").html(new JsonView({data: this.options.data}).render().$el);
             modal.modal('show');
+        },
+
+        save: function() {
+            var data = JSON.stringify(this.options.data.serialize());
+
+            //TODO proper url structure!!
+            //or use backbone!
+            var method = "POST";
+            if(this.options.data.generalInformation.has("id")) {
+                method = "PUT";
+            }
+
+            $.ajax({
+                type: method,
+                url: "/brews/add/",
+                data: {data: data},
+                success: this.saved,
+                error: function(e){
+                    alert("error..")
+                }
+            });
+        },
+
+        saved: function(e) {
+            var res = JSON.parse(e);
+            if(!this.options.data.generalInformation.has("id")) {
+                this.options.data.generalInformation.set({"id": res.id});
+            }
         }
 
     });
@@ -801,7 +830,7 @@ var ol = {};
             var mashTimeView = new ns.MashTimeView({el: $("#mashing_section"), collection: brew.mashSchedule}).render();
             var fermentationView = new ns.FermentationView({el: $("#fermentation_section"), model: brew.fermentation}).render();
             var additionalInformationView = new ns.AdditionalInformationView({el: $("#other_section"), model: brew.additionalInformation}).render();
-            var recepieView = new ns.RecepieView({el: $("#recepie"), data: brew});
+            var recepieView = new ns.RecepieView({el: $("#controls"), data: brew});
 
             return this;
         }

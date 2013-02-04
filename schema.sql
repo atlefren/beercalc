@@ -6,4 +6,4 @@ create table malts (
   color int
 );
 
-INSERT INTO malts (name, max_ppg, color) VALUES ('Marris Otter', 38.0. 8.0);
+CREATE TABLE brews (id integer primary key autoincrement, data text);

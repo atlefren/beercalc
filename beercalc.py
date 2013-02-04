@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, request, Response, g
+from flask import Flask, render_template, url_for, request, Response, g, make_response
 import simplejson
 import sqlite3
 
@@ -27,8 +27,24 @@ def brews():
     brews = [
         {"id": 1, "name": "Svarte Faen #2"}
     ]
-
     return render_template('brews.html', brews=brews)
+
+@app.route('/brews/add/', methods=['POST', "PUT"])
+def add_brew():
+
+    json =  request.form["data"]
+
+    if request.method == 'POST':
+        name = simplejson.loads(json)["generalInformation"]["beer_name"]
+        if name == "":
+            return make_response(simplejson.dumps({"error": "Specify name!"}), 400)
+
+        print "POST WITH NAME", name
+    elif request.method == 'PUT':
+        id = simplejson.loads(json)["generalInformation"]["id"]
+        print "PUT WITH ID", id
+
+    return make_response(simplejson.dumps({"id": 1}), 201)
 
 @app.route('/brewsheet/')
 def brewsheet():
