@@ -1,24 +1,43 @@
-from flask import Flask, render_template, url_for, request, Response, g, make_response
+from flask import Flask, render_template, url_for, request, Response, make_response
+from flask.ext.sqlalchemy import SQLAlchemy
 import simplejson
-import sqlite3
-
-app = Flask(__name__)
+#import sqlite3
+import os
 
 app.config.from_envvar('BREWCALC_SETTINGS', silent=True)
+basedir = os.path.abspath(os.path.dirname(__file__))
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, app.config['SQLALCHEMY_DATABASE_NAME'])
+app.config['SQLALCHEMY_MIGRATE_REPO'] = os.path.join(basedir, app.config['SQLALCHEMY_MIGRATE_REPO'])
 
-def connect_db():
-    return sqlite3.connect(app.config['DATABASE'])
 
-@app.before_request
-def before_request():
-    g.db = connect_db()
+app = Flask(__name__)
+app.config.from_object('config')
+db = SQLAlchemy(app)
 
-@app.teardown_request
-def teardown_request(exception):
-    g.db.close()
+from app import views, models
+
+
+
+
+
+#def connect_db():
+    #return sqlite3.connect(app.config['DATABASE'])
+
+#@app.before_request
+#def before_request():
+#    g.db = connect_db()
+
+#@app.teardown_request
+#def teardown_request(exception):
+#    g.db.close()
 
 @app.route('/')
 def index():
+    basedir = os.path.abspath(os.path.dirname(__file__))
+
+    #print app.config['SQLALCHEMY_MIGRATE_REPO']
+    #print app.config['SQLALCHEMY_DATABASE_URI']
+
     return render_template('index.html')
 
 @app.route('/brews/')
@@ -72,11 +91,11 @@ def find_malts():
 
 @app.route('/ingredients/malts/list/')
 def all_malts():
-    cur = g.db.execute('select id, name, max_ppg, color from malts order by id desc')
-    malts = [dict(id=row[0], name=row[1], max_ppg=row[0], color=row[0]) for row in cur.fetchall()]
+    #cur = g.db.execute('select id, name, max_ppg, color from malts order by id desc')
+    #malts = [dict(id=row[0], name=row[1], max_ppg=row[0], color=row[0]) for row in cur.fetchall()]
 
     #return simplejson.dumps(malts)
-    return render_template('malt_list.html', malts=malts)
+    return render_template('malt_list.html', malts=[])
 
 @app.route('/ingredients/hops/list/')
 def all_hops():

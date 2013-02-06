@@ -3,3 +3,5 @@
 *.iws
 venv
 beercalc.conf
+app.db
+db_repository
