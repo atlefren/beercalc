@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block body %}
+<section>
+        <h2>Malts</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Color (EBC)</th>
+                    <th>PPG</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for malt in malts %}
+                <tr>
+                    <td>{{ malt.name }}</td>
+                    <td>{{ malt.color }}</td>
+                    <td>{{ malt.ppg }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% if g.user.is_authenticated() %}
+        <button class="btn" id="add">Add Malt</button>
+        {% endif %}
+</section>
+{% endblock %}

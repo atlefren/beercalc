@@ -13,10 +13,36 @@ def before_request():
     g.user = current_user
 
 @app.route('/')
-@login_required
+#@login_required
 def index():
     user = g.user
     print user
+    return render_template('index.html')
+
+@app.route('/ingredients/malt/')
+def malt():
+    return render_template('malt_list.html', malts=[{"name": "Marris 0tter", "color": "40", "ppg": "34" }])
+
+@app.route('/ingredients/hops/')
+def hops():
+    return render_template('base.html')
+
+@app.route('/ingredients/yeast/')
+def yeast():
+    return render_template('base.html')
+
+@app.route('/brews/my/')
+@login_required
+def my_brews():
+    return render_template('base.html')
+
+@app.route('/brews/add/')
+@login_required
+def add_brew():
+    return render_template('base.html')
+
+@app.route('/brews/browse/')
+def browse_brews():
     return render_template('base.html')
 
 @app.route('/login', methods = ['GET', 'POST'])
@@ -24,15 +50,20 @@ def index():
 def login():
     if g.user is not None and g.user.is_authenticated():
         return redirect(url_for('index'))
-    form = LoginForm()
-    if form.validate_on_submit():
-        session['remember_me'] = form.remember_me.data
-        return oid.try_login(form.openid.data, ask_for = ['nickname', 'email'])
-    return render_template('login.html',
-        title = 'Sign In',
-        form = form,
-        providers = app.config['OPENID_PROVIDERS'])
 
+    if request.method == 'POST':
+        print "....", request.form
+
+        providers = {
+            'google': 'https://www.google.com/accounts/o8/id',
+            'myopenid': 'https://www.myopenid.com'
+        }
+        provider = providers[request.form['openid_provider']]
+        session['remember_me'] = 'remember_me' in request.form
+        print "!!", provider
+        return oid.try_login(provider, ask_for = ['nickname', 'email']) #
+    else:
+        return render_template('login.html')
 
 @oid.after_login
 def after_login(resp):

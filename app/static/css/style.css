@@ -87,19 +87,25 @@ table .input-medium {
     height: 300px;
 }
 
+
 .sidebar, .main {
+
+    padding: 10p
+    /*
     -webkit-border-radius: 6px;
     -moz-border-radius: 6px;
     border-radius: 6px;
-    padding: 10px;
+
 
     background-color: #f5f5f5;
+    */
 }
 
+/*
 .main .row {
     padding-left: 30px;
 }
-
+*/
 /*
 body {
     font-family: Verdana, sans-serif;
