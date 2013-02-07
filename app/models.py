@@ -1,5 +1,6 @@
 from app import db
 
+
 ROLE_USER = 0
 ROLE_ADMIN = 1
 
@@ -24,14 +25,28 @@ class User(db.Model):
     def __repr__(self):
         return '<User %r>' % (self.username)
 
+from collections import OrderedDict
+
+
+
 
 class Malt(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(140))
     color = db.Column(db.String(140))
-
+    ppg = db.Column(db.Integer)
     def __repr__(self):
         return '<Malt %r>' % (self.name)
+
+    @property
+    def serialize(self):
+        """Return object data in easily serializeable format"""
+        return {
+            'id'         : self.id,
+            'name': self.name,
+            'color': self.color,
+            'ppg': self.ppg
+        }
 
 class Hop(db.Model):
     id = db.Column(db.Integer, primary_key = True)

@@ -1,7 +1,6 @@
 from flask import render_template, flash, redirect, session, url_for, request, g
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from app import app, db, lm, oid
-from forms import LoginForm
 from models import User, ROLE_USER, ROLE_ADMIN
 
 @lm.user_loader
@@ -20,7 +19,7 @@ def index():
     return render_template('index.html')
 
 @app.route('/ingredients/malt/')
-def malt():
+def malt_view():
     return render_template('malt_list.html', malts=[{"name": "Marris 0tter", "color": "40", "ppg": "34" }])
 
 @app.route('/ingredients/hops/')
