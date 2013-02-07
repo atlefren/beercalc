@@ -1,7 +1,7 @@
 from flask import render_template, flash, redirect, session, url_for, request, g
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from app import app, db, lm, oid
-from models import User, ROLE_USER, ROLE_ADMIN
+from models import User, Malt, ROLE_USER, ROLE_ADMIN
 
 @lm.user_loader
 def load_user(id):
@@ -20,15 +20,15 @@ def index():
 
 @app.route('/ingredients/malt/')
 def malt_view():
-    return render_template('malt_list.html', malts=[{"name": "Marris 0tter", "color": "40", "ppg": "34" }])
+    return render_template('malt_list.html', malts=Malt.query.order_by(Malt.name))
 
 @app.route('/ingredients/hops/')
 def hops():
-    return render_template('base.html')
+    return render_template('hop_list.html')
 
 @app.route('/ingredients/yeast/')
 def yeast():
-    return render_template('base.html')
+    return render_template('yeast_list.html')
 
 @app.route('/brews/my/')
 @login_required
@@ -38,7 +38,7 @@ def my_brews():
 @app.route('/brews/add/')
 @login_required
 def add_brew():
-    return render_template('base.html')
+    return render_template('brewsheet.html', brew=None)
 
 @app.route('/brews/browse/')
 def browse_brews():

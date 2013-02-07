@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% set active_page = "ingredients" %}
+{% block body %}
+<section>
+    <h2>Yeast</h2>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Attenuation</th>
+            <th>Type</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for hop in hops %}
+        <tr>
+            <td>{{ yeast.name }}</td>
+            <td>{{ yeast.attenuation }}</td>
+            <td>{{ yeast.type }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% if g.user.is_authenticated() %}
+    <button class="btn" id="add">Add Yeast</button>
+    {% endif %}
+</section>
+{% endblock %}

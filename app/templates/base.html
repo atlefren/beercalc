@@ -21,24 +21,24 @@
     <div class="navbar-inner">
         <a class="brand" href="#">BeerCalc Beta</a>
         <ul class="nav">
-            <li class="active"><a href="{{ url_for('index') }}">Home</a></li>
+            <li {% if request.endpoint == 'index' %} class="active" {% endif %} ><a href="{{ url_for('index') }}">Home</a></li>
 
             {% if g.user.is_authenticated() %}
-            <li><a href="{{ url_for('add_brew') }}">Add brew</a></li>
-            <li><a href="{{ url_for('my_brews') }}">My brews</a></li>
+            <li {% if request.endpoint == 'add_brew' %} class="active" {% endif %}><a href="{{ url_for('add_brew') }}">Add brew</a></li>
+            <li{% if request.endpoint == 'my_brews' %} class="active" {% endif %}><a href="{{ url_for('my_brews') }}">My brews</a></li>
             {% endif %}
-            <li class="dropdown">
+            <li class="dropdown {% if active_page == 'ingredients' %} active{% endif %}">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                     Ingredients
                     <b class="caret"></b>
                 </a>
                 <ul class="dropdown-menu">
-                    <li><a tabindex="-1" href="{{ url_for('malt_view') }}">Malts</a></li>
-                    <li><a tabindex="-1" href="{{ url_for('hops') }}">Hops</a></li>
-                    <li><a tabindex="-1" href="{{ url_for('yeast') }}">Yeast</a></li>
+                    <li {% if request.endpoint == 'malt_view' %} class="active" {% endif %}><a tabindex="-1" href="{{ url_for('malt_view') }}">Malts</a></li>
+                    <li {% if request.endpoint == 'hops' %} class="active" {% endif %}><a tabindex="-1" href="{{ url_for('hops') }}">Hops</a></li>
+                    <li {% if request.endpoint == 'yeast' %} class="active" {% endif %}><a tabindex="-1" href="{{ url_for('yeast') }}">Yeast</a></li>
                 </ul>
             </li>
-            <li><a href="{{ url_for('browse_brews') }}">Browse brews</a></li>
+            <li {% if request.endpoint == 'browse_brews' %} class="active" {% endif %}><a href="{{ url_for('browse_brews') }}">Browse brews</a></li>
         </ul>
         <ul class="nav pull-right">
         {% if g.user.is_authenticated() %}

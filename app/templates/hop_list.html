@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% set active_page = "ingredients" %}
+{% block body %}
+<section>
+    <h2>Hops</h2>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>&alpha;Acid (%)</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for hop in hops %}
+        <tr>
+            <td>{{ hop.name }}</td>
+            <td>{{ hop.aplha_acid }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% if g.user.is_authenticated() %}
+    <button class="btn" id="add">Add Hop</button>
+    {% endif %}
+</section>
+{% endblock %}
