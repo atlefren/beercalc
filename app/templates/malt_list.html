@@ -1,28 +1,49 @@
 {% extends "base.html" %}
+{% block js %}
+{{ super() }}
+
+        <script type="text/javascript" src="{{ url_for('static', filename='script/ingredient_list.js') }}"></script>
+        <script type="text/javascript">
+
+            $(document).ready(function(){
+
+                console.log();
+                new ol.MaltList({el: $("#malts")}).setData({{malts|safe}});
+            });
+        </script>
+
+{% endblock %}
+
+
 {% set active_page = "ingredients" %}
 {% block body %}
-<section>
+<section id="malts">
         <h2>Malts</h2>
-        <table class="table">
+        <table class="table" style="width: 100%;">
             <thead>
                 <tr>
                     <th>Name</th>
                     <th>Color (EBC)</th>
                     <th>PPG</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
-            {% for malt in malts %}
-                <tr>
-                    <td>{{ malt.name }}</td>
-                    <td>{{ malt.color }}</td>
-                    <td>{{ malt.ppg }}</td>
-                </tr>
-            {% endfor %}
             </tbody>
         </table>
         {% if g.user.is_authenticated() %}
         <button class="btn" id="add">Add Malt</button>
         {% endif %}
 </section>
+{% endblock %}
+
+
+
+{% block templates %}
+<script type="text/template" id="malt_row">
+    <td><%=name %></td>
+    <td><%=color %></td>
+    <td><%=ppg %></td>
+    <td></td>
+</script>
 {% endblock %}

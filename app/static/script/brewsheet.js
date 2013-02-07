@@ -729,13 +729,13 @@ var ol = {};
         },
 
         show_recipe: function() {
-            var modal = $('#recipeModal');
+            var modal = $('#modal');
             modal.find(".modal-body").html(new AsciiView({data: this.options.data}).render().$el);
             modal.modal('show');
         },
 
         show_json: function() {
-            var modal = $('#recipeModal');
+            var modal = $('#modal');
             modal.find(".modal-body").html(new JsonView({data: this.options.data}).render().$el);
             modal.modal('show');
         },

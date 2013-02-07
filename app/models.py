@@ -28,13 +28,12 @@ class User(db.Model):
 from collections import OrderedDict
 
 
-
-
 class Malt(db.Model):
+
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(140))
-    color = db.Column(db.String(140))
-    ppg = db.Column(db.Integer)
+    color = db.Column(db.Float)
+    ppg = db.Column(db.Float)
     def __repr__(self):
         return '<Malt %r>' % (self.name)
 
