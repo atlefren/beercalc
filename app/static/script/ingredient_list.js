@@ -4,13 +4,36 @@ var ol = ol || {};
 
     var Malt = Backbone.Model.extend({
 
+        toJSON: function (){
+            var data = {
+                "id": this.get("id"),
+                "name": this.get("name")
+            };
+            if(this.has("ppg") && this.get("ppg") !== "") {
+                data.ppg = this.get("ppg");
+            }
+            if(this.has("color") && this.get("color") !== "") {
+                data.color = this.get("color");
+            }
+            return data;
+        },
+
+        toTemplate: function (){
+
+            return {
+                "id": this.get("id"),
+                "name": this.get("name"),
+                "color": this.get("color"),
+                "ppg": this.get("ppg")
+            }
+        }
     });
 
     var Malts = Backbone.Collection.extend({
 
         model: Malt,
 
-        url: "/api/malts/"
+        url: "/api/malt"
 
     });
 
@@ -19,9 +42,7 @@ var ol = ol || {};
         tagName: "tr",
 
         render: function() {
-            var d = this.model.toJSON();
-            console.log(d);
-            this.$el.append(_.template($("#malt_row").html(), d));
+            this.$el.append(_.template($("#malt_row").html(), this.model.toTemplate()));
             return this;
         }
     });
@@ -39,7 +60,6 @@ var ol = ol || {};
         },
 
         addOne: function(model) {
-            console.log("addone", model);
             if(!model.isNew()) {
                 this.$el.append(new MaltRow({model: model}).render().$el);
             }
@@ -76,7 +96,6 @@ var ol = ol || {};
                 return res;
             }, {}, this);
             this.options.callback(values);
-            this.$el.remove();
         }
 
     });
@@ -88,7 +107,7 @@ var ol = ol || {};
         },
 
         initialize: function() {
-            _.bindAll(this, "add", "added");
+            _.bindAll(this, "add", "added", "saved", "saveError");
             this.collection = new Malts();
             new MaltTable({"el": this.$el.find("tbody"), collection: this.collection})
         },
@@ -100,14 +119,22 @@ var ol = ol || {};
 
         add: function() {
             var form = ["name", "color", "ppg"];
-            var adder = new Adder({"form": form, "callback": this.added}).render();
-            this.$el.find("tbody").append(adder.$el);
+            this.adder = new Adder({"form": form, "callback": this.added}).render();
+            this.$el.find("tbody").append(this.adder.$el);
         },
 
         added: function(values) {
             var model = new this.collection.model();
             this.collection.add(model);
-            model.save(values, {wait: true});
+            model.save(values, {"wait": true, "success": this.saved, "error": this.saveError});
+        },
+
+        saved: function() {
+            this.adder.$el.remove();
+        },
+
+        saveError: function(model, xhr, options) {
+            console.log(model, xhr, options);
         }
     });
 }(ol));

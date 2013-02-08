@@ -28,8 +28,9 @@ class User(db.Model):
 from collections import OrderedDict
 
 
-class Malt(db.Model):
 
+
+class Malt(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(140))
     color = db.Column(db.Float)
