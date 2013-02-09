@@ -123,6 +123,14 @@ var ol = {};
         }
     });
 
+    var toLbs = function(grams) {
+        return grams * 0.002205;
+    };
+
+    var toGallons = function(liter) {
+        return liter * 0.264172051242;
+    };
+
     var GeneralInformation = Backbone.Model.extend({
         "defaults": {
             "beer_name": "",
@@ -157,8 +165,6 @@ var ol = {};
             this.options.brew.malts.on("add", this.toggleColor, this);
             this.options.brew.malts.on("remove", this.toggleColor, this);
             this.options.brew.malts.on("change", this.toggleColor, this);
-
-
 
         },
 
@@ -220,16 +226,39 @@ var ol = {};
         },
 
         toggleColor: function() {
+            console.log("toggle!")
             var malts = this.options.brew.malts;
             var volume =  this.options.brew.generalInformation.get("wort_size");
             if(volume !== "" && !isNaN(volume) && malts.length > 0) {
                 if(malts.reduce(function(state, malt) { return malt.validate(); }, true)) {
                     this.calculate_color();
+                    this.calculateOG();
                 } else {
                     this.model.set("computed_color", "");
                     this.$el.find("#computed_color").val("");
                 }
             }
+        },
+
+        calculateOG: function(){
+
+            var malts = this.options.brew.malts;
+            var volume =  this.options.brew.generalInformation.get("wort_size");
+
+            var efficiency = 75;
+
+            var og = malts.reduce(function(sum, malt) {
+                var amount = malt.get("quantity");
+                var ppg = malt.get("max_ppg");
+
+                return sum + ((efficiency/100) * ppg) * (toLbs(amount) / toGallons(volume));
+            }, 0);
+
+            //round and get from nn to 1.0nn
+            og = Math.round((1 + (og/1000)) * 1000) / 1000;
+            this.$el.find("#actual_og").val(og);
+            this.model.set("actual_og", og);
+
         },
 
         //based on Palmer, "how to brew" p. 271, and
@@ -265,7 +294,7 @@ var ol = {};
         },
 
         validate: function() {
-            return _.reduce(["quantity", "color"], function(ok, attr) {
+            return _.reduce(["quantity"], function(ok, attr) {
                 return (this.get(attr) !== "" && !isNaN(this.get(attr)));
             }, true, this);
         }
