@@ -230,21 +230,24 @@ var ol = {};
             var malts = this.options.brew.malts;
             var volume =  this.options.brew.generalInformation.get("wort_size");
             if(volume !== "" && !isNaN(volume) && malts.length > 0) {
-                if(malts.reduce(function(state, malt) { return malt.validate(); }, true)) {
+                if(malts.reduce(function(state, malt) { return malt.validate(["quantity", "color"]); }, true)) {
                     this.calculate_color();
-                    this.calculateOG();
                 } else {
                     this.model.set("computed_color", "");
                     this.$el.find("#computed_color").val("");
+                }
+                if(malts.reduce(function(state, malt) { return malt.validate(["quantity", "max_ppg"]); }, true)) {
+                    this.calculateOG();
+                } else {
+                    this.$el.find("#actual_og").val("");
+                    this.model.set("actual_og", "");
                 }
             }
         },
 
         calculateOG: function(){
-
             var malts = this.options.brew.malts;
             var volume =  this.options.brew.generalInformation.get("wort_size");
-
             var efficiency = 75;
 
             var og = malts.reduce(function(sum, malt) {
@@ -293,8 +296,8 @@ var ol = {};
             "color": ""
         },
 
-        validate: function() {
-            return _.reduce(["quantity"], function(ok, attr) {
+        validate: function(attrs) {
+            return _.reduce(attrs, function(ok, attr) {
                 return (this.get(attr) !== "" && !isNaN(this.get(attr)));
             }, true, this);
         }
