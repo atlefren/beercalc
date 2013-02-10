@@ -42,6 +42,15 @@
     <td><%=name %></td>
     <td><%=color %></td>
     <td><%=ppg %></td>
-    <td></td>
+    <td style="text-align:right;">
+        <button id="edit" class="btn btn-small" title="Edit"><i class="icon-edit"></button></i>
+        <button id="delete" class="btn btn-small" title="Delete"><i class="icon-remove-sign"></i></button>
+    </td>
 </script>
+        <script type="text/template" id="edit_row_template">
+            <% _.each(fields, function(field){ %>
+            <td><input id="<%= field.name %>" type="text" value="<%= field.value %>"></td>
+            <% }); %>
+            <td style="text-align: right;"><button type="button" class="btn btn-primary btn-small" id="save">Save</button></td>
+        </script>
 {% endblock %}

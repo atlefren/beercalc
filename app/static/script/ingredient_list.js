@@ -79,14 +79,11 @@ var ol = ol || {};
         },
 
         render: function() {
-
-            var data = _.map(this.options.form, function(el) {
-                return "<td><input type='text' id='" + el +"'></td>"
+            var fields = _.map(this.options.form, function(el) {
+                return {"name": el, value:""};
             }, this);
 
-            var data = data.join("") + "<td><button type='button' class='btn btn-primary' id='save'>Save</button></td>";
-
-            this.$el.append($(data));
+            this.$el.append(_.template($("#edit_row_template").html(), {"fields": fields}));
             return this;
         },
 
