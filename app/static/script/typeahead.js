@@ -95,7 +95,7 @@
                 return this.shown ? this.hide() : this
             }
 
-            items = $.isFunction(this.source) ? this.source(this.query, $.proxy(this.process, this)) : this.source
+            items = $.isFunction(this.source) ? this.source(this.query, $.proxy(this.process, this), this.options.model) : this.source
 
             return items ? this.process(items) : this
         }

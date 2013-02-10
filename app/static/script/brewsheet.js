@@ -15,49 +15,16 @@ var ol = {};
         return fG(G) * fT(T);
     };
 
-    //TODO: Add more here
-    var maltSearch = function(query, callback) {
-
+    var apiSearch = function(query, callback, model) {
         var params = {"filters": [{"name": "name", "op": "like", "val": "%" + query + "%"}]};
-
-        $.get("/api/malt?q=" + JSON.stringify(params), function(res) {
+        $.get("/api/" + model + "?q=" + JSON.stringify(params), function(res) {
 
             if(res.objects){
                 callback(res.objects);
             } else {
                 callback([]);
             }
-
         });
-
-    };
-
-
-    //todo: update with data from http://www.brewersfriend.com/2010/02/27/hops-alpha-acid-table-2009/
-    var hopSearch = function(query, callback) {
-        var res = [
-            {"id": 1, "name": "British Columbia Goldings", "alpha_acid": 5},
-            {"id": 2, "name": "Cascade", "alpha_acid": 5.5},
-            {"id": 3, "name": "Crystal", "alpha_acid": 3.5},
-            {"id": 4, "name": "East Kent Goldings", "alpha_acid": 5},
-            {"id": 5, "name": "Fuggles", "alpha_acid": 4},
-            {"id": 6, "name": "Glacier", "alpha_acid": 5.5},
-            {"id": 7, "name": "Hallertauer Hersbrucker", "alpha_acid": 3.5},
-            {"id": 8, "name": "Hallertauer Mittelfrüh", "alpha_acid": 4},
-            {"id": 9, "name": "Liberty", "alpha_acid": 4},
-            {"id": 10, "name": "Mt. Hood", "alpha_acid": 6},
-            {"id": 11, "name": "Progress", "alpha_acid": 5.5},
-            {"id": 12, "name": "Saaz", "alpha_acid": 3.5},
-            {"id": 13, "name": "Spalt", "alpha_acid": 4.5},
-            {"id": 14, "name": "Styrian Goldings", "alpha_acid": 6},
-            {"id": 15, "name": "Tettnang", "alpha_acid": 4.5},
-            {"id": 16, "name": "Willamette", "alpha_acid": 5},
-            {"id": 17, "name": "Whitbread Goldings Variety", "alpha_acid": 4.5},
-            {"id": 18, "name": "Challenger", "alpha_acid": 8.5},
-            {"id": 19, "name": "Summit", "alpha_acid": 18.5},
-            {"id": 20, "name": "Centennial", "alpha_acid": 7.8}
-        ];
-        callback(res);
     };
 
     var ToggleView = Backbone.View.extend({
@@ -364,7 +331,7 @@ var ol = {};
 
         render: function() {
             this.$el.html(_.template($("#malt_table_row_template").html(), this.model.toJSON()));
-            this.$el.find("#name").typeahead({source: maltSearch, selectCallback: this.setMalt});
+            this.$el.find("#name").typeahead({source: apiSearch, selectCallback: this.setMalt, model: "malt"});
             DynamicTableView.prototype.render.apply(this, arguments);
             return this;
         },
@@ -531,7 +498,7 @@ var ol = {};
         render: function() {
             this.$el.html(_.template($("#hop_table_row_template").html(), this.model.toJSON()));
 
-            this.$el.find("#name").typeahead({source: hopSearch, selectCallback: this.setHop});
+            this.$el.find("#name").typeahead({source: apiSearch, selectCallback: this.setHop, model : "hop"});
 
             DynamicTableView.prototype.render.apply(this, arguments);
             return this;
