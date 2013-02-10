@@ -612,9 +612,9 @@ var ol = {};
 
     var Fermentation  = Backbone.Model.extend({
         "defaults": {
-            "yeast_name": "",
+            "name": "",
             "yeast_type": "none",
-            "yeast_attenuation": "",
+            "attenuation": "",
             "primary_fermentation_days": "",
             "primary_fermentation_temp": "",
             "secondary_fermentation_days": "",
@@ -626,14 +626,22 @@ var ol = {};
 
     ns.FermentationView = DynamicTableView.extend({
 
-        listenOn: ["yeast_name", "yeast_attenuation", "primary_fermentation_days", "primary_fermentation_temp", "secondary_fermentation_days", "secondary_fermentation_temp", "storage_days", "storage_temp"],
+        listenOn: ["name", "attenuation", "primary_fermentation_days", "primary_fermentation_temp", "secondary_fermentation_days", "secondary_fermentation_temp", "storage_days", "storage_temp"],
 
         events: {
             "change #yeast_type": "changeYeastType"
         },
 
+        initialize: function() {
+            DynamicTableView.prototype.initialize.apply(this, arguments);
+            _.bindAll(this, "setYeast");
+        },
+
         render: function() {
             this.$el.find("#fermentation").html(_.template($("#fermentation_form_template").html(), this.model.toJSON()));
+
+            this.$el.find("#name").typeahead({source: apiSearch, selectCallback: this.setYeast, model: "yeast"});
+
             DynamicTableView.prototype.render.apply(this, arguments);
             return this;
         },
@@ -641,6 +649,12 @@ var ol = {};
         changeYeastType: function() {
            var yeast_type = this.$el.find("#yeast_type").val();
            this.model.set({"yeast_type": yeast_type});
+        },
+
+        setYeast: function(data) {
+            _.each(_.omit(data, "id"), function(value, key) {
+                this.$el.find("#" + key).val(value).change();
+            }, this);
         }
     });
 

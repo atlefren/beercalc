@@ -274,11 +274,11 @@
 
     <script type="text/template" id="fermentation_form_template">
         <div>
-            <label for="yeast_name">Yeast Name
-                <input type="text" id="yeast_name" class="input-xlarge" value="<%= yeast_name %>">
+            <label for="name">Yeast Name
+                <input type="text" id="name" class="input-xlarge" value="<%= name %>">
             </label>
-            <label for="yeast_attenuation">Attenuation
-                <input type="text" id="yeast_attenuation" class="input-mini" value="<%= yeast_attenuation %>">%
+            <label for="attenuation">Attenuation
+                <input type="text" id="attenuation" class="input-mini" value="<%= attenuation %>">%
             </label>
             &nbsp;
             <label for="yeast_type">Yeast Type
@@ -590,7 +590,7 @@ Sluttvolum:   <%= ol.templateFunc.rpad(ol.templateFunc.orNa(generalInformation.b
 Total koketid vørter: <%= ol.templateFunc.rpad(ol.templateFunc.orNa(boil.boil_time), 3) %> min
 
 [b]Gjær[/b]
-Betegnelsen på gjæren:   <%= ol.templateFunc.rpad(ol.templateFunc.orNa(fermentation.yeast_name), 3) %>            <%= ol.templateFunc.mapYeast(fermentation.yeast_type) %>
+Betegnelsen på gjæren:   <%= ol.templateFunc.rpad(ol.templateFunc.orNa(fermentation.name), 3) %>            <%= ol.templateFunc.mapYeast(fermentation.yeast_type) %>
 
 [b]Gjæringstemperatur og -tid[/b]
 Gjæring/primærgjæring    <%= ol.templateFunc.rpad(ol.templateFunc.orNa(fermentation.primary_fermentation_days), 3) %> dager ved <%= ol.templateFunc.rpad(ol.templateFunc.orNa(fermentation.primary_fermentation_temp), 3) %> gr C
