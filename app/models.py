@@ -56,6 +56,15 @@ class Hop(db.Model):
     def __repr__(self):
         return '<Hop %r>' % (self.name)
 
+    @property
+    def serialize(self):
+        """Return object data in easily serializeable format"""
+        return {
+            'id'         : self.id,
+            'name': self.name,
+            'alpha_acid': self.alpha_acid,
+        }
+
 class Yeast(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(140))

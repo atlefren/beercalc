@@ -203,4 +203,35 @@ var ol = ol || {};
             IngredientList.prototype.initialize.apply(this, arguments);
         }
     });
+
+    var Hop = Backbone.Model.extend({
+        toJSON: function (){
+            var data = {
+                "id": this.get("id"),
+                "name": this.get("name")
+            };
+            if(this.has("alpha_acid") && this.get("alpha_acid") !== "") {
+                data.alpha_acid = this.get("alpha_acid");
+            }
+            return data;
+        }
+    });
+
+    var Hops = Backbone.Collection.extend({
+
+        model: Hop,
+
+        url: "/api/hop"
+
+    });
+
+    ns.HopList = IngredientList.extend({
+
+        attributes: ["name", "alpha_acid"],
+
+        initialize: function() {
+            this.collection = new Hops();
+            IngredientList.prototype.initialize.apply(this, arguments);
+        }
+    });
 }(ol));

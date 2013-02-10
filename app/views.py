@@ -1,7 +1,7 @@
 from flask import render_template, flash, redirect, session, url_for, request, g
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from app import app, db, lm, oid
-from models import User, Malt, ROLE_USER, ROLE_ADMIN
+from models import User, Malt, Hop, ROLE_USER, ROLE_ADMIN
 import simplejson
 
 @lm.user_loader
@@ -26,7 +26,8 @@ def malt_view():
 
 @app.route('/ingredients/hops/')
 def hops():
-    return render_template('hop_list.html')
+    hops = simplejson.dumps([malt.serialize for malt in Hop.query.order_by(Hop.name)])
+    return render_template('hop_list.html', hops=hops)
 
 @app.route('/ingredients/yeast/')
 def yeast():

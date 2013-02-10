@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block js %}
+{{ super() }}
+<script type="text/javascript" src="{{ url_for('static', filename='script/ingredient_list.js') }}"></script>
+{% endblock %}
+
+{% set active_page = "ingredients" %}
+
+{% block templates %}
+<script type="text/template" id="ingredient_row_template">
+    <% _.each(fields, function(field){ %>
+    <td><%= field.value %></td>
+    <% }); %>
+    <td style="text-align:right;">
+        <button id="edit" class="btn btn-small" title="Edit"><i class="icon-edit"></button></i>
+        <button id="delete" class="btn btn-small" title="Delete"><i class="icon-remove-sign"></i></button>
+    </td>
+</script>
+<script type="text/template" id="edit_row_template">
+    <% _.each(fields, function(field){ %>
+    <td><div class="control-group"><input id="<%= field.name %>" type="text" value="<%= field.value %>"></div></td>
+    <% }); %>
+    <td style="text-align: right;"><button type="button" class="btn btn-primary btn-small" id="save">Save</button></td>
+</script>
+{% endblock %}
