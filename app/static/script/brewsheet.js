@@ -18,15 +18,18 @@ var ol = {};
     //TODO: Add more here
     var maltSearch = function(query, callback) {
 
-        $.get("/ingredients/malts/?q=" + query, callback);
-        /*
-        var res = [
-                {"id": 1, "name": "Marris Otter", "max_ppg": 38, "color": 8},
-                {"id": 2, "name": "Crystal Rye", "max_ppg": 29, "color": 150},
-                {"id": 3, "name": "Pale Chocolate", "max_ppg": 28, "color": 423}
-            ];
-        callback(res);
-        */
+        var params = {"filters": [{"name": "name", "op": "like", "val": "%" + query + "%"}]};
+
+        $.get("/api/malt?q=" + JSON.stringify(params), function(res) {
+
+            if(res.objects){
+                callback(res.objects);
+            } else {
+                callback([]);
+            }
+
+        });
+
     };
 
 
@@ -236,7 +239,7 @@ var ol = {};
                     this.model.set("computed_color", "");
                     this.$el.find("#computed_color").val("");
                 }
-                if(malts.reduce(function(state, malt) { return malt.validate(["quantity", "max_ppg"]); }, true)) {
+                if(malts.reduce(function(state, malt) { return malt.validate(["quantity", "ppg"]); }, true)) {
                     this.calculateOG();
                 } else {
                     this.$el.find("#actual_og").val("");
@@ -252,7 +255,7 @@ var ol = {};
 
             var og = malts.reduce(function(sum, malt) {
                 var amount = malt.get("quantity");
-                var ppg = malt.get("max_ppg");
+                var ppg = malt.get("ppg");
 
                 return sum + ((efficiency/100) * ppg) * (toLbs(amount) / toGallons(volume));
             }, 0);
@@ -292,7 +295,7 @@ var ol = {};
             "quantity": "",
             "percentage": "",
             "name": "",
-            "max_ppg": "",
+            "ppg": "",
             "color": ""
         },
 
@@ -352,7 +355,7 @@ var ol = {};
 
         tagName: "tr",
 
-        listenOn: ["quantity", "name", "max_ppg", "color"],
+        listenOn: ["quantity", "name", "ppg", "color"],
 
         initialize: function() {
             DynamicTableView.prototype.initialize.apply(this, arguments);
