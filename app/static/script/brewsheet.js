@@ -468,7 +468,7 @@ var ol = {};
         "defaults": {
             "quantity": "",
             "name": "",
-            "form": "none",
+            "form": "cones",
             "alpha_acid": "",
             "boil_time": ""
         },
