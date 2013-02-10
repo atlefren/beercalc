@@ -12,7 +12,7 @@ var ol = ol || {};
         },
 
         initialize: function() {
-            _.bindAll(this, "edit", "save", "saved", "delete");
+            _.bindAll(this, "edit", "save", "saved", "saveError", "delete");
             this.model.on("destroy", this.remove, this);
         },
 
@@ -35,6 +35,10 @@ var ol = ol || {};
         },
 
         save: function() {
+
+            this.$el.find(".control-group").removeClass("error");
+            this.$el.find(".help-inline").remove();
+
             var values = _.reduce(this.options.attr, function(res, el) {
                 res[el] = this.$el.find("#" + el).val();
                 return res;
@@ -51,11 +55,15 @@ var ol = ol || {};
         },
 
         saveError: function(model, xhr, options) {
-            console.log(model, xhr, options);
+            var errors = JSON.parse(xhr.responseText);
+            _.each(errors.message, function(error) {
+                var parent = this.$el.find("#" + error.field).parent();
+                parent.append($("<span class='help-inline'>" + error.message +  "</span>"));
+                parent.addClass("error");
+            }, this);
         },
 
         delete: function() {
-            console.log("delete!");
             this.model.destroy();
         }
     });
@@ -64,7 +72,8 @@ var ol = ol || {};
 
         initialize: function() {
             this.collection.on("reset", this.addAll, this);
-            this.collection.on("change", this.addOne, this);
+            this.collection.on("add", this.addOne, this);
+          //  this.collection.on("change", this.addOne, this);
         },
 
         addAll: function() {
@@ -72,9 +81,9 @@ var ol = ol || {};
         },
 
         addOne: function(model) {
-            if(!model.isNew()) {
+            //if(!model.isNew()) {
                 this.$el.append(new IngredientRow({model: model, "attr": this.options.attributes}).render().$el);
-            }
+            //}
         }
     });
 
@@ -100,13 +109,25 @@ var ol = ol || {};
         },
 
         save: function(){
+
+            this.$el.find(".control-group").removeClass("error");
+            this.$el.find(".help-inline").remove();
+
             var values = _.reduce(this.options.form, function(res, el) {
                 res[el] = this.$el.find("#" + el).val();
                 return res;
             }, {}, this);
             this.options.callback(values);
-        }
+        },
 
+        displayError: function(xhr) {
+            var errors = JSON.parse(xhr.responseText);
+            _.each(errors.message, function(error) {
+                var parent = this.$el.find("#" + error.field).parent();
+                parent.append($("<span class='help-inline'>" + error.message +  "</span>"));
+                parent.addClass("error");
+            }, this);
+        }
     });
 
     var IngredientList = Backbone.View.extend({
@@ -134,16 +155,17 @@ var ol = ol || {};
 
         added: function(values) {
             var model = new this.collection.model();
-            this.collection.add(model);
+            model.urlRoot = this.collection.url;
             model.save(values, {"wait": true, "success": this.saved, "error": this.saveError});
         },
 
-        saved: function() {
+        saved: function(model) {
             this.adder.$el.remove();
+            this.collection.add(model);
         },
 
         saveError: function(model, xhr, options) {
-            console.log(model, xhr, options);
+           this.adder.displayError(xhr);
         }
     });
 
