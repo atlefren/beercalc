@@ -7,11 +7,13 @@ var ol = ol || {};
 
         events: {
             "click #edit": "edit",
-            "click #save": "save"
+            "click #save": "save",
+            "click #delete": "delete"
         },
 
         initialize: function() {
-            _.bindAll(this, "edit", "save", "saved");
+            _.bindAll(this, "edit", "save", "saved", "delete");
+            this.model.on("destroy", this.remove, this);
         },
 
         render: function() {
@@ -50,6 +52,11 @@ var ol = ol || {};
 
         saveError: function(model, xhr, options) {
             console.log(model, xhr, options);
+        },
+
+        delete: function() {
+            console.log("delete!");
+            this.model.destroy();
         }
     });
 

@@ -34,7 +34,7 @@ def post_preprocessor(data):
 # Create API endpoints, which will be available at /api/<tablename> by
 # default. Allowed HTTP methods can be specified as well.
 manager.create_api(Malt,
-                    methods=['GET', 'POST', 'PUT'],
+                    methods=['GET', 'POST', 'PUT', "DELETE"],
                     preprocessors={
                         'POST': [post_preprocessor]
                     },
