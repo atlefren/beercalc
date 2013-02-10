@@ -5,13 +5,51 @@ var ol = ol || {};
 
         tagName: "tr",
 
+        events: {
+            "click #edit": "edit",
+            "click #save": "save"
+        },
+
+        initialize: function() {
+            _.bindAll(this, "edit", "save", "saved");
+        },
+
         render: function() {
             var fields = _.map(this.options.attr, function(attribute){
                 return {"value": this.model.get(attribute)}
             }, this);
-
+            this.$el.html("");
             this.$el.append(_.template($("#ingredient_row_template").html(), {"fields": fields}));
             return this;
+        },
+
+        edit: function() {
+            var fields = _.map(this.options.attr, function(attribute) {
+                return {"name": attribute, value: this.model.get(attribute)};
+            }, this);
+
+            this.$el.html("");
+            this.$el.append(_.template($("#edit_row_template").html(), {"fields": fields}));
+        },
+
+        save: function() {
+            var values = _.reduce(this.options.attr, function(res, el) {
+                res[el] = this.$el.find("#" + el).val();
+                return res;
+            }, {}, this);
+            this.saveChanges(values);
+        },
+
+        saveChanges: function(values) {
+            this.model.save(values, {"wait": true, "success": this.saved, "error": this.saveError});
+        },
+
+        saved: function() {
+            this.render();
+        },
+
+        saveError: function(model, xhr, options) {
+            console.log(model, xhr, options);
         }
     });
 
@@ -132,7 +170,6 @@ var ol = ol || {};
         attributes: ["name", "color", "ppg"],
 
         initialize: function() {
-
             this.collection = new Malts();
             IngredientList.prototype.initialize.apply(this, arguments);
         }
