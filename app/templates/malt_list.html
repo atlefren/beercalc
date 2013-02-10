@@ -38,10 +38,10 @@
 
 
 {% block templates %}
-<script type="text/template" id="malt_row">
-    <td><%=name %></td>
-    <td><%=color %></td>
-    <td><%=ppg %></td>
+<script type="text/template" id="ingredient_row_template">
+    <% _.each(fields, function(field){ %>
+    <td><%= field.value %></td>
+    <% }); %>
     <td style="text-align:right;">
         <button id="edit" class="btn btn-small" title="Edit"><i class="icon-edit"></button></i>
         <button id="delete" class="btn btn-small" title="Delete"><i class="icon-remove-sign"></i></button>

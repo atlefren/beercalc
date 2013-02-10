@@ -1,57 +1,24 @@
 var ol = ol || {};
 (function(ns) {
 
-
-    var Malt = Backbone.Model.extend({
-
-        toJSON: function (){
-            var data = {
-                "id": this.get("id"),
-                "name": this.get("name")
-            };
-            if(this.has("ppg") && this.get("ppg") !== "") {
-                data.ppg = this.get("ppg");
-            }
-            if(this.has("color") && this.get("color") !== "") {
-                data.color = this.get("color");
-            }
-            return data;
-        },
-
-        toTemplate: function (){
-
-            return {
-                "id": this.get("id"),
-                "name": this.get("name"),
-                "color": this.get("color"),
-                "ppg": this.get("ppg")
-            }
-        }
-    });
-
-    var Malts = Backbone.Collection.extend({
-
-        model: Malt,
-
-        url: "/api/malt"
-
-    });
-
-    var MaltRow = Backbone.View.extend({
+    var IngredientRow = Backbone.View.extend({
 
         tagName: "tr",
 
         render: function() {
-            this.$el.append(_.template($("#malt_row").html(), this.model.toTemplate()));
+            var fields = _.map(this.options.attr, function(attribute){
+                return {"value": this.model.get(attribute)}
+            }, this);
+
+            this.$el.append(_.template($("#ingredient_row_template").html(), {"fields": fields}));
             return this;
         }
     });
 
-    var MaltTable = Backbone.View.extend({
+    var IngredientTable = Backbone.View.extend({
 
         initialize: function() {
             this.collection.on("reset", this.addAll, this);
-            //this.collection.on("add", this.addOne, this);
             this.collection.on("change", this.addOne, this);
         },
 
@@ -61,7 +28,7 @@ var ol = ol || {};
 
         addOne: function(model) {
             if(!model.isNew()) {
-                this.$el.append(new MaltRow({model: model}).render().$el);
+                this.$el.append(new IngredientRow({model: model, "attr": this.options.attributes}).render().$el);
             }
         }
     });
@@ -97,16 +64,17 @@ var ol = ol || {};
 
     });
 
-    ns.MaltList = Backbone.View.extend({
+    var IngredientList = Backbone.View.extend({
 
         events: {
             "click #add": "add"
         },
 
+        attributes: ["name", "color", "ppg"],
+
         initialize: function() {
             _.bindAll(this, "add", "added", "saved", "saveError");
-            this.collection = new Malts();
-            new MaltTable({"el": this.$el.find("tbody"), collection: this.collection})
+            new IngredientTable({"el": this.$el.find("tbody"), collection: this.collection, attributes: this.attributes})
         },
 
         setData: function(data) {
@@ -115,8 +83,7 @@ var ol = ol || {};
         },
 
         add: function() {
-            var form = ["name", "color", "ppg"];
-            this.adder = new Adder({"form": form, "callback": this.added}).render();
+            this.adder = new Adder({"form": this.attributes, "callback": this.added}).render();
             this.$el.find("tbody").append(this.adder.$el);
         },
 
@@ -132,6 +99,42 @@ var ol = ol || {};
 
         saveError: function(model, xhr, options) {
             console.log(model, xhr, options);
+        }
+    });
+
+    var Malt = Backbone.Model.extend({
+
+        toJSON: function (){
+            var data = {
+                "id": this.get("id"),
+                "name": this.get("name")
+            };
+            if(this.has("ppg") && this.get("ppg") !== "") {
+                data.ppg = this.get("ppg");
+            }
+            if(this.has("color") && this.get("color") !== "") {
+                data.color = this.get("color");
+            }
+            return data;
+        }
+    });
+
+    var Malts = Backbone.Collection.extend({
+
+        model: Malt,
+
+        url: "/api/malt"
+
+    });
+
+    ns.MaltList = IngredientList.extend({
+
+        attributes: ["name", "color", "ppg"],
+
+        initialize: function() {
+
+            this.collection = new Malts();
+            IngredientList.prototype.initialize.apply(this, arguments);
         }
     });
 }(ol));
