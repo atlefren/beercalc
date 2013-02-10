@@ -7,30 +7,35 @@ manager = flask.ext.restless.APIManager(app, flask_sqlalchemy_db=db)
 
 #TODO simplyfy this...
 
+def verify_is_number(dict, value, errors):
+    print "verify ", value
+    if value in dict:
+        if dict[value] == "":
+            dict[value] = None
+        else:
+            try:
+                float(dict[value])
+            except Exception:
+                errors.append({"field": value, "message": "Must be number"})
+
+def verify_is_set(dict, value, errors):
+    if not dict[value] or dict[value] == "":
+        errors.append({"field": value, "message": "Must be set"})
+
 def malt_put_preprocessor(instid, data):
     malt_verify(data)
-    return data
+    return
 
 def malt_post_preprocessor(data):
     malt_verify(data)
     return data
 
+
 def malt_verify(data):
     errors = []
-    if not data["name"] or data["name"] == "":
-        errors.append({"field": "name", "message": "Must be set"})
-
-    if "ppg" in data:
-        try:
-            float(data["ppg"])
-        except Exception:
-            errors.append({"field": "ppg", "message": "Must be number"})
-
-    if "color" in data:
-        try:
-            float(data["color"])
-        except Exception:
-            errors.append({"field": "color", "message": "Must be number"})
+    verify_is_set(data, "name", errors)
+    verify_is_number(data, "ppg", errors)
+    verify_is_number(data, "color", errors)
 
     if errors:
         raise ProcessingException(message=errors,
@@ -54,17 +59,10 @@ def hop_post_preprocessor(data):
     hop_verify(data)
     return data
 
-def malt_verify(data):
+def hop_verify(data):
     errors = []
-    if not data["name"] or data["name"] == "":
-        errors.append({"field": "name", "message": "Must be set"})
-
-    if "alpha_acid" in data:
-        try:
-            float(data["alpha_acid"])
-        except Exception:
-            errors.append({"field": "alpha_acid", "message": "Must be number"})
-
+    verify_is_set(data, "name", errors)
+    verify_is_number(data, "alpha_acid", errors)
     if errors:
         raise ProcessingException(message=errors,
             status_code=400)
@@ -74,8 +72,8 @@ def malt_verify(data):
 manager.create_api(Hop,
     methods=['GET', 'POST', 'PUT', "DELETE"],
     preprocessors={
-        'PATCH_SINGLE': [malt_put_preprocessor],
-        'POST': [malt_post_preprocessor],
+        'PATCH_SINGLE': [hop_put_preprocessor],
+        'POST': [hop_post_preprocessor],
         },
 )
 
@@ -89,14 +87,8 @@ def yeast_post_preprocessor(data):
 
 def yeast_verify(data):
     errors = []
-    if not data["name"] or data["name"] == "":
-        errors.append({"field": "name", "message": "Must be set"})
-
-    if "attenuation" in data:
-        try:
-            float(data["attenuation"])
-        except Exception:
-            errors.append({"field": "attenuation", "message": "Must be number"})
+    verify_is_set(data, "name", errors)
+    verify_is_number(data, "attenuation", errors)
 
     if errors:
         raise ProcessingException(message=errors,

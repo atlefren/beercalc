@@ -172,71 +172,36 @@ var ol = ol || {};
 
     var Malt = Backbone.Model.extend({
 
-        toJSON: function (){
-            var data = {
-                "id": this.get("id"),
-                "name": this.get("name")
-            };
-            if(this.has("ppg") && this.get("ppg") !== "") {
-                data.ppg = this.get("ppg");
-            }
-            if(this.has("color") && this.get("color") !== "") {
-                data.color = this.get("color");
-            }
-            return data;
-        }
     });
 
     var Malts = Backbone.Collection.extend({
-
         model: Malt,
-
         url: "/api/malt"
-
     });
 
     ns.MaltList = IngredientList.extend({
+
         attributes: ["name", "color", "ppg"],
+
         collectionType: Malts
     });
 
     var Hop = Backbone.Model.extend({
-        toJSON: function (){
-            var data = {
-                "id": this.get("id"),
-                "name": this.get("name")
-            };
-            if(this.has("alpha_acid") && this.get("alpha_acid") !== "") {
-                data.alpha_acid = this.get("alpha_acid");
-            }
-            return data;
-        }
     });
 
     var Hops = Backbone.Collection.extend({
-
         model: Hop,
-
         url: "/api/hop"
-
     });
 
     ns.HopList = IngredientList.extend({
+
         attributes: ["name", "alpha_acid"],
+
         collectionType: Hops
     });
 
     var Yeast = Backbone.Model.extend({
-        toJSON: function (){
-            var data = {
-                "id": this.get("id"),
-                "name": this.get("name")
-            };
-            if(this.has("attenuation") && this.get("attenuation") !== "") {
-                data.attenuation = this.get("attenuation");
-            }
-            return data;
-        }
     });
 
     var Yeasts = Backbone.Collection.extend({
@@ -248,7 +213,9 @@ var ol = ol || {};
     });
 
     ns.YeastList = IngredientList.extend({
+
         attributes: ["name", "attenuation", "type"],
+
         collectionType: Yeasts
     });
 }(ol));
