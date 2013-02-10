@@ -229,7 +229,6 @@ var ol = {};
         },
 
         toggleColor: function() {
-            console.log("toggle!")
             var malts = this.options.brew.malts;
             var volume =  this.options.brew.generalInformation.get("wort_size");
             if(volume !== "" && !isNaN(volume) && malts.length > 0) {
