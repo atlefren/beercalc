@@ -642,6 +642,7 @@ var ol = {};
         "defaults": {
             "yeast_name": "",
             "yeast_type": "none",
+            "yeast_attenuation": "",
             "primary_fermentation_days": "",
             "primary_fermentation_temp": "",
             "secondary_fermentation_days": "",
@@ -653,8 +654,7 @@ var ol = {};
 
     ns.FermentationView = DynamicTableView.extend({
 
-        listenOn: ["yeast_name", "primary_fermentation_days", "primary_fermentation_temp", "secondary_fermentation_days", "secondary_fermentation_temp", "storage_days", "storage_temp"],
-
+        listenOn: ["yeast_name", "yeast_attenuation", "primary_fermentation_days", "primary_fermentation_temp", "secondary_fermentation_days", "secondary_fermentation_temp", "storage_days", "storage_temp"],
 
         events: {
             "change #yeast_type": "changeYeastType"
