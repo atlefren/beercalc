@@ -42,7 +42,7 @@ class Malt(db.Model):
     def serialize(self):
         """Return object data in easily serializeable format"""
         return {
-            'id'         : self.id,
+            'id': self.id,
             'name': self.name,
             'color': self.color,
             'ppg': self.ppg
@@ -69,9 +69,17 @@ class Yeast(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(140))
     attenuation = db.Column(db.Integer)
-    type = db.Column(db.String(50))
+    type = db.Column(db.String(20))
 
     def __repr__(self):
         return '<Yeast %r>' % (self.name)
 
-
+    @property
+    def serialize(self):
+        """Return object data in easily serializeable format"""
+        return {
+            'id'         : self.id,
+            'name': self.name,
+            'attenuation': self.attenuation,
+            'type': self.type,
+        }

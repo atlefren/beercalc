@@ -1,5 +1,5 @@
 from app import app, db
-from app.models import Malt, Hop
+from app.models import Malt, Hop, Yeast
 import flask.ext.restless
 from flask.ext.restless import ProcessingException
 
@@ -76,5 +76,38 @@ manager.create_api(Hop,
     preprocessors={
         'PATCH_SINGLE': [malt_put_preprocessor],
         'POST': [malt_post_preprocessor],
+        },
+)
+
+def yeast_put_preprocessor(instid, data):
+    yeast_verify(data)
+    return data
+
+def yeast_post_preprocessor(data):
+    yeast_verify(data)
+    return data
+
+def yeast_verify(data):
+    errors = []
+    if not data["name"] or data["name"] == "":
+        errors.append({"field": "name", "message": "Must be set"})
+
+    if "attenuation" in data:
+        try:
+            float(data["attenuation"])
+        except Exception:
+            errors.append({"field": "attenuation", "message": "Must be number"})
+
+    if errors:
+        raise ProcessingException(message=errors,
+            status_code=400)
+
+# Create API endpoints, which will be available at /api/<tablename> by
+# default. Allowed HTTP methods can be specified as well.
+manager.create_api(Yeast,
+    methods=['GET', 'POST', 'PUT', "DELETE"],
+    preprocessors={
+        'PATCH_SINGLE': [yeast_put_preprocessor],
+        'POST': [yeast_post_preprocessor],
         },
 )

@@ -1,9 +1,19 @@
-{% extends "base.html" %}
-{% set active_page = "ingredients" %}
+{% extends "ingredient_list.html" %}
+{% block js %}
+{{ super() }}
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        new ol.YeastList({el: $("#yeasts")}).setData({{yeasts|safe}});
+    });
+</script>
+
+{% endblock %}
+
 {% block body %}
-<section>
-    <h2>Yeast</h2>
-    <table class="table">
+<section id="yeasts">
+    <h2>Yeasts</h2>
+    <table class="table" style="width: 100%;">
         <thead>
         <tr>
             <th>Name</th>
@@ -12,13 +22,6 @@
         </tr>
         </thead>
         <tbody>
-        {% for hop in hops %}
-        <tr>
-            <td>{{ yeast.name }}</td>
-            <td>{{ yeast.attenuation }}</td>
-            <td>{{ yeast.type }}</td>
-        </tr>
-        {% endfor %}
         </tbody>
     </table>
     {% if g.user.is_authenticated() %}

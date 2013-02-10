@@ -140,6 +140,7 @@ var ol = ol || {};
 
         initialize: function() {
             _.bindAll(this, "add", "added", "saved", "saveError");
+            this.collection = new this.collectionType();
             new IngredientTable({"el": this.$el.find("tbody"), collection: this.collection, attributes: this.attributes})
         },
 
@@ -195,13 +196,8 @@ var ol = ol || {};
     });
 
     ns.MaltList = IngredientList.extend({
-
         attributes: ["name", "color", "ppg"],
-
-        initialize: function() {
-            this.collection = new Malts();
-            IngredientList.prototype.initialize.apply(this, arguments);
-        }
+        collectionType: Malts
     });
 
     var Hop = Backbone.Model.extend({
@@ -226,12 +222,33 @@ var ol = ol || {};
     });
 
     ns.HopList = IngredientList.extend({
-
         attributes: ["name", "alpha_acid"],
+        collectionType: Hops
+    });
 
-        initialize: function() {
-            this.collection = new Hops();
-            IngredientList.prototype.initialize.apply(this, arguments);
+    var Yeast = Backbone.Model.extend({
+        toJSON: function (){
+            var data = {
+                "id": this.get("id"),
+                "name": this.get("name")
+            };
+            if(this.has("attenuation") && this.get("attenuation") !== "") {
+                data.attenuation = this.get("attenuation");
+            }
+            return data;
         }
+    });
+
+    var Yeasts = Backbone.Collection.extend({
+
+        model: Yeast,
+
+        url: "/api/yeast"
+
+    });
+
+    ns.YeastList = IngredientList.extend({
+        attributes: ["name", "attenuation", "type"],
+        collectionType: Yeasts
     });
 }(ol));
