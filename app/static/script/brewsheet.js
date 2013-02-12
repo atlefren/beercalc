@@ -823,7 +823,6 @@ var ol = {};
         listenOn: ["name", "attenuation", "yeast_type"],
 
         initialize: function() {
-            console.log("!");
             _.bindAll(this, "setYeast");
             DynamicTableView.prototype.initialize.apply(this, arguments);
         },
@@ -911,7 +910,7 @@ var ol = {};
             "beer_name": "",
             "brewer": "",
             "beer_style": "",
-            //"wort_size": "",
+            "wort_size": "",
             "batch_size": "",
             "boil_time": "",
             "brewhouse_efficiency": "75",
@@ -956,6 +955,8 @@ var ol = {};
             }
             _.bindAll(this, "change");
 
+            this.brew.on("change", function(brew) {console.log(brew);}, this);
+
             this.brew.get("malts").on("change", this.maltChange, this);
             this.brew.get("hops").on("change", this.hopChange, this);
             this.brew.on("change:batch_size", this.batchSizeChanged, this);
@@ -977,7 +978,6 @@ var ol = {};
 
                 if(this.brew.get(key) instanceof Backbone.Collection) {
                     if(this.subviews[key]) {
-                        console.log(key);
                         new this.subviews[key]({"el": this.$el.find("#" + key), "collection": this.brew.get(key)}).render();
                     }
                 }

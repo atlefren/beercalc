@@ -2,19 +2,26 @@
     <form class="form-horizontal">
         <fieldset>
             <legend>Water</legend>
-            <div id="water" class="simple_form content">
-                <div class="control-group">
-                    <label class="control-label" for="mashing_water">Mashing Water</label>
-                    <div class="controls">
-                        <input type="text" id="mashing_water"  class="input-mini" value="<%= mashing_water %>">
-                        <span class="help-inline">l</span>
+            <div class="row">
+                <div class="span3">
+                    <label for="mashing_water">Mashing Water</label>
+                    <div class="input-append">
+                        <input id="mashing_water" class="span1" type="text" value="<%= mashing_water %>">
+                        <span class="add-on">l</span>
                     </div>
                 </div>
-                <div class="control-group">
-                    <label class="control-label" for="sparging_water">Sparging Water</label>
-                    <div class="controls">
-                        <input type="text" id="sparging_water" class="input-mini" value="<%= sparging_water %>">
-                        <span class="help-inline">l</span>
+                <div class="span3">
+                    <label for="sparging_water">Sparging Water</label>
+                    <div class="input-append">
+                        <input id="sparging_water" class="span1" type="text" value="<%= sparging_water %>">
+                        <span class="add-on">l</span>
+                    </div>
+                </div>
+                <div class="span3">
+                    <label for="wort_size">Wort Volume</label>
+                    <div class="input-append">
+                        <input id="wort_size" class="span1" type="text" value="<%= wort_size %>">
+                        <span class="add-on">l</span>
                     </div>
                 </div>
             </div>
