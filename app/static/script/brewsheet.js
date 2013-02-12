@@ -586,6 +586,7 @@ var ol = {};
             "batch_size": "",
             "boil_time": "",
             "brewhouse_efficiency": "75",
+            "brew_efficiency": "-",
             "computed_color": "-",
             "computed_ibu": "-",
             "computed_og": "-",
@@ -638,6 +639,7 @@ var ol = {};
             this.brew.on("change:computed_og", this.gravityChanged, this);
 
             this.brew.on("change:actual_og", this.computeActualABV, this);
+            this.brew.on("change:actual_og", this.computeEfficiency, this);
             this.brew.on("change:actual_fg", this.computeActualABV, this);
         },
 
@@ -693,6 +695,7 @@ var ol = {};
                 this.computeGravity();
                 this.computeColor();
                 this.computeBitterness();
+                this.computeEfficiency();
             }
         },
 
@@ -713,6 +716,7 @@ var ol = {};
             if(this.brew.get("malts").length > 0) {
                 this.computeGravity();
                 this.computeColor();
+                this.computeEfficiency();
             }
         },
 
@@ -808,7 +812,6 @@ var ol = {};
 
         computeFG: function() {
             var og = this.brew.get("computed_og");
-
             var yeasts = this.brew.get("yeasts");
 
             var fg = "-";
@@ -854,6 +857,32 @@ var ol = {};
             }
             this.brew.set({"actual_abv": abv});
             this.$el.find("#actual_abv").val(abv);
+        },
+
+        computeEfficiency: function() {
+            var og = this.brew.get("actual_og");
+            var volume =  this.brew.get("batch_size");
+            var malts = this.brew.get("malts");
+
+            var efficiency = "-";
+            if(isNumber(og) && isNumber(volume) && malts.length > 0){
+
+                var max_gravity = malts.reduce(function(sum, malt){
+                    var amount = malt.get("quantity");
+                    var ppg = malt.get("ppg");
+                    if(isNumber(amount) && isNumber(ppg)) {
+                        var addition = ppg * (toLbs(amount) / toGallons(volume));
+                        return sum + addition;
+                    }
+                    return sum;
+                }, 0);
+                efficiency = Math.round(((og - 1)*1000 / max_gravity) * 100)
+            }
+            this.brew.set({"brew_efficiency": efficiency});
+            this.$el.find("#brew_efficiency").val(efficiency);
+
+
+
         },
 
         showJSON: function() {
