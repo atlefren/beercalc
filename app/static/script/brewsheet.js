@@ -268,13 +268,14 @@ var ol = {};
         model: MashTime
     });
 
-    ns.MashTimeView = BaseSectionView.extend({
+    var MashTimeView = ns.MashTimeView = BaseSectionView.extend({
 
         events: {
             "click #add_mash_time": "add"
         },
 
         initialize: function() {
+            console.log("init", this.$el);
             _.bindAll(this, "add");
             BaseSectionView.prototype.initialize.apply(this, arguments);
             this.collection.on("destroy", this.render, this);
@@ -283,7 +284,7 @@ var ol = {};
 
         render: function() {
             BaseSectionView.prototype.render.apply(this, arguments);
-            var table = this.$el.find("#mashing").find("tbody");
+            var table = this.$el.find("#mash_schedule_table").find("tbody");
             table.html("");
             this.collection.each(function(mashTime) {
                 table.append(new MashScheduleRowView({model: mashTime}).render().$el);
@@ -311,15 +312,21 @@ var ol = {};
                 }
                 return res;
             }, {arr: [], "prev": 0}).arr;
-            $.plot(
-                this.$el,
-                [{data: data}],
-                {
-                    xaxis: {min: 0, axisLabel: 'Minutes'},
-                    yaxis: {min: 0, max: 100, axisLabel: '&deg;C'}
-                }
-            );
-            return this;
+
+            if(data.length > 0) {
+                this.$el.show();
+                $.plot(
+                    this.$el,
+                    [{data: data}],
+                    {
+                        xaxis: {min: 0, axisLabel: 'Minutes'},
+                        yaxis: {min: 0, max: 100, axisLabel: '&deg;C'}
+                    }
+                );
+                return this;
+            } else {
+                this.$el.hide();
+            }
         }
 
     });
@@ -928,8 +935,7 @@ var ol = {};
             "comment": "",
             "mashing_water": "",
             "sparging_water": "",
-            //"mash_time": "",
-            //"mash_temperature": "",
+            "mash_schedule": new MashSchedule(),
             "malts": new Malts(),
             "hops": new Hops(),
             "additives": new Additives(),
@@ -966,7 +972,8 @@ var ol = {};
             "malts": MaltSectionView,
             "hops": HopSectionView,
             "additives": AdditiveSectionView,
-            "yeasts": YeastSectionView
+            "yeasts": YeastSectionView,
+            "mash_schedule": MashTimeView
         },
 
         render: function() {

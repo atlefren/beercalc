@@ -2,9 +2,9 @@
     <form>
         <fieldset>
             <legend>Mashing schedule</legend>
-            <div class="row content">
+            <div id="mash_schedule" class="row content">
                 <div class="span4" style="width: 270px;">
-                    <table id="mashing" class="table table-bordered">
+                    <table id="mash_schedule_table" class="table table-bordered">
                         <thead>
                         <tr>
                             <th class="medium-td">Duration (m)</th>
@@ -18,7 +18,7 @@
                     <button type="button" id="add_mash_time" class="btn pull-right">Add time</button>
                 </div>
                 <div class="span5">
-                    <!--<div id="mash_graph" class="graph"></div>-->
+                   <div id="mash_graph" class="graph" style="display: none;"></div>
                 </div>
             </div>
         </fieldset>
