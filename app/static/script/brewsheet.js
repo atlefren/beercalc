@@ -926,8 +926,6 @@ var ol = {};
             "filtered": false,
             "co2": "none",
             "comment": "",
-
-
             "mashing_water": "",
             "sparging_water": "",
             //"mash_time": "",
