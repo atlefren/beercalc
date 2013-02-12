@@ -2,7 +2,7 @@ var ol = {};
 (function(ns) {
 
     //Thinseth equation, Palmer "How to brew" p 58
-    var calculateUtilization = function(G, T) {
+    var computeUtilization = function(G, T) {
 
         var fG = function(g) {
             return 1.65 * Math.pow(0.000125, (g-1));
@@ -14,6 +14,10 @@ var ol = {};
 
         return fG(G) * fT(T);
     };
+
+    var computeABV = function(og, fg) {
+        return (76.08 * (og-fg) / (1.775-og)) * (fg / 0.794)
+    }
 
     var apiSearch = function(query, callback, model) {
         var params = {"filters": [{"name": "name", "op": "like", "val": "%" + query + "%"}]};
@@ -587,6 +591,7 @@ var ol = {};
             "computed_og": "-",
             "actual_og": "",
             "computed_fg": "-",
+            "computed_abv": "-",
             "actual_fg": "",
             "brew_date": "",
             "bottle_date": "",
@@ -627,9 +632,13 @@ var ol = {};
 
             this.brew.get("malts").on("change", this.maltChange, this);
             this.brew.get("hops").on("change", this.hopChange, this);
+            this.brew.get("yeasts").on("change", this.yeastChange, this);
             this.brew.on("change:batch_size", this.batchSizeChanged, this);
             this.brew.on("change:brewhouse_efficiency", this.efficiencyChanged, this);
-            this.brew.on("change:computed_og", this.gravityChanged, this)
+            this.brew.on("change:computed_og", this.gravityChanged, this);
+
+            this.brew.on("change:actual_og", this.computeActualABV, this);
+            this.brew.on("change:actual_fg", this.computeActualABV, this);
         },
 
         subviews: {
@@ -696,6 +705,7 @@ var ol = {};
         gravityChanged: function() {
             if(isNumber(this.brew.get("computed_og"))){
                 this.computeBitterness();
+                this.computeFG();
             }
         },
 
@@ -709,6 +719,12 @@ var ol = {};
         hopChange: function() {
             if(this.brew.get("hops").length > 0) {
                 this.computeBitterness();
+            }
+        },
+
+        yeastChange: function() {
+            if(this.brew.get("yeasts").length > 0) {
+                this.computeFG();
             }
         },
 
@@ -775,7 +791,7 @@ var ol = {};
                     var boil_time = hop.get("boil_time");
                     if(isNumber(quantity) && isNumber(alpha_acid) && isNumber(boil_time)) {
                         var aau = parseFloat(quantity) * parseFloat(alpha_acid);
-                        var utilization = calculateUtilization(og, parseFloat(boil_time));
+                        var utilization = computeUtilization(og, parseFloat(boil_time));
                         var ibu = aau * utilization * (10 / volume );
                         return total_ibu + ibu;
                     }
@@ -788,6 +804,56 @@ var ol = {};
             }
             this.brew.set({"computed_ibu": bitterness});
             this.$el.find("#computed_ibu").text(bitterness);
+        },
+
+        computeFG: function() {
+            var og = this.brew.get("computed_og");
+
+            var yeasts = this.brew.get("yeasts");
+
+            var fg = "-";
+            if(isNumber(og) && yeasts.length > 0) {
+                var avg_attenuation = yeasts.reduce(function(sum, yeast) {
+                    var attenuation = yeast.get("attenuation");
+                    if(isNumber(attenuation)) {
+                        return sum + attenuation;
+                    }
+                    return sum;
+                },0);
+
+                if(avg_attenuation > 0) {
+                    avg_attenuation = avg_attenuation / yeasts.length;
+                    fg = Math.round(((og - 1)-((og - 1) * (avg_attenuation / 100)) + 1) * 1000) / 1000;
+                }
+            }
+            this.brew.set({"computed_fg": fg});
+            this.$el.find("#computed_fg").text(fg);
+            this.computeABV();
+
+        },
+
+        computeABV: function() {
+            var og = this.brew.get("computed_og");
+            var fg = this.brew.get("computed_fg");
+
+            var abv = "-";
+            if(isNumber(og) && isNumber(fg)){
+                abv = Math.round(computeABV(og, fg) * 10) / 10;
+            }
+            this.brew.set({"computed_abv": abv});
+            this.$el.find("#computed_abv").text(abv);
+        },
+
+        computeActualABV: function() {
+            var og = this.brew.get("actual_og");
+            var fg = this.brew.get("actual_fg");
+
+            var abv = "";
+            if(isNumber(og) && isNumber(fg)){
+                abv = Math.round(computeABV(og, fg) * 10) / 10;
+            }
+            this.brew.set({"actual_abv": abv});
+            this.$el.find("#actual_abv").val(abv);
         },
 
         showJSON: function() {
