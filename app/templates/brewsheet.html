@@ -37,27 +37,27 @@
         <script type="text/template" id="brewsheet_template">
             <div class="tab-content">
                 <div class="tab-pane active" id="tab1">
-                    {% include 'general_information.html' %}
-                    {% include 'malts_section.html' %}
-                    {% include 'hops_section.html' %}
-                    {% include 'yeasts_section.html' %}
-                    {% include 'additives_section.html' %}
+                    {% include 'brewsheet_sections/general_information.html' %}
+                    {% include 'brewsheet_sections/malts_section.html' %}
+                    {% include 'brewsheet_sections/hops_section.html' %}
+                    {% include 'brewsheet_sections/yeasts_section.html' %}
+                    {% include 'brewsheet_sections/additives_section.html' %}
                 </div>
                 <div class="tab-pane" id="tab2">
-                    {% include 'water_section.html' %}
-                    {% include 'mashing_section.html' %}
-                    {% include 'fermentation_section.html' %}
+                    {% include 'brewsheet_sections/water_section.html' %}
+                    {% include 'brewsheet_sections/mashing_section.html' %}
+                    {% include 'brewsheet_sections/fermentation_section.html' %}
                 </div>
                 <div class="tab-pane" id="tab3">
-                    {% include 'additional_information.html' %}
+                    {% include 'brewsheet_sections/additional_information.html' %}
                     <section id="save_section">
                         <form class="form-horizontal">
                             <fieldset>
                                 <legend>Save</legend>
                                 <div id="controls">
-                                    <button class="btn" id="show_recipe">Show recipe</button>
-                                    <button class="btn" id="show_json">Show JSON</button>
-                                    <button class="btn" id="save">Save recipe</button>
+                                    <button type="button" class="btn" id="show_recipe">Show recipe</button>
+                                    <button type="button" class="btn" id="show_json">Show JSON</button>
+                                    <button type="button" class="btn" id="save">Save recipe</button>
                                 </div>
                             </fieldset>
                         </form>
@@ -68,86 +68,112 @@
 {% endblock %}
     <!-- TEMPLATES: -->
         {% block templates %}
-<script type="text/template" id="malt_table_row_template">
-    <td>
-        <input id="quantity" type="text" class="input-mini" value="<%= quantity %>">
-    </td>
-    <th>
-        <input id="percentage" type="text" class="input-mini" readonly="readonly" value="<%= percentage %>">
-    </th>
-    <td>
-        <input id="name" type="text" class="input-large" value="<%= name %>">
-    </td>
-    <td>
-        <input id="ppg" type="text" class="input-mini" value="<%= ppg %>">
-    </td>
-    <td>
-        <input id="color" type="text" class="input-mini" value="<%= color %>">
-    </td>
-    <td class="remove"><i class="icon-remove-circle"></i></td>
-</script>
-<script type="text/template" id="hop_table_row_template">
-    <td>
-        <input id="quantity" type="text" class="input-mini" value="<%= quantity %>">
-    </td>
-    <td>
-        <input id="name" type="text" class="input-large" value="<%= name %>">
-    </td>
-    <td>
-        <input id="alpha_acid" type="text" class="input-mini" value="<%= alpha_acid %>">
-    </td>
-    <td>
-        <select id="form" class="small">
-            <option value="none" <% if( form == 'none') { %> selected  <% } %>>--</option>
-            <option value="pellets" <% if( form == 'pellets') { %> selected  <% } %>>Pellets</option>
-            <option value="cones" <% if( form == 'cones') { %> selected  <% } %>>Cones</option>
-        </select>
-    </td>
-    <td>
-        <input id="boil_time" type="text" class="input-medium" value="<%= boil_time %>">
-    </td>
-    <td class="remove"><i class="icon-remove-circle"></i></td>
-</script>
+        <script type="text/template" id="malt_table_row_template">
+            <td>
+                <input id="quantity" type="text" class="input-mini" value="<%= quantity %>">
+            </td>
+            <th>
+                <input id="percentage" type="text" class="input-mini" readonly="readonly" value="<%= percentage %>">
+            </th>
+            <td>
+                <input id="name" type="text" class="input-large" value="<%= name %>">
+            </td>
+            <td>
+                <input id="ppg" type="text" class="input-mini" value="<%= ppg %>">
+            </td>
+            <td>
+                <input id="color" type="text" class="input-mini" value="<%= color %>">
+            </td>
+            <td class="remove"><i class="icon-remove-circle"></i></td>
+        </script>
 
-<script type="text/template" id="additive_table_row_template">
-    <td>
-        <input id="quantity" type="text" class="input-mini" value="<%= quantity %>">
-    </td>
-    <td>
-        <input id="name" type="text" class="input-large" value="<%= name %>">
-    </td>
-    <td>
-        <input id="added_when" type="text" class="input-medium" value="<%= added_when %>"> <!-- todo: make select -->
-    </td>
-    <td>
-        <input id="boil_time" type="text" class="input-medium" value="<%= boil_time %>">
-    </td>
-    <td class="remove"><i class="icon-remove-circle"></i></td>
-</script>
+        <script type="text/template" id="hop_table_row_template">
+            <td>
+                <input id="quantity" type="text" class="input-mini" value="<%= quantity %>">
+            </td>
+            <td>
+                <input id="name" type="text" class="input-large" value="<%= name %>">
+            </td>
+            <td>
+                <input id="alpha_acid" type="text" class="input-mini" value="<%= alpha_acid %>">
+            </td>
+            <td>
+                <select id="form" class="small">
+                    <option value="none" <% if( form == 'none') { %> selected  <% } %>>--</option>
+                    <option value="pellets" <% if( form == 'pellets') { %> selected  <% } %>>Pellets</option>
+                    <option value="cones" <% if( form == 'cones') { %> selected  <% } %>>Cones</option>
+                </select>
+            </td>
+            <td>
+                <input id="boil_time" type="text" class="input-medium" value="<%= boil_time %>">
+            </td>
+            <td class="remove"><i class="icon-remove-circle"></i></td>
+        </script>
 
-<script type="text/template" id="yeast_table_row_template">
-    <td>
-        <input id="name" type="text" class="input-large" value="<%= name %>">
-    </td>
-    <td>
-        <input id="attenuation" type="text" class="input-medium" value="<%= attenuation %>">
-    </td>
-    <td>
-        <input id="type" type="text" class="input-medium" value="<%= type %>"><!-- todo: make select -->
-    </td>
-    <td class="remove"><i class="icon-remove-circle"></i></td>
-</script>
+        <script type="text/template" id="additive_table_row_template">
+            <td>
+                <input id="quantity" type="text" class="input-mini" value="<%= quantity %>">
+            </td>
+            <td>
+                <input id="name" type="text" class="input-large" value="<%= name %>">
+            </td>
+            <td>
+                <input id="added_when" type="text" class="input-medium" value="<%= added_when %>"> <!-- todo: make select -->
+            </td>
+            <td>
+                <input id="boil_time" type="text" class="input-medium" value="<%= boil_time %>">
+            </td>
+            <td class="remove"><i class="icon-remove-circle"></i></td>
+        </script>
 
-    <script type="text/template" id="mash_time_row_template">
+        <script type="text/template" id="yeast_table_row_template">
+            <td>
+                <input id="name" type="text" class="input-large" value="<%= name %>">
+            </td>
+            <td>
+                <input id="attenuation" type="text" class="input-medium" value="<%= attenuation %>">
+            </td>
+            <td>
+                <input id="type" type="text" class="input-medium" value="<%= type %>"><!-- todo: make select -->
+            </td>
+            <td class="remove"><i class="icon-remove-circle"></i></td>
+        </script>
 
-        <td class="medium">
-            <input id="mash_time" type="text" class="input-mini" value="<%= mash_time %>">
-        </td>
-        <td class="medium">
-            <input id="mash_temperature" type="text" class="input-mini" value="<%= mash_temperature %>">
-        </td>
-        <td class="remove"><i class="icon-remove-circle"></i></td>
-    </script>
+        <script type="text/template" id="mash_time_row_template">
+
+            <td class="medium">
+                <input id="mash_time" type="text" class="input-mini" value="<%= mash_time %>">
+            </td>
+            <td class="medium">
+                <input id="mash_temperature" type="text" class="input-mini" value="<%= mash_temperature %>">
+            </td>
+            <td class="remove"><i class="icon-remove-circle"></i></td>
+        </script>
+
+        <script type="text/template" id="fermentation_row_template">
+
+            <td class="medium">
+                <input id="type" type="text" class="input-medium" value="<%= type %>">
+            </td>
+            <td class="medium">
+                <input id="days" type="text" class="input-mini" value="<%= days %>">
+            </td>
+            <td class="mini">
+                days
+            </td>
+            <td class="mini">
+                at
+            </td>
+            <td class="medium">
+                <input id="temperature" type="text" class="input-mini" value="<%= temperature %>">
+            </td>
+            <td class="mini">
+                &deg;C
+            </td>
+            <td class="remove"><i class="icon-remove-circle"></i></td>
+        </script>
+
+
 <script type="text/template" id="ascii_template">
 [tt][size=10pt][b]Generell informasjon[/b]
 Navn på brygget: <%= ol.templateFunc.orNa(generalInformation.beer_name) %>

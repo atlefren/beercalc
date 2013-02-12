@@ -100,163 +100,7 @@ var ol = {};
     var toGallons = function(liter) {
         return liter * 0.264172051242;
     };
-/*
-    var GeneralInformation = Backbone.Model.extend({
-        "defaults": {
-            "beer_name": "",
-            "brewer": "",
-            "beer_style": "",
-            "wort_size": "",
-            "batch_size": "",
-            "computed_color": "",
-            "computed_ibu": "",
-            "actual_og": "",
-            "fg": ""
-        }
-    });
 
-    ns.GeneralInformationView = DynamicTableView.extend({
-
-        listenOn: ["beer_name", "brewer", "beer_style", "wort_size", "batch_size", "computed_color", "computed_ibu", "actual_og", "fg"],
-
-        initialize: function() {
-            DynamicTableView.prototype.initialize.apply(this, arguments);
-
-            this.model.on("change:actual_og", this.toggleABV, this);
-            this.model.on("change:fg", this.toggleABV, this);
-
-            this.model.on("change:actual_og", this.toggleIBU, this);
-            this.model.on("change:wort_size", this.toggleIBU, this);
-            this.options.brew.hops.on("add", this.toggleIBU, this);
-            this.options.brew.hops.on("remove", this.toggleIBU, this);
-            this.options.brew.hops.on("change", this.toggleIBU, this);
-
-            this.model.on("change:wort_size", this.toggleColor, this);
-            this.options.brew.malts.on("add", this.toggleColor, this);
-            this.options.brew.malts.on("remove", this.toggleColor, this);
-            this.options.brew.malts.on("change", this.toggleColor, this);
-
-        },
-
-        render: function() {
-            this.$el.find("#desc").html(_.template($("#general_information_template").html(), this.model.toJSON()));
-            DynamicTableView.prototype.render.apply(this, arguments);
-            this.toggleABV();
-            return this;
-        },
-
-        toggleABV: function() {
-            var og = this.model.get("actual_og");
-            var fg = this.model.get("fg");
-
-            if(!isNaN(og) && og !== "" && !isNaN(fg) && fg !== "" ) {
-                this.calculate_abv();
-            } else {
-                this.$el.find("#abv").val("");
-            }
-        },
-
-        calculate_abv: function() {
-            var og = this.model.get("actual_og");
-            var fg = this.model.get("fg");
-            var abv =(76.08 * (og - fg) / (1.775 - og)) * (fg / 0.794); //taken from http://www.brewersfriend.com/2011/06/16/alcohol-by-volume-calculator-updated/
-            abv = Math.round( abv * 10 ) / 10;
-            this.$el.find("#abv").val(abv);
-        },
-
-        toggleIBU: function() {
-            var og = this.model.get("actual_og");
-            var wort_size = this.model.get("wort_size");
-            var hops = this.options.brew.hops;
-            if(!isNaN(og) && og !== "" && !isNaN(wort_size) && wort_size !== "" && hops.length > 0 ) {
-                 if(hops.reduce(function(state, hop) { return hop.validate(); }, true)) {
-                     this.calculate_ibu();
-                 } else {
-                     this.$el.find("#computed_ibu").val("");
-                     this.model.set("computed_ibu", "");
-                 }
-            }
-        },
-
-        calculate_ibu: function() {
-            var brew = this.options.brew;
-            var og = brew.generalInformation.get("actual_og");
-            var volume = brew.generalInformation.get("wort_size");
-            var ibu = brew.hops.reduce(function(total_ibu, hop) {
-                var quantity = hop.get("quantity");
-                var alpha_acid = hop.get("alpha_acid");
-                var boil_time = hop.get("boil_time");
-                var aau = parseFloat(quantity) * parseFloat(alpha_acid);
-                var utilization = calculateUtilization(og, parseFloat(boil_time));
-                var ibu = aau * utilization * (10 / volume );
-                return total_ibu + ibu;
-            }, 0);
-            this.$el.find("#computed_ibu").val(Math.round(ibu));
-            this.model.set("computed_ibu", Math.round(ibu));
-        },
-
-        toggleColor: function() {
-            var malts = this.options.brew.malts;
-            var volume =  this.options.brew.generalInformation.get("wort_size");
-            if(volume !== "" && !isNaN(volume) && malts.length > 0) {
-                if(malts.reduce(function(state, malt) { return malt.validate(["quantity", "color"]); }, true)) {
-                    this.calculate_color();
-                } else {
-                    this.model.set("computed_color", "");
-                    this.$el.find("#computed_color").val("");
-                }
-                if(malts.reduce(function(state, malt) { return malt.validate(["quantity", "ppg"]); }, true)) {
-                    this.calculateOG();
-                } else {
-                    this.$el.find("#actual_og").val("");
-                    this.model.set("actual_og", "");
-                }
-            }
-        },
-
-        calculateOG: function(){
-            var malts = this.options.brew.malts;
-            var volume =  this.options.brew.generalInformation.get("wort_size");
-            var efficiency = 75;
-
-            var og = malts.reduce(function(sum, malt) {
-                var amount = malt.get("quantity");
-                var ppg = malt.get("ppg");
-
-                return sum + ((efficiency/100) * ppg) * (toLbs(amount) / toGallons(volume));
-            }, 0);
-
-            //round and get from nn to 1.0nn
-            og = Math.round((1 + (og/1000)) * 1000) / 1000;
-            this.$el.find("#actual_og").val(og);
-            this.model.set("actual_og", og);
-
-        },
-
-        //based on Palmer, "how to brew" p. 271, and
-        //http://en.wikipedia.org/wiki/Standard_Reference_Method
-        //Moreys method used
-        calculate_color: function() {
-            var malts = this.options.brew.malts;
-            var volume =  this.options.brew.generalInformation.get("wort_size");
-
-            var total_mcu = malts.reduce(function(sum, malt) {
-                var amount = malt.get("quantity");
-                var ebc = malt.get("color");
-                var mcu = (amount * 0.0022) * (ebc * 0.508);
-                return sum + mcu;
-            }, 0) / (volume * 0.2642);
-
-            //Moreys Formula
-            var srm = 1.49 * Math.pow(total_mcu, 0.69);
-            var ebc = srm * 1.97;
-            this.$el.find("#computed_color").val(Math.round(ebc));
-            this.model.set("computed_color", Math.round(ebc));
-        }
-
-    });
-
-*/
     var MashTime = Backbone.Model.extend({
         "defaults": {
             "mash_time": "",
@@ -275,7 +119,6 @@ var ol = {};
         },
 
         initialize: function() {
-            console.log("init", this.$el);
             _.bindAll(this, "add");
             BaseSectionView.prototype.initialize.apply(this, arguments);
             this.collection.on("destroy", this.render, this);
@@ -348,155 +191,11 @@ var ol = {};
         }
     });
 
-    var Water = Backbone.Model.extend({
-        "defaults": {
-            "mashing_water": "",
-            "sparging_water": ""
-        }
-    });
-
-    /*
-    ns.WaterView = DynamicTableView.extend({
-
-        listenOn: ["mashing_water", "sparging_water"],
-
-        render: function() {
-            this.$el.find("#water").html(_.template($("#water_form_template").html(), this.model.toJSON()));
-            DynamicTableView.prototype.render.apply(this, arguments);
-            return this;
-        }
-    });
-
-    var Boil = Backbone.Model.extend({
-        "defaults": {
-            "boil_time": ""
-        }
-    });
-
-    ns.BoiltimeView = DynamicTableView.extend({
-
-        listenOn: ["boil_time"],
-
-        render: function() {
-            this.$el.find("#boiling").html(_.template($("#boil_time_form_template").html(), this.model.toJSON()));
-            DynamicTableView.prototype.render.apply(this, arguments);
-            return this;
-        }
-    });
-*/
-
-
     var Fermentation  = Backbone.Model.extend({
         "defaults": {
             "type": "",
             "days": "",
             "temperature": ""
-        }
-    });
-
-    var Fermentations = Backbone.Collection.extend({
-        model: Fermentation
-    });
-
-    /*
-    var FermentationOld  = Backbone.Model.extend({
-        "defaults": {
-            "name": "",
-            "yeast_type": "none",
-            "attenuation": "",
-            "primary_fermentation_days": "",
-            "primary_fermentation_temp": "",
-            "secondary_fermentation_days": "",
-            "secondary_fermentation_temp": "",
-            "storage_days": "",
-            "storage_temp": ""
-        }
-    });
-
-    ns.FermentationView = DynamicTableView.extend({
-
-        listenOn: ["name", "attenuation", "primary_fermentation_days", "primary_fermentation_temp", "secondary_fermentation_days", "secondary_fermentation_temp", "storage_days", "storage_temp"],
-
-        events: {
-            "change #yeast_type": "changeYeastType"
-        },
-
-        initialize: function() {
-            DynamicTableView.prototype.initialize.apply(this, arguments);
-            _.bindAll(this, "setYeast");
-        },
-
-        render: function() {
-            this.$el.find("#fermentation").html(_.template($("#fermentation_form_template").html(), this.model.toJSON()));
-
-            this.$el.find("#name").typeahead({source: apiSearch, selectCallback: this.setYeast, model: "yeast"});
-
-            DynamicTableView.prototype.render.apply(this, arguments);
-            return this;
-        },
-
-        changeYeastType: function() {
-           var yeast_type = this.$el.find("#yeast_type").val();
-           this.model.set({"yeast_type": yeast_type});
-        },
-
-        setYeast: function(data) {
-            _.each(_.omit(data, "id"), function(value, key) {
-                this.$el.find("#" + key).val(value).change();
-            }, this);
-        }
-    });
-
-    var AdditionalInformation = Backbone.Model.extend({
-        "defaults": {
-            "brew_date": "",
-            "bottle_date": "",
-            "filtered": false,
-            "co2": "none",
-            "comment": ""
-        }
-    });
-
-    ns.AdditionalInformationView = DynamicTableView.extend({
-
-        listenOn: ["brew_date", "bottle_date", "comment"],
-
-        events:  {
-            "change #filtered": "changeFiltered",
-            "change #co2": "changeCo2"
-        },
-
-        initialize: function() {
-            DynamicTableView.prototype.initialize.apply(this, arguments);
-            _.bindAll(this, "changeFiltered", "changeCo2", "brewDateChanged", "bottleDateChanged");
-        },
-
-        render: function() {
-            this.$el.find("#additional_desc").html(_.template($("#additional_information_template").html(), this.model.toJSON()));
-            DynamicTableView.prototype.render.apply(this, arguments);
-
-            this.$el.find("#brew_date").parent().datepicker().on('changeDate', this.brewDateChanged);
-            this.$el.find("#bottle_date").parent().datepicker().on('changeDate', this.bottleDateChanged);
-
-            return this;
-        },
-
-        brewDateChanged: function(e) {
-            this.model.set({"brew_date": this.$el.find("#brew_date").val()});
-        },
-
-        bottleDateChanged: function(e) {
-            this.model.set({"bottle_date": this.$el.find("#bottle_date").val()});
-        },
-
-        changeFiltered: function(){
-            var filtered = this.$el.find("#filtered").is(":checked");
-            this.model.set({"filtered": filtered});
-        },
-
-        changeCo2: function() {
-            var co2 = this.$el.find("#co2").val();
-            this.model.set({"co2": co2});
         }
     });
 
@@ -515,106 +214,61 @@ var ol = {};
         tagName: "pre",
 
         render: function() {
-            this.$el.html(JSON.stringify(this.options.data.serialize(), undefined, 4));
+            this.$el.html(JSON.stringify(this.options.data, undefined, 4));
             return this;
         }
     });
 
-    ns.RecepieView = Backbone.View.extend({
+    var Fermentations = Backbone.Collection.extend({
+
+        initialize: function(models) {
+            if(!models){
+                this.add([{"type": "primary"}, {"type": "secondary"}, {"type": "storage"}])
+            }
+        },
+
+        model: Fermentation
+    });
+
+    var FermentationView = BaseSectionView.extend({
 
         events: {
-            "click #show_recipe": "show_recipe",
-            "click #show_json": "show_json",
-            "click #save": "save"
+            "click #add_fermentation": "add"
         },
 
         initialize: function() {
-            _.bindAll(this, "show_recipe", "show_json", "saved");
+            _.bindAll(this, "add");
+            BaseSectionView.prototype.initialize.apply(this, arguments);
+            this.collection.on("destroy", this.render, this);
+            this.collection.on("add", this.render, this);
         },
 
-        show_recipe: function() {
-            var modal = $('#modal');
-            modal.find(".modal-body").html(new AsciiView({data: this.options.data}).render().$el);
-            modal.modal('show');
-        },
-
-        show_json: function() {
-            var modal = $('#modal');
-            modal.find(".modal-body").html(new JsonView({data: this.options.data}).render().$el);
-            modal.modal('show');
-        },
-
-        save: function() {
-            var data = JSON.stringify(this.options.data.serialize());
-
-            //TODO proper url structure!!
-            //or use backbone!
-            var method = "POST";
-            if(this.options.data.generalInformation.has("id")) {
-                method = "PUT";
-            }
-
-            $.ajax({
-                type: method,
-                url: "/brews/add/",
-                data: {data: data},
-                success: this.saved,
-                error: function(e){
-                    alert("error..")
-                }
+        render: function() {
+            BaseSectionView.prototype.render.apply(this, arguments);
+            var table = this.$el.find("#fermentation_table").find("tbody");
+            table.html("");
+            this.collection.each(function(fermentation) {
+                table.append(new FermentationRowView({model: fermentation}).render().$el);
             });
-        },
-
-        saved: function(e) {
-            var res = JSON.parse(e);
-            if(!this.options.data.generalInformation.has("id")) {
-                this.options.data.generalInformation.set({"id": res.id});
-            }
         }
-
     });
 
-    ns.createBrew = function(initial) {
+    var FermentationRowView = DynamicTableView.extend({
 
-        var data = {};
-        data.generalInformation = new GeneralInformation(initial.generalInformation);
-        data.malts = new Malts(initial.malts);
-        data.mashSchedule = new MashSchedule(initial.mashSchedule);
-        data.hops = new Hops(initial.hops);
-        data.additives = new Additives(initial.additives);
-        data.water = new Water(initial.water);
-        data.boil = new Boil(initial.boil);
-        data.fermentation = new Fermentation(initial.fermentation);
-        data.additionalInformation = new AdditionalInformation(initial.additionalInformation);
+        tagName: "tr",
 
+        listenOn: ["type", "days", "temperature"],
 
-        var serialize = function() {
-            return _.reduce(data, function(res, d, key) {
-                res[key] = d.toJSON();
-                return res;
-            }, {});
-        };
+        initialize: function() {
+            DynamicTableView.prototype.initialize.apply(this, arguments);
+        },
 
-        return {
-            malts: data.malts,
-            hops: data.hops,
-            generalInformation: data.generalInformation,
-            additives: data.additives,
-            water: data.water,
-            boil: data.boil,
-            mashSchedule: data.mashSchedule,
-            fermentation: data.fermentation,
-            additionalInformation: data.additionalInformation,
-            serialize: serialize
-        };
-    };
-
-
-*/
-
-
-
-
+        render: function() {
+            this.$el.html(_.template($("#fermentation_row_template").html(), this.model.toJSON()));
+            DynamicTableView.prototype.render.apply(this, arguments);
+            return this;
+        }
+    });
 
     var Malt = Backbone.Model.extend({
         "defaults": {
@@ -921,7 +575,6 @@ var ol = {};
             "batch_size": "",
             "boil_time": "",
             "brewhouse_efficiency": "75",
-
             "computed_color": "-",
             "computed_ibu": "-",
             "computed_og": "-",
@@ -939,8 +592,8 @@ var ol = {};
             "malts": new Malts(),
             "hops": new Hops(),
             "additives": new Additives(),
-            "yeasts": new Yeasts()//,
-            //"fermentations": new Fermentations()
+            "yeasts": new Yeasts(),
+            "fermentations": new Fermentations()
         }
     });
 
@@ -953,11 +606,15 @@ var ol = {};
 
     ns.BrewSheet = Backbone.View.extend({
 
+        events: {
+            "click #show_json": "showJSON"
+        },
+
         initialize: function() {
             if(!this.brew) {
                 this.brew = new Brew();
             }
-            _.bindAll(this, "change");
+            _.bindAll(this, "change", "changeDate");
 
             this.brew.on("change", function(brew) {console.log(brew);}, this);
 
@@ -973,7 +630,8 @@ var ol = {};
             "hops": HopSectionView,
             "additives": AdditiveSectionView,
             "yeasts": YeastSectionView,
-            "mash_schedule": MashTimeView
+            "mash_schedule": MashTimeView,
+            "fermentations": FermentationView
         },
 
         render: function() {
@@ -997,7 +655,13 @@ var ol = {};
                     }
                 }
             }, this);
+            this.$el.find(".date").datepicker().on('changeDate', this.changeDate);
             return this;
+        },
+
+        changeDate: function (e){
+            var target = $(e.currentTarget);
+            this.change({"currentTarget": target.find("input")});
         },
 
         change: function(e) {
@@ -1117,45 +781,14 @@ var ol = {};
             }
             this.brew.set({"computed_ibu": bitterness});
             this.$el.find("#computed_ibu").text(bitterness);
-        }
-    });
-
-
-    /*
-    ns.BrewSheet = Backbone.View.extend({
-
-        initialize: function() {
-
         },
 
-        render: function() {
-
-            var initial = {};
-            if(this.options.brew) {
-                initial = this.options.brew;
-            }
-
-            var brew = ns.createBrew(initial);
-
-            console.log(brew);
-
-            var general = new ns.GeneralInformationView({el: $("#general_section"), model: brew.generalInformation, brew: brew}).render();
-
-            var maltView = new ns.MaltSectionView({el: $("#malt_section"), collection: brew.malts}).render();
-            var hopView = new ns.HopSectionView({el: $("#hops_section"), collection: brew.hops}).render();
-            var additivesView = new ns.AdditiveSectionView({el: $("#additives_section"), collection: brew.additives}).render();
-            var waterView = new ns.WaterView({el: $("#water_section"), model: brew.water}).render();
-            var boiltimeView = new ns.BoiltimeView({el: $("#boiling_section"), model: brew.boil}).render();
-            var mashTimeView = new ns.MashTimeView({el: $("#mashing_section"), collection: brew.mashSchedule}).render();
-            var fermentationView = new ns.FermentationView({el: $("#fermentation_section"), model: brew.fermentation}).render();
-            var additionalInformationView = new ns.AdditionalInformationView({el: $("#other_section"), model: brew.additionalInformation}).render();
-            var recepieView = new ns.RecepieView({el: $("#controls"), data: brew});
-
-            return this;
+        showJSON: function() {
+            var modal = $('#modal');
+            modal.find(".modal-body").html(new JsonView({data: this.brew.toJSON()}).render().$el);
+            modal.modal('show');
         }
-
     });
-*/
 }(ol));
 
 ol.templateFunc = {};
