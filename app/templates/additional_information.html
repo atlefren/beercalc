@@ -1,0 +1,83 @@
+<section id="additional_info_section">
+    <form class="form-horizontal">
+        <fieldset>
+            <legend>Other information</legend>
+            <div id="additional_desc" class="content">
+                <div class="row">
+                    <div class="span5">
+                        <div class="control-group">
+                            <label for="actual_og" class="control-label">Measured OG</label>
+                            <div class="controls">
+                                <input id="actual_og" class="input-large" size="16" type="text" value="<%= actual_og %>">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="span5">
+                        <div class="control-group">
+                            <label for="actual_fg" class="control-label">Measured FG</label>
+                            <div class="controls">
+                                <input id="actual_fg" class="input-large" size="16" type="text" value="<%= actual_fg %>">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="span5">
+                        <div class="control-group">
+                            <label for="brew_date" class="control-label">Brew Date</label>
+                            <div class="controls">
+                                <div class="input-append date" data-date="12-02-2012" data-date-format="dd.mm.yyyy">
+                                    <input id="brew_date" class="span3" size="16" type="text" value="<%= brew_date %>" style="width: 180px;">
+                                    <span class="add-on"><i class="icon-th"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="span5">
+                        <div class="control-group">
+                            <label for="bottle_date" class="control-label">Bottle Date</label>
+                            <div class="controls">
+                                <div class="input-append date"  data-date="12-02-2012" data-date-format="dd.mm.yyyy">
+                                    <input id="bottle_date" class="span3" size="16" type="text" value="<%= bottle_date %>" style="width: 180px;">
+                                    <span class="add-on"><i class="icon-th"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="span5">
+                        <div class="control-group">
+                            <label for="co2" class="control-label">CO<sub>2</sub></label>
+                            <div class="controls">
+                                <select id="co2">
+                                    <option value="none" <% if( co2 == 'none') { %> selected  <% } %>></option>
+                                    <option value="natural" <% if( co2 == 'natural') { %> selected  <% } %>>Natural</option>
+                                    <option value="added" <% if( co2 == 'added') { %> selected  <% } %>>Added</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="span5">
+                        <div class="control-group">
+                            <label for="filtered" class="control-label">Filtered</label>
+                            <div class="controls">
+                                <input type="checkbox" id="filtered" <% if( filtered) { %> checked  <% } %> >
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="span10">
+                        <div class="control-group">
+                            <label for="comment">Additional comments (max 200 words)</label>
+                            <div class="controls">
+                                <textarea id="comment"><%= comment %></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+</section>

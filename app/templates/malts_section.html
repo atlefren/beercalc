@@ -1,0 +1,44 @@
+<section id="malts_section">
+    <form autocomplete="off">
+        <fieldset>
+            <legend>Malts & sugars</legend>
+
+            <div class="row">
+                <div id="malts" class="span10">
+                    <table id="malts_table" class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th class="mini-td">Qty (g)</th>
+                            <th class="mini-td">%</th>
+                            <th class="large-td">Malt/Sugar</th>
+                            <th class="mini-td">Max Ppg</th>
+                            <th class="mini-td">Color (EBC)</th>
+                            <th class="ex-small"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                    <button type="button" id="add_malt" class="btn pull-right">Add malt</button>
+                </div>
+                <div class="span2">
+                    <table class="table table-condensed calculations">
+                        <tr>
+                            <th>OG</th>
+                            <td id="computed_og"><%= computed_og %></td>
+                        </tr>
+                        <tr>
+                            <th>FG</th>
+                            <td id="computed_fg"><%= computed_fg %></td>
+                        </tr>
+                        <tr>
+                            <th>Color (EBC)</th>
+                            <td id="computed_color"><%= computed_color %></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+        </fieldset>
+    </form>
+</section>

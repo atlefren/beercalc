@@ -1,0 +1,35 @@
+<section id="hops_section">
+    <form autocomplete="off">
+        <fieldset>
+            <legend>Hops</legend>
+            <div class="row">
+                <div id="hops" class="span10">
+                    <table id="hops_table" class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th class="mini-td">Qty (g)</th>
+                            <th class="large-td">Hop name</th>
+                            <th class="mini-td">&alpha; Acid</th>
+                            <th class="mini-td">Form</th>
+                            <th class="medium-td">Boil Time (m)</th>
+                            <th class="ex-small"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                    <button type="button" id="add_hop" class="btn pull-right">Add hop</button>
+                </div>
+                <div class="span2">
+                    <table class="table table-condensed calculations">
+                        <tr>
+                            <th>IBU</th>
+                            <td id="computed_ibu"><%= computed_ibu %></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+        </fieldset>
+    </form>
+</section>

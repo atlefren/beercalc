@@ -18,192 +18,54 @@
 
         <script type="text/javascript">
             $(document).ready(function(){
-                {% if brew %}
-                    var brew = {{ brew|safe }};
-                {% else %}
-                    var brew;
-                {% endif %}
-                console.log(brew);
-                var brewSheet = new ol.BrewSheet({brew: brew}).render();
+                var brewSheet = new ol.BrewSheet({"el": $("#brewsheet")}).render();
             });
         </script>
         {% endblock %}
 
         {% block body %}
-            <h2>Brewsheet</h2>
-            <div id="controls">
-                <button class="btn" id="show_recipe">Show recipe</button>
-                <button class="btn" id="show_json">Show JSON</button>
-                <button class="btn" id="save">Save recipe</button>
-            </div>
-            <div class="row">
-                <div id="general_section" class="section span10">
-                    <form class="form-horizontal">
-                        <fieldset>
-                            <legend>(<i class="toggle icon-minus"></i>) General information</legend>
-                            <div id="desc" class="content"></div>
-                        </fieldset>
-                    </form>
-                </div>
-            </div>
+        <h2>Brewsheet</h2>
+        <div id="brewsheet" class="tabbable">
 
-            <div class="row">
-                <div id="malt_section" class="section span10">
-                    <form autocomplete="off">
-                        <fieldset>
-                            <legend>(<i class="toggle icon-minus"></i>) Malt</legend>
-                            <div class="content">
-                                <table id="malts_table" class="table table-bordered">
-                                    <thead>
-                                    <tr>
-                                        <th class="mini-td">Qty (g)</th>
-                                        <th class="mini-td">%</th>
-                                        <th class="large-td">Malt/Sugar</th>
-                                        <th class="mini-td">Max Ppg</th>
-                                        <th class="mini-td">Color (EBC)</th>
-                                        <th class="ex-small"></th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>
-                                <button type="button" id="add_malt" class="btn pull-right">Add malt</button>
-                            </div>
-                        </fieldset>
-                    </form>
-                </div>
-            </div>
-
-            <div class="row">
-                <div id="water_section" class="section span10">
-                    <form class="form-horizontal">
-                        <fieldset>
-                            <legend>(<i class="toggle icon-minus"></i>) Water</legend>
-                            <div id="water" class="simple_form content"></div>
-                        </fieldset>
-                    </form>
-                </div>
-            </div>
-
-            <div class="row">
-                <div id="mashing_section" class="section span10">
-                    <form>
-                        <fieldset>
-                            <legend>(<i class="toggle icon-minus"></i>) Mashing schedule</legend>
-                            <div class="row content">
-                                <div class="span4" style="width: 270px;">
-                                    <table id="mashing" class="table table-bordered">
-                                        <thead>
-                                        <tr>
-                                            <th class="medium-td">Duration (m)</th>
-                                            <th class="medium-td">Temp (&deg;C)</th>
-                                            <th class="ex-small"></th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        </tbody>
-                                    </table>
-                                    <button type="button" id="add_mash_time" class="btn pull-right">Add time</button>
-                                </div>
-                                <div class="span5">
-                                    <div id="mash_graph" class="graph"></div>
-                                </div>
-                            </div>
-                        </fieldset>
-                    </form>
-                </div>
-            </div>
-
-            <div class="row">
-                <div id="hops_section" class="section span10">
-                    <form autocomplete="off">
-                        <fieldset>
-                            <legend>(<i class="toggle icon-minus"></i>) Hops</legend>
-                            <div class="content">
-                                <table id="hops"  class="table table-bordered">
-                                    <thead>
-                                    <tr>
-                                        <th class="mini-td">Qty (g)</th>
-                                        <th class="large-td">Hop name</th>
-                                        <th class="mini-td">&alpha; Acid</th>
-                                        <th class="mini-td">Form</th>
-                                        <th class="medium-td">Boil Time (m)</th>
-                                        <th class="ex-small"></th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>
-                                <button type="button" id="add_hop" class="btn pull-right">Add hop</button>
-                            </div>
-                        </fieldset>
-                    </form>
-                </div>
-            </div>
-
-            <div class="row">
-                <div id="additives_section" class="section span10">
-                    <form>
-                        <fieldset>
-                            <legend>(<i class="toggle icon-minus"></i>) Additives</legend>
-                            <div class="content">
-                                <table id="additives" class="table table-bordered">
-                                    <thead>
-                                    <tr>
-                                        <th class="mini-td">Qty (g)</th>
-                                        <th class="large-td">Additive name</th>
-                                        <th class="medium-td">Boil Time (m)</th>
-                                        <th class="ex-small"></th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>
-                                <button type="button" id="add_additive" class="btn pull-right">Add Additive</button>
-                            </div>
-                        </fieldset>
-                    </form>
-                </div>
-            </div>
-
-            <div class="row">
-                <div id="boiling_section" class="section span10">
-                    <form class="form-horizontal">
-                        <fieldset>
-                            <legend>(<i class="toggle icon-minus"></i>) Boiling</legend>
-                            <div id="boiling" class="simple_form content"></div>
-                        </fieldset>
-                    </form>
-                </div>
-            </div>
-
-            <div class="row">
-                <div id="fermentation_section" class="section span10">
-                    <form>
-                        <fieldset  class="form-inline">
-                            <legend>(<i class="toggle icon-minus"></i>) Fermentation</legend>
-                            <div id="fermentation" class="content"></div>
-                        </fieldset>
-                    </form>
-                </div>
-            </div>
-
-            <div class="row">
-                <div id="other_section" class="section span10">
-                    <form class="form-horizontal">
-                        <fieldset>
-                            <legend>(<i class="toggle icon-minus"></i>) Other information</legend>
-                            <div id="additional_desc" class="content">
-                            </div>
-                        </fieldset>
-                    </form>
-                </div>
-            </div>
-        {% endblock %}
-                <!--
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="#tab1" data-toggle="tab">Plan recipe</a></li>
+                <li><a href="#tab2" data-toggle="tab">Brewing</a></li>
+                <li><a href="#tab3" data-toggle="tab">Results</a></li>
+            </ul>
         </div>
-    </div>
--->
+
+        <script type="text/template" id="brewsheet_template">
+            <div class="tab-content">
+                <div class="tab-pane active" id="tab1">
+                    {% include 'general_information.html' %}
+                    {% include 'malts_section.html' %}
+                    {% include 'hops_section.html' %}
+                    {% include 'yeasts_section.html' %}
+                    {% include 'additives_section.html' %}
+                </div>
+                <div class="tab-pane" id="tab2">
+                    {% include 'water_section.html' %}
+                    {% include 'mashing_section.html' %}
+                    {% include 'fermentation_section.html' %}
+                </div>
+                <div class="tab-pane" id="tab3">
+                    {% include 'additional_information.html' %}
+                    <section id="save_section">
+                        <form class="form-horizontal">
+                            <fieldset>
+                                <legend>Save</legend>
+                                <div id="controls">
+                                    <button class="btn" id="show_recipe">Show recipe</button>
+                                    <button class="btn" id="show_json">Show JSON</button>
+                                    <button class="btn" id="save">Save recipe</button>
+                                </div>
+                            </fieldset>
+                        </form>
+                    </section>
+                </div>
+            </div>
+        </script>
+{% endblock %}
     <!-- TEMPLATES: -->
         {% block templates %}
 <script type="text/template" id="malt_table_row_template">
@@ -224,42 +86,57 @@
     </td>
     <td class="remove"><i class="icon-remove-circle"></i></td>
 </script>
+<script type="text/template" id="hop_table_row_template">
+    <td>
+        <input id="quantity" type="text" class="input-mini" value="<%= quantity %>">
+    </td>
+    <td>
+        <input id="name" type="text" class="input-large" value="<%= name %>">
+    </td>
+    <td>
+        <input id="alpha_acid" type="text" class="input-mini" value="<%= alpha_acid %>">
+    </td>
+    <td>
+        <select id="form" class="small">
+            <option value="none" <% if( form == 'none') { %> selected  <% } %>>--</option>
+            <option value="pellets" <% if( form == 'pellets') { %> selected  <% } %>>Pellets</option>
+            <option value="cones" <% if( form == 'cones') { %> selected  <% } %>>Cones</option>
+        </select>
+    </td>
+    <td>
+        <input id="boil_time" type="text" class="input-medium" value="<%= boil_time %>">
+    </td>
+    <td class="remove"><i class="icon-remove-circle"></i></td>
+</script>
 
-    <script type="text/template" id="hop_table_row_template">
-        <td>
-            <input id="quantity" type="text" class="input-mini" value="<%= quantity %>">
-        </td>
-        <td>
-            <input id="name" type="text" class="input-large" value="<%= name %>">
-        </td>
-        <td>
-            <input id="alpha_acid" type="text" class="input-mini" value="<%= alpha_acid %>">
-        </td>
-        <td>
-            <select id="form" class="small">
-                <option value="none" <% if( form == 'none') { %> selected  <% } %>>--</option>
-                <option value="pellets" <% if( form == 'pellets') { %> selected  <% } %>>Pellets</option>
-                <option value="cones" <% if( form == 'cones') { %> selected  <% } %>>Cones</option>
-            </select>
-        </td>
-        <td>
-            <input id="boil_time" type="text" class="input-medium" value="<%= boil_time %>">
-        </td>
-        <td class="remove"><i class="icon-remove-circle"></i></td>
-    </script>
+<script type="text/template" id="additive_table_row_template">
+    <td>
+        <input id="quantity" type="text" class="input-mini" value="<%= quantity %>">
+    </td>
+    <td>
+        <input id="name" type="text" class="input-large" value="<%= name %>">
+    </td>
+    <td>
+        <input id="added_when" type="text" class="input-medium" value="<%= added_when %>"> <!-- todo: make select -->
+    </td>
+    <td>
+        <input id="boil_time" type="text" class="input-medium" value="<%= boil_time %>">
+    </td>
+    <td class="remove"><i class="icon-remove-circle"></i></td>
+</script>
 
-    <script type="text/template" id="additive_table_row_template">
-        <td>
-            <input id="quantity" type="text" class="input-mini" value="<%= quantity %>">
-        </td>
-        <td>
-            <input id="name" type="text" class="input-large" value="<%= name %>">
-        </td>
-        <td>
-            <input id="boil_time" type="text" class="input-medium" value="<%= boil_time %>">
-        </td>
-        <td class="remove"><i class="icon-remove-circle"></i></td>
-    </script>
+<script type="text/template" id="yeast_table_row_template">
+    <td>
+        <input id="name" type="text" class="input-large" value="<%= name %>">
+    </td>
+    <td>
+        <input id="attenuation" type="text" class="input-medium" value="<%= attenuation %>">
+    </td>
+    <td>
+        <input id="type" type="text" class="input-medium" value="<%= type %>"><!-- todo: make select -->
+    </td>
+    <td class="remove"><i class="icon-remove-circle"></i></td>
+</script>
 
     <script type="text/template" id="mash_time_row_template">
 
@@ -271,255 +148,6 @@
         </td>
         <td class="remove"><i class="icon-remove-circle"></i></td>
     </script>
-
-    <script type="text/template" id="fermentation_form_template">
-        <div>
-            <label for="name">Yeast Name
-                <input type="text" id="name" class="input-xlarge" value="<%= name %>">
-            </label>
-            <label for="attenuation">Attenuation
-                <input type="text" id="attenuation" class="input-mini" value="<%= attenuation %>">%
-            </label>
-            &nbsp;
-            <label for="yeast_type">Yeast Type
-                <select id="yeast_type" class="input-medium">
-                    <option value="none" <% if( yeast_type == 'none') { %> selected  <% } %>></option>
-                    <option value="liquid" <% if( yeast_type == 'liquid') { %> selected  <% } %>>Liquid</option>
-                    <option value="dry" <% if( yeast_type == 'dry') { %> selected  <% } %>>Dry</option>
-                    <option value="homegrown" <% if( yeast_type == 'homegrown') { %> selected  <% } %>>Homegrown</option>
-                </select>
-            </label>
-        </div>
-        <div>
-            <label for="primary_fermentation_days" class="ferm-label">
-                Primary fermentation
-            </label>
-            <input type="text" id="primary_fermentation_days" class="input-mini" value="<%= primary_fermentation_days %>">
-            days
-            <label for="primary_fermentation_temp">
-                at
-                <input type="text" id="primary_fermentation_temp" class="input-mini" value="<%= primary_fermentation_temp %>">
-                &deg;C
-            </label>
-        </div>
-        <div>
-            <label for="secondary_fermentation_days" class="ferm-label">
-                Secondary fermentation
-            </label>
-            <input type="text" id="secondary_fermentation_days" class="input-mini" value="<%= secondary_fermentation_days %>">
-            days
-            <label for="secondary_fermentation_temp">
-                at
-                <input type="text" id="secondary_fermentation_temp" class="input-mini" value="<%= secondary_fermentation_temp %>">
-                &deg;C
-            </label>
-        </div>
-        <div>
-            <label for="storage_days" class="ferm-label">
-                Storage
-            </label>
-            <input type="text" id="storage_days" class="input-mini" value="<%= storage_days %>">
-            days
-            <label for="storage_temp">
-                at
-                <input type="text" id="storage_temp" class="input-mini" value="<%= storage_temp %>">
-                &deg;C
-            </label>
-        </div>
-    </script>
-
-    <script type="text/template" id="water_form_template">
-        <div class="control-group">
-            <label class="control-label" for="mashing_water">Mashing Water</label>
-            <div class="controls">
-                <input type="text" id="mashing_water"  class="input-mini" value="<%= mashing_water %>">
-                <span class="help-inline">l</span>
-            </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label" for="sparging_water">Sparging Water</label>
-            <div class="controls">
-                <input type="text" id="sparging_water" class="input-mini" value="<%= sparging_water %>">
-                <span class="help-inline">l</span>
-            </div>
-        </div>
-
-    </script>
-
-
-    <script type="text/template" id="boil_time_form_template">
-        <div class="control-group">
-            <label class="control-label" for="boil_time">Boil Time</label>
-            <div class="controls">
-                <input type="text" id="boil_time"  class="input-mini" value="<%= boil_time %>">
-                <span class="help-inline">minutes</span>
-            </div>
-        </div>
-    </script>
-
-    <script type="text/template" id="general_information_template">
-
-        <div class="row">
-            <div class="span5">
-                <div class="control-group">
-                    <label for="beer_name" class="control-label">Beer Name</label>
-                    <div class="controls">
-                        <input type="text" id="beer_name" class="no-border" value="<%= beer_name %>">
-                    </div>
-                </div>
-
-            </div>
-            <div class="span5">
-                <div class="control-group">
-                    <label for="brewer" class="control-label">Brewer</label>
-                    <div class="controls">
-                        <input id="brewer" type="text" class="no-border" value="<%= brewer %>">
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="span5">
-                <div class="control-group">
-                    <label for="beer_style" class="control-label">Beer Style</label>
-                    <div class="controls">
-                        <input type="text" id="beer_style" class="no-border" value="<%= beer_style %>">
-                    </div>
-                </div>
-
-            </div>
-            <div class="span5">
-
-            </div>
-        </div>
-        <div class="row">
-            <div class="span5">
-                <div class="control-group">
-                    <label for="wort_size" class="control-label">Wort Volume (l)</label>
-                    <div class="controls">
-                        <input id="wort_size" type="text" class="no-border" value="<%= wort_size %>">
-                    </div>
-                </div>
-
-            </div>
-            <div class="span5">
-                <div class="control-group">
-                    <label for="batch_size" class="control-label">Final Volume (l)</label>
-                    <div class="controls">
-                        <input id="batch_size" type="text" class="no-border" value="<%= batch_size %>">
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="span5">
-                <div class="control-group">
-                    <label for="computed_ibu" class="control-label">Bitterness (IBU)</label>
-                    <div class="controls">
-                        <input id="computed_ibu" type="text" value="<%= computed_ibu %>">
-                    </div>
-                </div>
-
-            </div>
-            <div class="span5">
-                <div class="control-group">
-                    <label for="computed_color" class="control-label">Color (EBC)</label>
-                    <div class="controls">
-                        <input id="computed_color" type="text" value="<%= computed_color %>">
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="span5">
-                <div class="control-group">
-                    <label for="actual_og" class="control-label">Original Gravity</label>
-                    <div class="controls">
-                        <input id="actual_og" type="text" class="no-border" value="<%= actual_og %>">
-                    </div>
-                </div>
-            </div>
-            <div class="span5">
-                <div class="control-group">
-                    <label for="fg" class="control-label">Final Gravity</label>
-                    <div class="controls">
-                        <input id="fg" type="text" class="no-border" value="<%= fg %>">
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="span5">
-                <div class="control-group">
-                    <label for="abv" class="control-label">ABV</label>
-                    <div class="controls">
-                        <input id="abv" type="text" disabled>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </script>
-
-
-    <script type="text/template" id="additional_information_template">
-        <div class="row">
-            <div class="span5">
-                <div class="control-group">
-                    <label for="brew_date" class="control-label">Brew Date</label>
-                    <div class="controls">
-                        <div class="input-append date" data-date="12-02-2012" data-date-format="dd.mm.yyyy">
-                            <input id="brew_date" class="span3" size="16" type="text" value="<%= brew_date %>" style="width: 180px;">
-                            <span class="add-on"><i class="icon-th"></i></span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="span5">
-                <div class="control-group">
-                    <label for="bottle_date" class="control-label">Bottle Date</label>
-                    <div class="controls">
-                        <div class="input-append date"  data-date="12-02-2012" data-date-format="dd.mm.yyyy">
-                            <input id="bottle_date" class="span3" size="16" type="text" value="<%= bottle_date %>" style="width: 180px;">
-                            <span class="add-on"><i class="icon-th"></i></span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="span5">
-                <div class="control-group">
-                    <label for="co2" class="control-label">CO<sub>2</sub></label>
-                    <div class="controls">
-                        <select id="co2">
-                            <option value="none" <% if( co2 == 'none') { %> selected  <% } %>></option>
-                            <option value="natural" <% if( co2 == 'natural') { %> selected  <% } %>>Natural</option>
-                            <option value="added" <% if( co2 == 'added') { %> selected  <% } %>>Added</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-            <div class="span5">
-                <div class="control-group">
-                    <label for="filtered" class="control-label">Filtered</label>
-                    <div class="controls">
-                        <input type="checkbox" id="filtered" <% if( filtered) { %> checked  <% } %> >
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="span10">
-                <div class="control-group">
-                    <label for="comment">Additional comments (max 200 words)</label>
-                    <div class="controls">
-                        <textarea id="comment"><%= comment %></textarea>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </script>
-
 <script type="text/template" id="ascii_template">
 [tt][size=10pt][b]Generell informasjon[/b]
 Navn på brygget: <%= ol.templateFunc.orNa(generalInformation.beer_name) %>

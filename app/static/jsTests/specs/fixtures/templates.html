@@ -1,0 +1,399 @@
+<script type="text/template" id="malt_table_row_template">
+    <td>
+        <input id="quantity" type="text" class="input-mini" value="<%= quantity %>">
+    </td>
+    <th>
+        <input id="percentage" type="text" class="input-mini" readonly="readonly" value="<%= percentage %>">
+    </th>
+    <td>
+        <input id="name" type="text" class="input-large" value="<%= name %>">
+    </td>
+    <td>
+        <input id="ppg" type="text" class="input-mini" value="<%= ppg %>">
+    </td>
+    <td>
+        <input id="color" type="text" class="input-mini" value="<%= color %>">
+    </td>
+    <td class="remove"><i class="icon-remove-circle"></i></td>
+</script>
+
+<script type="text/template" id="hop_table_row_template">
+    <td>
+        <input id="quantity" type="text" class="input-mini" value="<%= quantity %>">
+    </td>
+    <td>
+        <input id="name" type="text" class="input-large" value="<%= name %>">
+    </td>
+    <td>
+        <input id="alpha_acid" type="text" class="input-mini" value="<%= alpha_acid %>">
+    </td>
+    <td>
+        <select id="form" class="small">
+            <option value="none" <% if( form == 'none') { %> selected  <% } %>>--</option>
+            <option value="pellets" <% if( form == 'pellets') { %> selected  <% } %>>Pellets</option>
+            <option value="cones" <% if( form == 'cones') { %> selected  <% } %>>Cones</option>
+        </select>
+    </td>
+    <td>
+        <input id="boil_time" type="text" class="input-medium" value="<%= boil_time %>">
+    </td>
+    <td class="remove"><i class="icon-remove-circle"></i></td>
+</script>
+
+<script type="text/template" id="additive_table_row_template">
+    <td>
+        <input id="quantity" type="text" class="input-mini" value="<%= quantity %>">
+    </td>
+    <td>
+        <input id="name" type="text" class="input-large" value="<%= name %>">
+    </td>
+    <td>
+        <input id="boil_time" type="text" class="input-medium" value="<%= boil_time %>">
+    </td>
+    <td class="remove"><i class="icon-remove-circle"></i></td>
+</script>
+
+<script type="text/template" id="mash_time_row_template">
+
+    <td class="medium">
+        <input id="mash_time" type="text" class="input-mini" value="<%= mash_time %>">
+    </td>
+    <td class="medium">
+        <input id="mash_temperature" type="text" class="input-mini" value="<%= mash_temperature %>">
+    </td>
+    <td class="remove"><i class="icon-remove-circle"></i></td>
+</script>
+
+<script type="text/template" id="fermentation_form_template">
+    <div>
+        <label for="name">Yeast Name
+            <input type="text" id="name" class="input-xlarge" value="<%= name %>">
+        </label>
+        <label for="attenuation">Attenuation
+            <input type="text" id="attenuation" class="input-mini" value="<%= attenuation %>">%
+        </label>
+        &nbsp;
+        <label for="yeast_type">Yeast Type
+            <select id="yeast_type" class="input-medium">
+                <option value="none" <% if( yeast_type == 'none') { %> selected  <% } %>></option>
+                <option value="liquid" <% if( yeast_type == 'liquid') { %> selected  <% } %>>Liquid</option>
+                <option value="dry" <% if( yeast_type == 'dry') { %> selected  <% } %>>Dry</option>
+                <option value="homegrown" <% if( yeast_type == 'homegrown') { %> selected  <% } %>>Homegrown</option>
+            </select>
+        </label>
+    </div>
+    <div>
+        <label for="primary_fermentation_days" class="ferm-label">
+            Primary fermentation
+        </label>
+        <input type="text" id="primary_fermentation_days" class="input-mini" value="<%= primary_fermentation_days %>">
+        days
+        <label for="primary_fermentation_temp">
+            at
+            <input type="text" id="primary_fermentation_temp" class="input-mini" value="<%= primary_fermentation_temp %>">
+            &deg;C
+        </label>
+    </div>
+    <div>
+        <label for="secondary_fermentation_days" class="ferm-label">
+            Secondary fermentation
+        </label>
+        <input type="text" id="secondary_fermentation_days" class="input-mini" value="<%= secondary_fermentation_days %>">
+        days
+        <label for="secondary_fermentation_temp">
+            at
+            <input type="text" id="secondary_fermentation_temp" class="input-mini" value="<%= secondary_fermentation_temp %>">
+            &deg;C
+        </label>
+    </div>
+    <div>
+        <label for="storage_days" class="ferm-label">
+            Storage
+        </label>
+        <input type="text" id="storage_days" class="input-mini" value="<%= storage_days %>">
+        days
+        <label for="storage_temp">
+            at
+            <input type="text" id="storage_temp" class="input-mini" value="<%= storage_temp %>">
+            &deg;C
+        </label>
+    </div>
+</script>
+
+<script type="text/template" id="water_form_template">
+    <div class="control-group">
+        <label class="control-label" for="mashing_water">Mashing Water</label>
+        <div class="controls">
+            <input type="text" id="mashing_water"  class="input-mini" value="<%= mashing_water %>">
+            <span class="help-inline">l</span>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="sparging_water">Sparging Water</label>
+        <div class="controls">
+            <input type="text" id="sparging_water" class="input-mini" value="<%= sparging_water %>">
+            <span class="help-inline">l</span>
+        </div>
+    </div>
+
+</script>
+
+
+<script type="text/template" id="boil_time_form_template">
+    <div class="control-group">
+        <label class="control-label" for="boil_time">Boil Time</label>
+        <div class="controls">
+            <input type="text" id="boil_time"  class="input-mini" value="<%= boil_time %>">
+            <span class="help-inline">minutes</span>
+        </div>
+    </div>
+</script>
+
+<script type="text/template" id="general_information_template">
+
+    <div class="row">
+        <div class="span5">
+            <div class="control-group">
+                <label for="beer_name" class="control-label">Beer Name</label>
+                <div class="controls">
+                    <input type="text" id="beer_name" class="no-border" value="<%= beer_name %>">
+                </div>
+            </div>
+
+        </div>
+        <div class="span5">
+            <div class="control-group">
+                <label for="brewer" class="control-label">Brewer</label>
+                <div class="controls">
+                    <input id="brewer" type="text" class="no-border" value="<%= brewer %>">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="span5">
+            <div class="control-group">
+                <label for="beer_style" class="control-label">Beer Style</label>
+                <div class="controls">
+                    <input type="text" id="beer_style" class="no-border" value="<%= beer_style %>">
+                </div>
+            </div>
+
+        </div>
+        <div class="span5">
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="span5">
+            <div class="control-group">
+                <label for="wort_size" class="control-label">Wort Volume (l)</label>
+                <div class="controls">
+                    <input id="wort_size" type="text" class="no-border" value="<%= wort_size %>">
+                </div>
+            </div>
+
+        </div>
+        <div class="span5">
+            <div class="control-group">
+                <label for="batch_size" class="control-label">Final Volume (l)</label>
+                <div class="controls">
+                    <input id="batch_size" type="text" class="no-border" value="<%= batch_size %>">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="span5">
+            <div class="control-group">
+                <label for="computed_ibu" class="control-label">Bitterness (IBU)</label>
+                <div class="controls">
+                    <input id="computed_ibu" type="text" value="<%= computed_ibu %>">
+                </div>
+            </div>
+
+        </div>
+        <div class="span5">
+            <div class="control-group">
+                <label for="computed_color" class="control-label">Color (EBC)</label>
+                <div class="controls">
+                    <input id="computed_color" type="text" value="<%= computed_color %>">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="span5">
+            <div class="control-group">
+                <label for="actual_og" class="control-label">Original Gravity</label>
+                <div class="controls">
+                    <input id="actual_og" type="text" class="no-border" value="<%= actual_og %>">
+                </div>
+            </div>
+        </div>
+        <div class="span5">
+            <div class="control-group">
+                <label for="fg" class="control-label">Final Gravity</label>
+                <div class="controls">
+                    <input id="fg" type="text" class="no-border" value="<%= fg %>">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="span5">
+            <div class="control-group">
+                <label for="abv" class="control-label">ABV</label>
+                <div class="controls">
+                    <input id="abv" type="text" disabled>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+
+<script type="text/template" id="additional_information_template">
+    <div class="row">
+        <div class="span5">
+            <div class="control-group">
+                <label for="brew_date" class="control-label">Brew Date</label>
+                <div class="controls">
+                    <div class="input-append date" data-date="12-02-2012" data-date-format="dd.mm.yyyy">
+                        <input id="brew_date" class="span3" size="16" type="text" value="<%= brew_date %>" style="width: 180px;">
+                        <span class="add-on"><i class="icon-th"></i></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="span5">
+            <div class="control-group">
+                <label for="bottle_date" class="control-label">Bottle Date</label>
+                <div class="controls">
+                    <div class="input-append date"  data-date="12-02-2012" data-date-format="dd.mm.yyyy">
+                        <input id="bottle_date" class="span3" size="16" type="text" value="<%= bottle_date %>" style="width: 180px;">
+                        <span class="add-on"><i class="icon-th"></i></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="span5">
+            <div class="control-group">
+                <label for="co2" class="control-label">CO<sub>2</sub></label>
+                <div class="controls">
+                    <select id="co2">
+                        <option value="none" <% if( co2 == 'none') { %> selected  <% } %>></option>
+                        <option value="natural" <% if( co2 == 'natural') { %> selected  <% } %>>Natural</option>
+                        <option value="added" <% if( co2 == 'added') { %> selected  <% } %>>Added</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="span5">
+            <div class="control-group">
+                <label for="filtered" class="control-label">Filtered</label>
+                <div class="controls">
+                    <input type="checkbox" id="filtered" <% if( filtered) { %> checked  <% } %> >
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="span10">
+            <div class="control-group">
+                <label for="comment">Additional comments (max 200 words)</label>
+                <div class="controls">
+                    <textarea id="comment"><%= comment %></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/template" id="ascii_template">
+    [tt][size=10pt][b]Generell informasjon[/b]
+    Navn på brygget: <%= ol.templateFunc.orNa(generalInformation.beer_name) %>
+    Øltype: <%= ol.templateFunc.orNa(generalInformation.beer_style) %>
+    OG: <%= ol.templateFunc.rpad(ol.templateFunc.orNa(generalInformation.actual_og), 3) %>
+    FG: <%= ol.templateFunc.rpad(ol.templateFunc.orNa(generalInformation.fg), 3) %>
+    Farve (beregnet): <%= ol.templateFunc.rpad(ol.templateFunc.orNa(generalInformation.computed_color), 3) %> EBC
+    Beregnet bitter:  <%= ol.templateFunc.rpad(ol.templateFunc.orNa(generalInformation.computed_ibu), 3) %> IBU
+    Vørtermengde: <%= ol.templateFunc.rpad(ol.templateFunc.orNa(generalInformation.wort_size), 3) %> l
+    Sluttvolum:   <%= ol.templateFunc.rpad(ol.templateFunc.orNa(generalInformation.batch_size), 3) %> l
+
+    <%
+    if(malts.length > 0) {
+
+    print("[b]Malt & sukker[/b]\n");
+
+    var iSpace = _.max(_.pluck(malts, "name"), function(i) {return i.length; }).length;
+    _.each(malts, function(malt) {
+    print(ol.templateFunc.rpad(ol.templateFunc.orNa(malt.quantity), 4) + " gram       ");
+    print(ol.templateFunc.rpad(ol.templateFunc.orNa(malt.percentage), 4) + " %      ");
+    print(ol.templateFunc.lpad(ol.templateFunc.orNa(malt.name), iSpace) + "         ");
+    print(ol.templateFunc.rpad(ol.templateFunc.orNa(malt.color), 4) + " EBC");
+    print("\n");
+    });
+    }
+    %>
+    [b]Vann[/b]
+    <%= ol.templateFunc.rpad(ol.templateFunc.orNa(water.mashing_water), 3) %> liter til innmesking
+    <%= ol.templateFunc.rpad(ol.templateFunc.orNa(water.sparging_water), 3) %> liter til skylling
+
+    <%
+    if(mashSchedule.length > 0) {
+    print("[b]Meskeskjema[/b]\n");
+    _.each(mashSchedule, function(time) {
+    print(ol.templateFunc.rpad(ol.templateFunc.orNa(time.mash_time), 3) + " min    ");
+    print(ol.templateFunc.rpad(ol.templateFunc.orNa(time.mash_temperature), 3) + " gr C");
+    print("\n");
+    });
+    }
+
+    if(hops.length > 0) {
+    print("\n");
+    print("[b]Humle[/b]\n");
+    var iSpace = _.max(_.pluck(hops, "name"), function(i) {return i.length; }).length;
+    _.each(hops, function(hop) {
+    print(ol.templateFunc.rpad(ol.templateFunc.orNa(hop.quantity), 3)+ " gram    ");
+    print(ol.templateFunc.lpad(ol.templateFunc.orNa(hop.name), iSpace) + "    ");
+    print(ol.templateFunc.rpad(hop.alpha_acid , 4) + " % alfa  ");
+    print(ol.templateFunc.lpad(ol.templateFunc.mapHopForm(hop.form), 7) + "     ");
+    print("koketid " + ol.templateFunc.rpad(hop.boil_time, 3) + " min");
+    print("\n");
+    });
+    }
+
+    if(additives.length > 0) {
+    print("\n");
+    print("[b]Krydder og andre tilsetninger[/b]\n");
+    var iSpace = _.max(_.pluck(additives, "name"), function(i) {return i.length; }).length;
+    _.each(additives, function(additive) {
+    print(ol.templateFunc.rpad(ol.templateFunc.orNa(additive.quantity), 3)+ " gram    ");
+    print(ol.templateFunc.lpad(ol.templateFunc.orNa(additive.name), iSpace) + "          ");
+    print("koketid " + ol.templateFunc.rpad(additive.boil_time, 3) + " min");
+    print("\n");
+    });
+    }
+    %>
+    [b]Koketid[/b]
+    Total koketid vørter: <%= ol.templateFunc.rpad(ol.templateFunc.orNa(boil.boil_time), 3) %> min
+
+    [b]Gjær[/b]
+    Betegnelsen på gjæren:   <%= ol.templateFunc.rpad(ol.templateFunc.orNa(fermentation.name), 3) %>            <%= ol.templateFunc.mapYeast(fermentation.yeast_type) %>
+
+    [b]Gjæringstemperatur og -tid[/b]
+    Gjæring/primærgjæring    <%= ol.templateFunc.rpad(ol.templateFunc.orNa(fermentation.primary_fermentation_days), 3) %> dager ved <%= ol.templateFunc.rpad(ol.templateFunc.orNa(fermentation.primary_fermentation_temp), 3) %> gr C
+    Modning/sekundærgjæring  <%= ol.templateFunc.rpad(ol.templateFunc.orNa(fermentation.secondary_fermentation_days), 3) %> dager ved <%= ol.templateFunc.rpad(ol.templateFunc.orNa(fermentation.secondary_fermentation_temp), 3) %> gr C
+    lagring       <%= ol.templateFunc.rpad(ol.templateFunc.orNa(fermentation.storage_days), 3) %> dager ved <%= ol.templateFunc.rpad(ol.templateFunc.orNa(fermentation.storage_temp), 3) %> gr C
+
+    [b]Øvrig informasjon[/b]
+    Filtrert: <%= ol.templateFunc.yesNo(additionalInformation.filtered) %>
+    CO2: <%= ol.templateFunc.mapCo2(additionalInformation.co2) %>
+    Bryggedato: <%= ol.templateFunc.rpad(ol.templateFunc.orNa(additionalInformation.brew_date), 10) %>
+    Tappedato:  <%= ol.templateFunc.rpad(ol.templateFunc.orNa(additionalInformation.bottle_date), 10) %>
+
+    [b]Kommentar:[/b] <%= ol.templateFunc.orNa(additionalInformation.comment) %>[/size][/tt]
+</script>

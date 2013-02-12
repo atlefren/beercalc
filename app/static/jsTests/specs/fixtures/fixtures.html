@@ -1,0 +1,169 @@
+<h2>Brewsheet</h2>
+<div id="controls">
+    <button class="btn" id="show_recipe">Show recipe</button>
+    <button class="btn" id="show_json">Show JSON</button>
+    <button class="btn" id="save">Save recipe</button>
+</div>
+<div class="row">
+    <div id="general_section" class="section span10">
+        <form class="form-horizontal">
+            <fieldset>
+                <legend>(<i class="toggle icon-minus"></i>) General information</legend>
+                <div id="desc" class="content"></div>
+            </fieldset>
+        </form>
+    </div>
+</div>
+
+<div class="row">
+    <div id="malt_section" class="section span10">
+        <form autocomplete="off">
+            <fieldset>
+                <legend>(<i class="toggle icon-minus"></i>) Malt</legend>
+                <div class="content">
+                    <table id="malts_table" class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th class="mini-td">Qty (g)</th>
+                            <th class="mini-td">%</th>
+                            <th class="large-td">Malt/Sugar</th>
+                            <th class="mini-td">Max Ppg</th>
+                            <th class="mini-td">Color (EBC)</th>
+                            <th class="ex-small"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                    <button type="button" id="add_malt" class="btn pull-right">Add malt</button>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+</div>
+
+<div class="row">
+    <div id="water_section" class="section span10">
+        <form class="form-horizontal">
+            <fieldset>
+                <legend>(<i class="toggle icon-minus"></i>) Water</legend>
+                <div id="water" class="simple_form content"></div>
+            </fieldset>
+        </form>
+    </div>
+</div>
+
+<div class="row">
+    <div id="mashing_section" class="section span10">
+        <form>
+            <fieldset>
+                <legend>(<i class="toggle icon-minus"></i>) Mashing schedule</legend>
+                <div class="row content">
+                    <div class="span4" style="width: 270px;">
+                        <table id="mashing" class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th class="medium-td">Duration (m)</th>
+                                <th class="medium-td">Temp (&deg;C)</th>
+                                <th class="ex-small"></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                        <button type="button" id="add_mash_time" class="btn pull-right">Add time</button>
+                    </div>
+                    <div class="span5">
+                        <div id="mash_graph" class="graph"></div>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+</div>
+
+<div class="row">
+    <div id="hops_section" class="section span10">
+        <form autocomplete="off">
+            <fieldset>
+                <legend>(<i class="toggle icon-minus"></i>) Hops</legend>
+                <div class="content">
+                    <table id="hops"  class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th class="mini-td">Qty (g)</th>
+                            <th class="large-td">Hop name</th>
+                            <th class="mini-td">&alpha; Acid</th>
+                            <th class="mini-td">Form</th>
+                            <th class="medium-td">Boil Time (m)</th>
+                            <th class="ex-small"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                    <button type="button" id="add_hop" class="btn pull-right">Add hop</button>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+</div>
+
+<div class="row">
+    <div id="additives_section" class="section span10">
+        <form>
+            <fieldset>
+                <legend>(<i class="toggle icon-minus"></i>) Additives</legend>
+                <div class="content">
+                    <table id="additives" class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th class="mini-td">Qty (g)</th>
+                            <th class="large-td">Additive name</th>
+                            <th class="medium-td">Boil Time (m)</th>
+                            <th class="ex-small"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                    <button type="button" id="add_additive" class="btn pull-right">Add Additive</button>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+</div>
+
+<div class="row">
+    <div id="boiling_section" class="section span10">
+        <form class="form-horizontal">
+            <fieldset>
+                <legend>(<i class="toggle icon-minus"></i>) Boiling</legend>
+                <div id="boiling" class="simple_form content"></div>
+            </fieldset>
+        </form>
+    </div>
+</div>
+
+<div class="row">
+    <div id="fermentation_section" class="section span10">
+        <form>
+            <fieldset  class="form-inline">
+                <legend>(<i class="toggle icon-minus"></i>) Fermentation</legend>
+                <div id="fermentation" class="content"></div>
+            </fieldset>
+        </form>
+    </div>
+</div>
+
+<div class="row">
+    <div id="other_section" class="section span10">
+        <form class="form-horizontal">
+            <fieldset>
+                <legend>(<i class="toggle icon-minus"></i>) Other information</legend>
+                <div id="additional_desc" class="content">
+                </div>
+            </fieldset>
+        </form>
+    </div>
+</div>

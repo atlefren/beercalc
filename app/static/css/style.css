@@ -1,3 +1,11 @@
+.calculations th, .calculations  td {
+    border: 0;
+}
+
+.calculations th {
+    font-size: larger;
+
+}
 
 .mini-td {
     width: 80px;
