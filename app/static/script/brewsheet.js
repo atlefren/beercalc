@@ -223,7 +223,7 @@ var ol = {};
 
         initialize: function(models) {
             if(!models){
-                this.add([{"type": "primary"}, {"type": "secondary"}, {"type": "storage"}])
+                this.add([{"type": "primary"}, {"type": "secondary"}, {"type": "storage"}]);
             }
         },
 
@@ -451,6 +451,13 @@ var ol = {};
     });
 
     var Yeasts = Backbone.Collection.extend({
+
+        initialize: function(models) {
+            if(!models){
+                this.add(new Yeast());
+            }
+        },
+
         model: Yeast
     });
 
