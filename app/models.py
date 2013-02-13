@@ -28,13 +28,12 @@ class User(db.Model):
 from collections import OrderedDict
 
 
-
-
 class Malt(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(140))
     color = db.Column(db.Float)
     ppg = db.Column(db.Float)
+    description = db.Column(db.Text)
     def __repr__(self):
         return '<Malt %r>' % (self.name)
 
@@ -52,6 +51,7 @@ class Hop(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(140))
     alpha_acid = db.Column(db.Float)
+    profile = db.Column(db.Text)
 
     def __repr__(self):
         return '<Hop %r>' % (self.name)
@@ -70,7 +70,7 @@ class Yeast(db.Model):
     name = db.Column(db.String(140))
     attenuation = db.Column(db.Integer)
     type = db.Column(db.String(20))
-
+    flavor = db.Column(db.Text)
     def __repr__(self):
         return '<Yeast %r>' % (self.name)
 
