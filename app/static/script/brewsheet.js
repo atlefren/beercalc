@@ -655,7 +655,8 @@ var ol = {};
 
         events: {
             "click #show_json": "showJSON",
-            "click #save": "save"
+            "click #save": "save",
+            "click #clone": "clone"
         },
 
         initialize: function() {
@@ -668,7 +669,7 @@ var ol = {};
                 this.brew = new Brew();
                 this.brew.setData(this.options.brew)
             }
-            _.bindAll(this, "change", "changeDate", "save", "saved");
+            _.bindAll(this, "change", "changeDate", "save", "saved", "clone");
 
             this.brew.on("change", function(brew) {console.log(brew);}, this);
 
@@ -694,7 +695,8 @@ var ol = {};
         },
 
         render: function() {
-            this.$el.append(_.template($("#brewsheet_template").html(),this.brew.asJSON()));
+            this.$el.html("");
+            this.$el.append(_.template($("#brewsheet_template").html(), this.brew.asJSON()));
 
             _.each(this.brew.defaults, function(value, key) {
 
@@ -714,7 +716,20 @@ var ol = {};
                     }
                 }
             }, this);
-            this.$el.find(".date").datepicker().on('changeDate', this.changeDate);
+            if(this.options.disabled) {
+                this.$el.find("input").prop("disabled", true);
+                this.$el.find("button").each(function(){
+                    if(this.id !== "show_recipe" && this.id !== "show_json" && this.id !== "clone") {
+                        $(this).prop("disabled", true);
+                    }
+                });
+                this.$el.find("select").prop("disabled", true);
+                this.$el.find("textarea").prop("disabled", true);
+            } else {
+                this.$el.find(".date").datepicker().on('changeDate', this.changeDate);
+            }
+
+            $('#brewsheet a:first').tab('show');
             return this;
         },
 
@@ -935,6 +950,14 @@ var ol = {};
 
         saved: function() {
             window.history.pushState("object or string", "Title", "/brews/" + this.brew.get("id"));
+        },
+
+        clone: function() {
+            window.history.pushState("object or string", "Title", "/brews/add");
+            this.brew.set("id", null);
+            this.options.disabled = false;
+            this.render();
+            this.$el.find("#clone").attr("id", "save").html("Save recipe");
         }
     });
 }(ol));

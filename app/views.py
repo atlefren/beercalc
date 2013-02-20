@@ -15,8 +15,6 @@ def before_request():
 @app.route('/')
 #@login_required
 def index():
-    user = g.user
-    print user
     return render_template('index.html')
 
 @app.route('/ingredients/malt/')
@@ -43,13 +41,14 @@ def my_brews():
 @app.route('/brews/add/')
 @login_required
 def add_brew():
-    return render_template('brewsheet.html', brew=None)
+    return render_template('brewsheet.html', brew=None, is_own = True)
 
 @app.route('/brews/<int:brew_id>/')
 def show_brew(brew_id):
     brew =  Brew.query.get(brew_id)
-    if brew.public or (g.user.is_authenticated() and brew.user_id == g.user.id):
-        return render_template('brewsheet.html', brew=simplejson.dumps(brew.serialize))
+    is_own = (g.user.is_authenticated() and brew.user_id == g.user.id)
+    if brew.public or is_own:
+        return render_template('brewsheet.html', brew=simplejson.dumps(brew.serialize), is_own = is_own)
     abort(404)
 
 @app.route('/brews/browse/')
@@ -70,7 +69,6 @@ def login():
         }
         provider = providers[request.form['openid_provider']]
         session['remember_me'] = 'remember_me' in request.form
-        print "!!", provider
         return oid.try_login(provider, ask_for = ['nickname', 'email', 'fullname']) #
     else:
         return render_template('login.html')
