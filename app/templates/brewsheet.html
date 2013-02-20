@@ -18,7 +18,8 @@
 
         <script type="text/javascript">
             $(document).ready(function(){
-                var brewSheet = new ol.BrewSheet({"el": $("#brewsheet")}).render();
+                var name = "{{g.user.name}}";
+                var brewSheet = new ol.BrewSheet({"el": $("#brewsheet"), "name": name}).render();
             });
         </script>
         {% endblock %}

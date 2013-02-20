@@ -55,8 +55,6 @@ def login():
         return redirect(url_for('index'))
 
     if request.method == 'POST':
-        print "....", request.form
-
         providers = {
             'google': 'https://www.google.com/accounts/o8/id',
             'myopenid': 'https://www.myopenid.com'
@@ -64,7 +62,7 @@ def login():
         provider = providers[request.form['openid_provider']]
         session['remember_me'] = 'remember_me' in request.form
         print "!!", provider
-        return oid.try_login(provider, ask_for = ['nickname', 'email']) #
+        return oid.try_login(provider, ask_for = ['nickname', 'email', 'fullname']) #
     else:
         return render_template('login.html')
 
@@ -74,11 +72,12 @@ def after_login(resp):
         flash('Invalid login. Please try again.')
         redirect(url_for('login'))
     user = User.query.filter_by(email = resp.email).first()
+
     if user is None:
         username = resp.nickname
         if username is None or username == "":
             username = resp.email.split('@')[0]
-        user = User(username = username, email = resp.email, role = ROLE_USER)
+        user = User(username = username, email = resp.email, name = resp.fullname, role = ROLE_USER)
         db.session.add(user)
         db.session.commit()
     remember_me = False

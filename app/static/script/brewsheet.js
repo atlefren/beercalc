@@ -626,6 +626,9 @@ var ol = {};
         initialize: function() {
             if(!this.brew) {
                 this.brew = new Brew();
+                if(this.options.name) {
+                    this.brew.set({"brewer": this.options.name});
+                }
             }
             _.bindAll(this, "change", "changeDate");
 
