@@ -1,7 +1,8 @@
 from app import app, db
-from app.models import Malt, Hop, Yeast
+from app.models import Malt, Hop, Yeast, Brew
 import flask.ext.restless
 from flask.ext.restless import ProcessingException
+import simplejson
 
 manager = flask.ext.restless.APIManager(app, flask_sqlalchemy_db=db)
 
@@ -100,5 +101,17 @@ manager.create_api(Yeast,
     preprocessors={
         'PATCH_SINGLE': [yeast_put_preprocessor],
         'POST': [yeast_post_preprocessor],
+        },
+)
+
+def brew_post_preprocessor(data):
+    #TODO: get logged in user
+    data["user_id"] = 1
+    return data
+
+manager.create_api(Brew,
+    methods=['GET', 'POST', 'PUT'],
+    preprocessors={
+        'POST': [brew_post_preprocessor],
         },
 )

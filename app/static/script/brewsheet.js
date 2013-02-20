@@ -607,6 +607,40 @@ var ol = {};
             "additives": new Additives(),
             "yeasts": new Yeasts(),
             "fermentations": new Fermentations()
+        },
+
+        url: function() {
+            var base = "/api/brew";
+            if(this.has("id")){
+                return base + "/" + this.get("id");
+            }
+            return base
+        },
+
+        asJSON: function() {
+            return _.clone(this.attributes)
+        },
+
+        toJSON: function(){
+            //TODO: query user if this should be public
+            return {
+                "name": this.get("beer_name"),
+                "data": JSON.stringify(this.asJSON()),
+                "public": true
+            }
+        },
+
+        setData: function(data) {
+            _.each(data, function(value, key) {
+                if(this.get(key) instanceof Backbone.Collection) {
+                    this.get(key).reset(value);
+                } else if(this.get(key) instanceof Backbone.Model) {
+                    this.get(key).set(value);
+                } else {
+                    this.set(key, value);
+                }
+
+            }, this);
         }
     });
 
@@ -620,17 +654,21 @@ var ol = {};
     ns.BrewSheet = Backbone.View.extend({
 
         events: {
-            "click #show_json": "showJSON"
+            "click #show_json": "showJSON",
+            "click #save": "save"
         },
 
         initialize: function() {
-            if(!this.brew) {
+            if(!this.options.brew) {
                 this.brew = new Brew();
                 if(this.options.name) {
                     this.brew.set({"brewer": this.options.name});
                 }
+            } else {
+                this.brew = new Brew();
+                this.brew.setData(this.options.brew)
             }
-            _.bindAll(this, "change", "changeDate");
+            _.bindAll(this, "change", "changeDate", "save", "saved");
 
             this.brew.on("change", function(brew) {console.log(brew);}, this);
 
@@ -656,7 +694,7 @@ var ol = {};
         },
 
         render: function() {
-            this.$el.append(_.template($("#brewsheet_template").html(),this.brew.toJSON()));
+            this.$el.append(_.template($("#brewsheet_template").html(),this.brew.asJSON()));
 
             _.each(this.brew.defaults, function(value, key) {
 
@@ -883,15 +921,20 @@ var ol = {};
             }
             this.brew.set({"brew_efficiency": efficiency});
             this.$el.find("#brew_efficiency").val(efficiency);
-
-
-
         },
 
         showJSON: function() {
             var modal = $('#modal');
-            modal.find(".modal-body").html(new JsonView({data: this.brew.toJSON()}).render().$el);
+            modal.find(".modal-body").html(new JsonView({data: this.brew.asJSON()}).render().$el);
             modal.modal('show');
+        },
+
+        save: function() {
+            this.brew.save({}, {"success": this.saved});
+        },
+
+        saved: function() {
+            window.history.pushState("object or string", "Title", "/brews/" + this.brew.get("id"));
         }
     });
 }(ol));

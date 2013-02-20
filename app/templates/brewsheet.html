@@ -19,7 +19,8 @@
         <script type="text/javascript">
             $(document).ready(function(){
                 var name = "{{g.user.name}}";
-                var brewSheet = new ol.BrewSheet({"el": $("#brewsheet"), "name": name}).render();
+                var brew = {{brew|safe}};
+                var brewSheet = new ol.BrewSheet({"brew": brew, "el": $("#brewsheet"), "name": name}).render();
             });
         </script>
         {% endblock %}

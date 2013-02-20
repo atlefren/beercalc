@@ -1,7 +1,7 @@
 from flask import render_template, flash, redirect, session, url_for, request, g
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from app import app, db, lm, oid
-from models import User, Malt, Hop, Yeast, ROLE_USER, ROLE_ADMIN
+from models import Brew, User, Malt, Hop, Yeast, ROLE_USER, ROLE_ADMIN
 import simplejson
 
 @lm.user_loader
@@ -43,6 +43,12 @@ def my_brews():
 @login_required
 def add_brew():
     return render_template('brewsheet.html', brew=None)
+
+@app.route('/brews/<int:brew_id>/')
+@login_required
+def show_brew(brew_id):
+    brew =  Brew.query.get_or_404(brew_id)
+    return render_template('brewsheet.html', brew=simplejson.dumps(brew.serialize))
 
 @app.route('/brews/browse/')
 def browse_brews():

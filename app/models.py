@@ -1,5 +1,5 @@
 from app import db
-
+import simplejson
 
 ROLE_USER = 0
 ROLE_ADMIN = 1
@@ -27,6 +27,21 @@ class User(db.Model):
 
 from collections import OrderedDict
 
+class Brew(db.Model):
+    id = db.Column(db.Integer, primary_key = True)
+    name = db.Column(db.String(140))
+    data = db.Column(db.Text)
+    public = db.Column(db.Boolean)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    user = db.relationship('User',
+        backref=db.backref('brew', lazy='dynamic'))
+    def __repr__(self):
+        return '<Brew %r>' % (self.name)
+
+    @property
+    def serialize(self):
+        """Return object data in easily serializeable format"""
+        return simplejson.loads(self.data)
 
 class Malt(db.Model):
     id = db.Column(db.Integer, primary_key = True)
@@ -36,6 +51,8 @@ class Malt(db.Model):
     description = db.Column(db.Text)
     def __repr__(self):
         return '<Malt %r>' % (self.name)
+
+
 
     @property
     def serialize(self):
