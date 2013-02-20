@@ -20,6 +20,7 @@
     <% _.each(fields, function(field){ %>
     <td><div class="control-group"><input id="<%= field.name %>" type="text" value="<%= field.value %>"></div></td>
     <% }); %>
-    <td style="text-align: right;"><button type="button" class="btn btn-primary btn-small" id="save">Save</button></td>
+    <td style="text-align: right;"><button type="button" class="btn btn-primary btn-small" title="Save" id="save">Save</button></td>
+    <td style="text-align: right;"><button type="button" class="btn btn-small"  title="Cancel" id="cancel">Cancel</button></td>
 </script>
 {% endblock %}

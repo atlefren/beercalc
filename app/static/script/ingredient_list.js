@@ -21,11 +21,12 @@ var ol = ol || {};
         events: {
             "click #edit": "edit",
             "click #save": "save",
+            "click #cancel": "cancel",
             "click #delete": "delete"
         },
 
         initialize: function() {
-            _.bindAll(this, "edit", "save", "saved", "saveError", "delete");
+            _.bindAll(this, "edit", "save", "saved", "cancel", "saveError", "delete");
             this.model.on("destroy", this.remove, this);
         },
 
@@ -66,6 +67,10 @@ var ol = ol || {};
                 return res;
             }, {}, this);
             this.saveChanges(values);
+        },
+
+        cancel: function() {
+            this.render();
         },
 
         saveChanges: function(values) {
