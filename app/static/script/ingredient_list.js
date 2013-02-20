@@ -38,7 +38,9 @@ var ol = ol || {};
                 "fields": fields
             };
             if (this.model.tooltip) {
-                data.tooltip = this.model.get(this.model.tooltip);
+                var tooltip = this.model.get(this.model.tooltip);
+                this.$el.attr("title", tooltip);
+                this.$el.tooltip({"placement": "left"});
             }
             this.$el.html("");
             this.$el.append(_.template($("#ingredient_row_template").html(), data));
