@@ -8,7 +8,6 @@ manager = flask.ext.restless.APIManager(app, flask_sqlalchemy_db=db)
 #TODO simplyfy this...
 
 def verify_is_number(dict, value, errors):
-    print "verify ", value
     if value in dict:
         if dict[value] == "":
             dict[value] = None
@@ -24,7 +23,7 @@ def verify_is_set(dict, value, errors):
 
 def malt_put_preprocessor(instid, data):
     malt_verify(data)
-    return
+    return data
 
 def malt_post_preprocessor(data):
     malt_verify(data)
