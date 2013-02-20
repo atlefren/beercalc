@@ -10,6 +10,9 @@ class User(db.Model):
     email = db.Column(db.String(120), index = True, unique = True)
     role = db.Column(db.SmallInteger, default = ROLE_USER)
     name = db.Column(db.String(120), index = True, unique = True)
+    brews = db.relationship('Brew',
+        backref=db.backref('user', lazy='select'))
+
     def is_authenticated(self):
         return True
 
@@ -33,15 +36,15 @@ class Brew(db.Model):
     data = db.Column(db.Text)
     public = db.Column(db.Boolean)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    user = db.relationship('User',
-        backref=db.backref('brew', lazy='dynamic'))
     def __repr__(self):
         return '<Brew %r>' % (self.name)
 
     @property
     def serialize(self):
         """Return object data in easily serializeable format"""
-        return simplejson.loads(self.data)
+        data = simplejson.loads(self.data)
+        data["id"] = self.id
+        return data
 
 class Malt(db.Model):
     id = db.Column(db.Integer, primary_key = True)

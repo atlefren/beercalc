@@ -19,7 +19,11 @@
         <script type="text/javascript">
             $(document).ready(function(){
                 var name = "{{g.user.name}}";
-                var brew = {{brew|safe}};
+                var brew;
+                {% if brew %}
+                    brew = {{brew|safe}};
+                {% endif %}
+
                 var brewSheet = new ol.BrewSheet({"brew": brew, "el": $("#brewsheet"), "name": name}).render();
             });
         </script>

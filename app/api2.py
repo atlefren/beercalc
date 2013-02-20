@@ -1,3 +1,4 @@
+from flask import g
 from app import app, db
 from app.models import Malt, Hop, Yeast, Brew
 import flask.ext.restless
@@ -89,7 +90,6 @@ def yeast_verify(data):
     errors = []
     verify_is_set(data, "name", errors)
     verify_is_number(data, "attenuation", errors)
-
     if errors:
         raise ProcessingException(message=errors,
             status_code=400)
@@ -104,14 +104,28 @@ manager.create_api(Yeast,
         },
 )
 
+def brew_put_preprocessor(instid, data):
+
+    brew = Brew.query.get(instid)
+    print brew.user_id
+
+    if not g.user.is_authenticated() or brew.user_id != g.user.id:
+        raise ProcessingException(message='Not Authorized',
+            status_code=401)
+
+    return data
+
 def brew_post_preprocessor(data):
-    #TODO: get logged in user
-    data["user_id"] = 1
+    if not g.user.is_authenticated():
+        raise ProcessingException(message='Not Authorized',
+            status_code=401)
+    data["user_id"] = g.user.id
     return data
 
 manager.create_api(Brew,
     methods=['GET', 'POST', 'PUT'],
     preprocessors={
         'POST': [brew_post_preprocessor],
+        'PATCH_SINGLE': [brew_put_preprocessor],
         },
 )

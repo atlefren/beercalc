@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block body %}
+<section id="brews">
+    <h2>{{ title }}</h2>
+
+    <ul>
+        {% for brew in brews %}
+        <li><a href="/brews/{{brew.id}}">{{brew.name}}</a>
+        {%if show_brewer %}
+            ({{brew.user.name}})
+        {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+</section>
+{% endblock %}
