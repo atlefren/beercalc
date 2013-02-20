@@ -11,6 +11,9 @@
     <% _.each(fields, function(field){ %>
     <td><%= field.value %></td>
     <% }); %>
+    <% if (tooltip) { %>
+    <!--<td><%= tooltip %></td>-->
+    <% } %>
     <td style="text-align:right;">
         <button id="edit" class="btn btn-small" title="Edit"><i class="icon-edit"></button></i>
         <button id="delete" class="btn btn-small" title="Delete"><i class="icon-remove-sign"></i></button>

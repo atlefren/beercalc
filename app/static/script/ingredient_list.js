@@ -1,6 +1,19 @@
 var ol = ol || {};
 (function(ns) {
 
+    var Model = Backbone.Model.extend({
+        toJSON: function() {
+            return _.reduce(this.attributes, function(data, attr, key){
+                if(!isNaN(attr)) {
+                    data[key] = parseFloat(attr);
+                } else {
+                    data[key] = attr;
+                }
+                return data;
+            }, {}, this);
+        }
+    });
+
     var IngredientRow = Backbone.View.extend({
 
         tagName: "tr",
@@ -20,8 +33,15 @@ var ol = ol || {};
             var fields = _.map(this.options.attr, function(attribute){
                 return {"value": this.model.get(attribute)}
             }, this);
+
+            var data = {
+                "fields": fields
+            };
+            if (this.model.tooltip) {
+                data.tooltip = this.model.get(this.model.tooltip);
+            }
             this.$el.html("");
-            this.$el.append(_.template($("#ingredient_row_template").html(), {"fields": fields}));
+            this.$el.append(_.template($("#ingredient_row_template").html(), data));
             return this;
         },
 
@@ -73,7 +93,6 @@ var ol = ol || {};
         initialize: function() {
             this.collection.on("reset", this.addAll, this);
             this.collection.on("add", this.addOne, this);
-          //  this.collection.on("change", this.addOne, this);
         },
 
         addAll: function() {
@@ -81,9 +100,7 @@ var ol = ol || {};
         },
 
         addOne: function(model) {
-            //if(!model.isNew()) {
                 this.$el.append(new IngredientRow({model: model, "attr": this.options.attributes}).render().$el);
-            //}
         }
     });
 
@@ -136,8 +153,6 @@ var ol = ol || {};
             "click #add": "add"
         },
 
-        attributes: ["name", "color", "ppg"],
-
         initialize: function() {
             _.bindAll(this, "add", "added", "saved", "saveError");
             this.collection = new this.collectionType();
@@ -170,8 +185,8 @@ var ol = ol || {};
         }
     });
 
-    var Malt = Backbone.Model.extend({
-
+    var Malt = Model.extend({
+        tooltip: "description"
     });
 
     var Malts = Backbone.Collection.extend({
@@ -186,7 +201,8 @@ var ol = ol || {};
         collectionType: Malts
     });
 
-    var Hop = Backbone.Model.extend({
+    var Hop = Model.extend({
+        tooltip: "profile"
     });
 
     var Hops = Backbone.Collection.extend({
@@ -198,10 +214,13 @@ var ol = ol || {};
 
         attributes: ["name", "alpha_acid"],
 
+        tooltip: "profile",
+
         collectionType: Hops
     });
 
-    var Yeast = Backbone.Model.extend({
+    var Yeast = Model.extend({
+        tooltip: "flavor"
     });
 
     var Yeasts = Backbone.Collection.extend({

@@ -44,7 +44,8 @@ class Malt(db.Model):
             'id': self.id,
             'name': self.name,
             'color': self.color,
-            'ppg': self.ppg
+            'ppg': self.ppg,
+            'description': self.description
         }
 
 class Hop(db.Model):
@@ -63,6 +64,7 @@ class Hop(db.Model):
             'id'         : self.id,
             'name': self.name,
             'alpha_acid': self.alpha_acid,
+            'profile': self.profile
         }
 
 class Yeast(db.Model):
@@ -82,4 +84,5 @@ class Yeast(db.Model):
             'name': self.name,
             'attenuation': self.attenuation,
             'type': self.type,
+            'flavor': self.flavor
         }
