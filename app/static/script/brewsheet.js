@@ -17,7 +17,38 @@ var ol = {};
 
     var computeABV = function(og, fg) {
         return (76.08 * (og-fg) / (1.775-og)) * (fg / 0.794)
-    }
+    };
+
+    //taken from http://en.wikipedia.org/wiki/Standard_Reference_Method
+    var mapEBC = function(input) {
+
+        var colors = {
+            4:'#F8F753',
+            6:'#F6F513',
+            8:'#ECE61A',
+            12:'#D5BC26',
+            16:'#BF923B',
+            20:'#BF813A',
+            26:'#BC6733',
+            33:'#8D4C32',
+            39:'#5D341A',
+            47:'#261716',
+            57:'#0F0B0A',
+            69:'#080707',
+            79:'#030403'
+        };
+
+        if(isNaN(input)){
+            return "#fff";
+        }
+        var found = _.find(colors, function(hex, ebc) {
+            return input <= ebc;
+        });
+        if(found) {
+            return found;
+        }
+        return colors["79"];
+    };
 
     var apiSearch = function(query, callback, model) {
         var params = {"filters": [{"name": "name", "op": "like", "val": "%" + query + "%"}]};
@@ -696,7 +727,11 @@ var ol = {};
 
         render: function() {
             this.$el.html("");
-            this.$el.append(_.template($("#brewsheet_template").html(), this.brew.asJSON()));
+            var data = this.brew.asJSON();
+            if(this.brew.has("computed_color")){
+                data.color = mapEBC(this.brew.get("computed_color"));
+            }
+            this.$el.append(_.template($("#brewsheet_template").html(), data));
 
             _.each(this.brew.defaults, function(value, key) {
 
@@ -834,7 +869,7 @@ var ol = {};
                 }
             }
             this.brew.set({"computed_color": ebc});
-            this.$el.find("#computed_color").text(ebc);
+            this.$el.find("#computed_color").text(ebc).css("background-color", mapEBC(ebc));
         },
 
         //TODO: take form into consideration (reduce with 25% for pellets [check radical brewing])
