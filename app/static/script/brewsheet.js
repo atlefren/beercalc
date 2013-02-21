@@ -729,6 +729,7 @@ var ol = {};
                 this.$el.find(".date").datepicker().on('changeDate', this.changeDate);
             }
 
+            this.computeActualABV();
             $('#brewsheet a:first').tab('show');
             return this;
         },
