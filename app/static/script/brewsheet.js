@@ -105,6 +105,27 @@ ol.calc = {};
             }
         }
         return fg;
+    };
+
+    ns.computeColor = function(volume, malts) {
+        var ebc = "-";
+        if(ol.calc.isNumber(volume)  && malts.length > 0) {
+            var sum = malts.reduce(function(sum, malt) {
+                var amount = malt.get("quantity");
+                var ebc = malt.get("color");
+                if(ol.calc.isNumber(amount) && ol.calc.isNumber(ebc)) {
+                    return sum + (amount * 0.0022) * (ebc * 0.508);
+                }
+                return sum;
+            }, 0);
+            if (sum > 0 ) {
+                var total_mcu = sum / (volume * 0.2642);
+                //Moreys Formula
+                var srm = 1.4922 * Math.pow(total_mcu, 0.6859);
+                ebc = Math.round(srm * 1.97); //lovibond to ebc
+            }
+        }
+        return ebc;
     }
 
 }(ol.calc));
@@ -918,23 +939,9 @@ ol.calc = {};
         computeColor: function() {
             var malts = this.brew.get("malts");
             var volume =  this.brew.get("batch_size");
-            var ebc = "-";
-            if(ol.calc.isNumber(volume)  && malts.length > 0) {
-                var sum = malts.reduce(function(sum, malt) {
-                    var amount = malt.get("quantity");
-                    var ebc = malt.get("color");
-                    if(ol.calc.isNumber(amount) && ol.calc.isNumber(ebc)) {
-                        return sum + (amount * 0.0022) * (ebc * 0.508);
-                    }
-                    return sum;
-                }, 0);
-                if (sum > 0 ) {
-                    var total_mcu = sum / (volume * 0.2642);
-                    //Moreys Formula
-                    var srm = 1.49 * Math.pow(total_mcu, 0.69);
-                    ebc = Math.round(srm * 1.97);
-                }
-            }
+
+            var ebc = ol.calc.computeColor(volume, malts);
+
             this.brew.set({"computed_color": ebc});
             this.$el.find("#computed_color").text(ebc).css("background-color", mapEBC(ebc));
         },

@@ -201,4 +201,65 @@ describe("Brewsheet.Calculator", function() {
         });
 
     });
+
+
+    describe("Color calc", function(){
+
+        //example from "how to brew" pp. 272-273
+        beforeEach(function(){
+            this.malts = new ol.Malts(
+                [
+                    {
+                        "quantity": "2721.55422", //6 lbs
+                        "name": "2-row lager malt",
+                        "ppg": "36",
+                        "color": "10"
+                    },
+                    {
+                        "quantity": "226.796185", //0.5 lbs
+                        "name": "caramel 15",
+                        "ppg": "34",
+                        "color": "120"
+                    },
+                    {
+                        "quantity": "226.796185", //0.5 lbs
+                        "name": "chocolate malt",
+                        "ppg": "34",
+                        "color": "700"
+                    },
+                    {
+                        "quantity": "113.398093", //0.25 lbs
+                        "name": "black patent",
+                        "ppg": "30",
+                        "color": "1000"
+                    }
+                ]
+            );
+
+            this.volume = 19;
+        });
+
+
+        it("should return blank when volume not set", function() {
+            expect(calc.computeColor("", this.malts)).toBe("-")
+        });
+
+        it("should return blank when malt quantity not set", function() {
+            this.malts.each(function(malt) {
+                malt.set("quantity", "");
+            });
+            expect(calc.computeColor(this.volume, this.malts)).toBe("-")
+        });
+
+        it("should return blank when malt color not set", function() {
+            this.malts.each(function(malt) {
+                malt.set("color", "");
+            });
+            expect(calc.computeColor(this.volume, this.malts)).toBe("-")
+        });
+
+        it("should compute color", function() {
+            expect(calc.computeColor(this.volume, this.malts)).toBe(56)
+        });
+    });
 });
