@@ -175,4 +175,30 @@ describe("Brewsheet.Calculator", function() {
         });
     });
 
+    describe("FG calc", function(){
+        //example from http://www.homebrewtalk.com/f13/estimate-final-gravity-32826/#post322639
+        beforeEach(function(){
+            this.yeasts = new ol.Yeasts(
+                [
+                    {
+                        "attenuation": 75
+                    }
+                ]
+            );
+
+            this.og = 1.055;
+        });
+
+        it("should return blank when og not set", function() {
+            expect(calc.computeFG("", this.yeasts)).toBe("-");
+        });
+
+        it("should return blank when yeast attenuation not set", function() {
+            this.yeasts.each(function(yeast) {
+                yeast.set("attenuation", "");
+            });
+            expect(calc.computeFG(this.og, this.yeasts)).toBe("-");
+        });
+
+    });
 });

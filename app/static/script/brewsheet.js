@@ -85,6 +85,26 @@ ol.calc = {};
 
         }
         return og;
+    };
+
+    //taken from http://www.homebrewtalk.com/f13/estimate-final-gravity-32826/#post322639
+    ns.computeFG = function(og, yeasts) {
+        var fg = "-";
+        if(ol.calc.isNumber(og) && yeasts.length > 0) {
+            var avg_attenuation = yeasts.reduce(function(sum, yeast) {
+                var attenuation = yeast.get("attenuation");
+                if(ol.calc.isNumber(attenuation)) {
+                    return sum + attenuation;
+                }
+                return sum;
+            }, 0);
+
+            if(avg_attenuation > 0) {
+                avg_attenuation = avg_attenuation / yeasts.length;
+                fg = Math.round(((og - 1)-((og - 1) * (avg_attenuation / 100)) + 1) * 1000) / 1000;
+            }
+        }
+        return fg;
     }
 
 }(ol.calc));
@@ -552,7 +572,7 @@ ol.calc = {};
         }
     });
 
-    var Yeasts = Backbone.Collection.extend({
+    var Yeasts = ns.Yeasts = Backbone.Collection.extend({
 
         initialize: function(models) {
             if(!models){
@@ -919,7 +939,6 @@ ol.calc = {};
             this.$el.find("#computed_color").text(ebc).css("background-color", mapEBC(ebc));
         },
 
-        //TODO: take form into consideration (reduce with 25% for pellets [check radical brewing])
         computeBitterness: function() {
             var og = this.brew.get("computed_og");
             var volume =  this.brew.get("batch_size");
@@ -934,21 +953,7 @@ ol.calc = {};
             var og = this.brew.get("computed_og");
             var yeasts = this.brew.get("yeasts");
 
-            var fg = "-";
-            if(ol.calc.isNumber(og) && yeasts.length > 0) {
-                var avg_attenuation = yeasts.reduce(function(sum, yeast) {
-                    var attenuation = yeast.get("attenuation");
-                    if(ol.calc.isNumber(attenuation)) {
-                        return sum + attenuation;
-                    }
-                    return sum;
-                },0);
-
-                if(avg_attenuation > 0) {
-                    avg_attenuation = avg_attenuation / yeasts.length;
-                    fg = Math.round(((og - 1)-((og - 1) * (avg_attenuation / 100)) + 1) * 1000) / 1000;
-                }
-            }
+            var fg = ol.calc.computeFG(og, yeasts);
             this.brew.set({"computed_fg": fg});
             this.$el.find("#computed_fg").text(fg);
             this.computeABV();
