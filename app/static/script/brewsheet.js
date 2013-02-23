@@ -1,5 +1,22 @@
 var ol = {};
+ol.calc = {};
+
 (function(ns) {
+
+    ns.toLbs = function(grams) {
+        return grams * 0.002205;
+    };
+
+    ns.toGallons = function(liter) {
+        return liter * 0.264172051242;
+    };
+
+    ns.isNumber = isNumber = function(val){
+        if(val === "") {
+            return false;
+        }
+        return !isNaN(val);
+    };
 
     //Thinseth equation, Palmer "How to brew" p 58
     var computeUtilization = function(G, T) {
@@ -14,6 +31,40 @@ var ol = {};
 
         return fG(G) * fT(T);
     };
+
+    ns.computeBitterness= function(og, volume, hops) {
+        var bitterness = "-";
+        if(isNumber(og) && isNumber(volume) && hops.length > 0) {
+
+            var ibu = hops.reduce(function(total_ibu, hop) {
+                var quantity = hop.get("quantity");
+                var alpha_acid = hop.get("alpha_acid");
+                var boil_time = hop.get("boil_time");
+                if(isNumber(quantity) && isNumber(alpha_acid) && isNumber(boil_time)) {
+                    var aau = parseFloat(quantity) * parseFloat(alpha_acid);
+                    var utilization = computeUtilization(og, parseFloat(boil_time));
+                    var ibu = aau * utilization * (10 / volume );
+                    if(hop.get("form") === "pellets"){
+                        //according to "radical brewing" (pp 64) utilization is 24% higher for pellets
+                        ibu *= 1.24;
+                    }
+                    return total_ibu + ibu;
+                }
+                return total_ibu;
+            }, 0);
+
+            if(ibu > 0) {
+                bitterness = Math.round(ibu);
+            }
+        }
+        return bitterness;
+    }
+
+}(ol.calc));
+
+(function(ns) {
+
+
 
     var computeABV = function(og, fg) {
         return (76.08 * (og-fg) / (1.775-og)) * (fg / 0.794)
@@ -128,13 +179,6 @@ var ol = {};
         }
     });
 
-    var toLbs = function(grams) {
-        return grams * 0.002205;
-    };
-
-    var toGallons = function(liter) {
-        return liter * 0.264172051242;
-    };
 
     var MashTime = Backbone.Model.extend({
         "defaults": {
@@ -413,7 +457,7 @@ var ol = {};
         }
     });
 
-    var Hops = Backbone.Collection.extend({
+    var Hops = ns.Hops = Backbone.Collection.extend({
 
         model: Hop,
 
@@ -675,12 +719,7 @@ var ol = {};
         }
     });
 
-    var isNumber = function(val){
-        if(val === "") {
-            return false;
-        }
-        return !isNaN(val);
-    };
+
 
     ns.BrewSheet = Backbone.View.extend({
 
@@ -751,7 +790,7 @@ var ol = {};
                     }
                 }
             }, this);
-            if(this.options.disabled) {
+            if(this.options.disabled) {
                 this.$el.find("input").prop("disabled", true);
                 this.$el.find("button").each(function(){
                     if(this.id !== "show_recipe" && this.id !== "show_json" && this.id !== "clone") {
@@ -783,7 +822,7 @@ var ol = {};
         },
 
         batchSizeChanged: function(){
-            if(isNumber(this.brew.get("batch_size"))){
+            if(ol.calc.isNumber(this.brew.get("batch_size"))){
                 this.computeGravity();
                 this.computeColor();
                 this.computeBitterness();
@@ -792,13 +831,13 @@ var ol = {};
         },
 
         efficiencyChanged: function(){
-            if(isNumber(this.brew.get("brewhouse_efficiency"))){
+            if(ol.calc.isNumber(this.brew.get("brewhouse_efficiency"))){
                 this.computeGravity();
             }
         },
 
         gravityChanged: function() {
-            if(isNumber(this.brew.get("computed_og"))){
+            if(ol.calc.isNumber(this.brew.get("computed_og"))){
                 this.computeBitterness();
                 this.computeFG();
             }
@@ -829,12 +868,12 @@ var ol = {};
             var volume =  this.brew.get("batch_size");
             var efficiency = this.brew.get("brewhouse_efficiency");
             var og = "-";
-            if(isNumber(volume)  && isNumber(efficiency) && malts.length > 0) {
+            if(ol.calc.isNumber(volume)  && ol.calc.isNumber(efficiency) && malts.length > 0) {
                 var computed = malts.reduce(function(sum, malt) {
                     var amount = malt.get("quantity");
                     var ppg = malt.get("ppg");
-                    if(isNumber(amount) && isNumber(ppg)) {
-                        return sum + ((efficiency / 100) * ppg) * (toLbs(amount) / toGallons(volume));
+                    if(ol.calc.isNumber(amount) && ol.calc.isNumber(ppg)) {
+                        return sum + ((efficiency / 100) * ppg) * (ol.calc.toLbs(amount) / ol.calc.toGallons(volume));
                     }
                     return sum;
                 }, 0);
@@ -852,11 +891,11 @@ var ol = {};
             var malts = this.brew.get("malts");
             var volume =  this.brew.get("batch_size");
             var ebc = "-";
-            if(isNumber(volume)  && malts.length > 0) {
+            if(ol.calc.isNumber(volume)  && malts.length > 0) {
                 var sum = malts.reduce(function(sum, malt) {
                     var amount = malt.get("quantity");
                     var ebc = malt.get("color");
-                    if(isNumber(amount) && isNumber(ebc)) {
+                    if(ol.calc.isNumber(amount) && ol.calc.isNumber(ebc)) {
                         return sum + (amount * 0.0022) * (ebc * 0.508);
                     }
                     return sum;
@@ -878,26 +917,7 @@ var ol = {};
             var volume =  this.brew.get("batch_size");
             var hops = this.brew.get("hops");
 
-            var bitterness = "-";
-            if(isNumber(og) && isNumber(volume) && hops.length > 0) {
-
-                var ibu = hops.reduce(function(total_ibu, hop) {
-                    var quantity = hop.get("quantity");
-                    var alpha_acid = hop.get("alpha_acid");
-                    var boil_time = hop.get("boil_time");
-                    if(isNumber(quantity) && isNumber(alpha_acid) && isNumber(boil_time)) {
-                        var aau = parseFloat(quantity) * parseFloat(alpha_acid);
-                        var utilization = computeUtilization(og, parseFloat(boil_time));
-                        var ibu = aau * utilization * (10 / volume );
-                        return total_ibu + ibu;
-                    }
-                    return total_ibu;
-                }, 0);
-
-                if(ibu > 0) {
-                    bitterness = Math.round(ibu);
-                }
-            }
+            var bitterness = ol.calc.computeBitterness(og, volume, hops);
             this.brew.set({"computed_ibu": bitterness});
             this.$el.find("#computed_ibu").text(bitterness);
         },
@@ -907,10 +927,10 @@ var ol = {};
             var yeasts = this.brew.get("yeasts");
 
             var fg = "-";
-            if(isNumber(og) && yeasts.length > 0) {
+            if(ol.calc.isNumber(og) && yeasts.length > 0) {
                 var avg_attenuation = yeasts.reduce(function(sum, yeast) {
                     var attenuation = yeast.get("attenuation");
-                    if(isNumber(attenuation)) {
+                    if(ol.calc.isNumber(attenuation)) {
                         return sum + attenuation;
                     }
                     return sum;
@@ -932,7 +952,7 @@ var ol = {};
             var fg = this.brew.get("computed_fg");
 
             var abv = "-";
-            if(isNumber(og) && isNumber(fg)){
+            if(ol.calc.isNumber(og) && ol.calc.isNumber(fg)){
                 abv = Math.round(computeABV(og, fg) * 10) / 10;
             }
             this.brew.set({"computed_abv": abv});
@@ -944,7 +964,7 @@ var ol = {};
             var fg = this.brew.get("actual_fg");
 
             var abv = "";
-            if(isNumber(og) && isNumber(fg)){
+            if(ol.calc.isNumber(og) && ol.calc.isNumber(fg)){
                 abv = Math.round(computeABV(og, fg) * 10) / 10;
             }
             this.brew.set({"actual_abv": abv});
@@ -957,13 +977,13 @@ var ol = {};
             var malts = this.brew.get("malts");
 
             var efficiency = "-";
-            if(isNumber(og) && isNumber(volume) && malts.length > 0){
+            if(ol.calc.isNumber(og) && ol.calc.isNumber(volume) && malts.length > 0){
 
                 var max_gravity = malts.reduce(function(sum, malt){
                     var amount = malt.get("quantity");
                     var ppg = malt.get("ppg");
-                    if(isNumber(amount) && isNumber(ppg)) {
-                        var addition = ppg * (toLbs(amount) / toGallons(volume));
+                    if(ol.calc.isNumber(amount) && ol.calc.isNumber(ppg)) {
+                        var addition = ppg * (ol.calc.toLbs(amount) / ol.calc.toGallons(volume));
                         return sum + addition;
                     }
                     return sum;
