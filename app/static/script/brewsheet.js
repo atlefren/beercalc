@@ -523,7 +523,7 @@ var ol = {};
 
         tagName: "tr",
 
-        listenOn: ["name", "attenuation", "yeast_type"],
+        listenOn: ["name", "attenuation", "type"],
 
         initialize: function() {
             _.bindAll(this, "setYeast");

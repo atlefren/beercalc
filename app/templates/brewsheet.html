@@ -118,7 +118,6 @@
             </td>
             <td>
                 <select id="form" class="small">
-                    <option value="none" <% if( form == 'none') { %> selected  <% } %>>--</option>
                     <option value="pellets" <% if( form == 'pellets') { %> selected  <% } %>>Pellets</option>
                     <option value="cones" <% if( form == 'cones') { %> selected  <% } %>>Cones</option>
                 </select>
@@ -153,7 +152,11 @@
                 <input id="attenuation" type="text" class="input-medium" value="<%= attenuation %>">
             </td>
             <td>
-                <input id="type" type="text" class="input-medium" value="<%= type %>"><!-- todo: make select -->
+                <select id="type" class="small">
+                    <option value="liquid" <% if( type == 'liquid') { %> selected  <% } %>>Liquid</option>
+                    <option value="dry" <% if( type == 'dry') { %> selected  <% } %>>Dry</option>
+                    <option value="homegrown" <% if( type == 'homegrown') { %> selected  <% } %>>Homegrown</option>
+                </select>
             </td>
             <td class="remove"><i class="icon-remove-circle"></i></td>
         </script>
