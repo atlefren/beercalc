@@ -1,71 +1,131 @@
-from app import app, db, models
-from flask.ext import restful
-from flask.ext.restful import reqparse, abort
-from flask.ext.restful import Resource, fields, marshal_with
-
+from flask import g
+from app import app, db
+from app.models import Malt, Hop, Yeast, Brew
+import flask.ext.restless
+from flask.ext.restless import ProcessingException
 import simplejson
 
+manager = flask.ext.restless.APIManager(app, flask_sqlalchemy_db=db)
 
-api = restful.Api(app)
+#TODO simplyfy this...
 
-resource_fields = {
-    'id': fields.Integer,
-    'name': fields.String,
-    'color': fields.String,
-    'ppg': fields.String,
-    }
-class Malt(Resource):
+def verify_is_number(dict, value, errors):
+    if value in dict:
+        if dict[value] == "":
+            dict[value] = None
+        else:
+            try:
+                float(dict[value])
+            except Exception:
+                errors.append({"field": value, "message": "Must be number"})
 
-    def get(self, malt_id):
+def verify_is_set(dict, value, errors):
+    if not dict[value] or dict[value] == "":
+        errors.append({"field": value, "message": "Must be set"})
 
-        malt = models.Malt.query.get(malt_id)
-        if not malt:
-            return "Malt {} doesn't exist".format(malt_id), 404
-        return simplejson.dumps(malt.serialize)
+def malt_put_preprocessor(instid, data):
+    malt_verify(data)
+    return data
 
-    def put(self, malt_id):
-
-        parser = reqparse.RequestParser()
-        parser.add_argument('name', type=str, location='json')
-        args = parser.parse_args()
-
-        malt = models.Malt.query.get(malt_id)
-        if not malt:
-            return "Malt {} doesn't exist".format(malt_id), 404
-
-        data = simplejson.loads(args['malt'])
-        malt.name = data["name"]
-        db.session.commit()
-
-        return simplejson.dumps(malt.serialize), 201
-
-class Malts(Resource):
+def malt_post_preprocessor(data):
+    malt_verify(data)
+    return data
 
 
-    def get(self):
-        parser = reqparse.RequestParser()
-        parser.add_argument('q', type=str)
-        args = parser.parse_args()
-        if args["q"]:
-            return [malt for malt in MALTS if args["q"].lower() in malt['name'].lower()]
+def malt_verify(data):
+    errors = []
+    verify_is_set(data, "name", errors)
+    verify_is_number(data, "ppg", errors)
+    verify_is_number(data, "color", errors)
 
-        return simplejson.dumps([malt.serialize for malt in models.Malt.query.all()])
+    if errors:
+        raise ProcessingException(message=errors,
+            status_code=400)
 
-    @marshal_with(resource_fields)
-    def post(self):
+# Create API endpoints, which will be available at /api/<tablename> by
+# default. Allowed HTTP methods can be specified as well.
+manager.create_api(Malt,
+                    methods=['GET', 'POST', 'PUT', "DELETE"],
+                    preprocessors={
+                        'PATCH_SINGLE': [malt_put_preprocessor],
+                        'POST': [malt_post_preprocessor],
+                    },
+                )
 
-        parser = reqparse.RequestParser()
-        parser.add_argument('name', type=str, location='json', required=True, help='Must be set')
-        parser.add_argument('color', type=float, location='json', help='hmm')
-        parser.add_argument('ppg', type=float, location='json')
-        args = parser.parse_args()
+def hop_put_preprocessor(instid, data):
+    hop_verify(data)
+    return data
 
-        print args
-        malt = models.Malt(args)
-        db.session.add(malt)
-        db.session.commit()
+def hop_post_preprocessor(data):
+    hop_verify(data)
+    return data
 
-        return malt
+def hop_verify(data):
+    errors = []
+    verify_is_set(data, "name", errors)
+    verify_is_number(data, "alpha_acid", errors)
+    if errors:
+        raise ProcessingException(message=errors,
+            status_code=400)
 
-api.add_resource(Malt, '/api/malt/<string:malt_id>')
-api.add_resource(Malts, '/api/malts/')
+# Create API endpoints, which will be available at /api/<tablename> by
+# default. Allowed HTTP methods can be specified as well.
+manager.create_api(Hop,
+    methods=['GET', 'POST', 'PUT', "DELETE"],
+    preprocessors={
+        'PATCH_SINGLE': [hop_put_preprocessor],
+        'POST': [hop_post_preprocessor],
+        },
+)
+
+def yeast_put_preprocessor(instid, data):
+    yeast_verify(data)
+    return data
+
+def yeast_post_preprocessor(data):
+    yeast_verify(data)
+    return data
+
+def yeast_verify(data):
+    errors = []
+    verify_is_set(data, "name", errors)
+    verify_is_number(data, "attenuation", errors)
+    if errors:
+        raise ProcessingException(message=errors,
+            status_code=400)
+
+# Create API endpoints, which will be available at /api/<tablename> by
+# default. Allowed HTTP methods can be specified as well.
+manager.create_api(Yeast,
+    methods=['GET', 'POST', 'PUT', "DELETE"],
+    preprocessors={
+        'PATCH_SINGLE': [yeast_put_preprocessor],
+        'POST': [yeast_post_preprocessor],
+        },
+)
+
+def brew_put_preprocessor(instid, data):
+
+    brew = Brew.query.get(instid)
+    print brew.user_id
+
+    if not g.user.is_authenticated() or brew.user_id != g.user.id:
+        raise ProcessingException(message='Not Authorized',
+            status_code=401)
+
+    return data
+
+def brew_post_preprocessor(data):
+    if not g.user.is_authenticated():
+        raise ProcessingException(message='Not Authorized',
+            status_code=401)
+    data["user_id"] = g.user.id
+    return data
+
+manager.create_api(Brew,
+    methods=['GET', 'POST', 'PUT'],
+    preprocessors={
+        'POST': [brew_post_preprocessor],
+        'PATCH_SINGLE': [brew_put_preprocessor],
+        },
+)
