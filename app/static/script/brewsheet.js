@@ -986,6 +986,8 @@ var ol = {};
 
         saved: function() {
             window.history.pushState("object or string", "Title", "/brews/" + this.brew.get("id"));
+
+            this.$el.append(_.template($("#success_alert_template").html(), {"type": "success", "message": "Brew saved!"}));
         },
 
         clone: function() {

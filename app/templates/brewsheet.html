@@ -79,6 +79,14 @@
 {% endblock %}
     <!-- TEMPLATES: -->
         {% block templates %}
+
+        <script type="text/template" id="success_alert_template">
+            <div id="success" class="alert alert-<%= type %>">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <%= message%>
+            </div>
+        </script>
+
         <script type="text/template" id="malt_table_row_template">
             <td>
                 <input id="quantity" type="text" class="input-mini" value="<%= quantity %>">
