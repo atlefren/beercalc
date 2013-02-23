@@ -755,7 +755,7 @@ var ol = {};
                 this.$el.find("input").prop("disabled", true);
                 this.$el.find("button").each(function(){
                     if(this.id !== "show_recipe" && this.id !== "show_json" && this.id !== "clone") {
-                        $(this).prop("disabled", true);
+                        $(this).hide();
                     }
                 });
                 this.$el.find("select").prop("disabled", true);
