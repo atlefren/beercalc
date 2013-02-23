@@ -66,6 +66,7 @@ ol.calc = {};
     };
 
 
+    //see "how to brew" pp. 194-195
     ns.computeGravity = function(volume, efficiency, malts) {
         var og = "-";
         if(ol.calc.isNumber(volume)  && ol.calc.isNumber(efficiency) && malts.length > 0) {
@@ -107,6 +108,7 @@ ol.calc = {};
         return fg;
     };
 
+    //see http://brewwiki.com/index.php/Estimating_Color
     ns.computeColor = function(volume, malts) {
         var ebc = "-";
         if(ol.calc.isNumber(volume)  && malts.length > 0) {
@@ -126,7 +128,33 @@ ol.calc = {};
             }
         }
         return ebc;
-    }
+    };
+
+
+    //see "how to brew" pp. 192
+    ns.computeEfficiency = function(og, volume, malts) {
+        var efficiency = "-";
+        if(ol.calc.isNumber(og) && ol.calc.isNumber(volume) && malts.length > 0){
+
+            var max_gravity = malts.reduce(function(sum, malt){
+                var amount = malt.get("quantity");
+                var ppg = malt.get("ppg");
+                if(ol.calc.isNumber(amount) && ol.calc.isNumber(ppg)) {
+                    var addition = ppg * (ol.calc.toLbs(amount) / ol.calc.toGallons(volume));
+                    return sum + addition;
+                }
+                return sum;
+            }, 0);
+
+            console.log(max_gravity);
+
+            if(max_gravity > 0) {
+                efficiency = Math.round(((og - 1) * 1000 / max_gravity) * 100)
+            }
+        }
+
+        return efficiency;
+    };
 
 }(ol.calc));
 
@@ -996,20 +1024,7 @@ ol.calc = {};
             var volume =  this.brew.get("batch_size");
             var malts = this.brew.get("malts");
 
-            var efficiency = "-";
-            if(ol.calc.isNumber(og) && ol.calc.isNumber(volume) && malts.length > 0){
-
-                var max_gravity = malts.reduce(function(sum, malt){
-                    var amount = malt.get("quantity");
-                    var ppg = malt.get("ppg");
-                    if(ol.calc.isNumber(amount) && ol.calc.isNumber(ppg)) {
-                        var addition = ppg * (ol.calc.toLbs(amount) / ol.calc.toGallons(volume));
-                        return sum + addition;
-                    }
-                    return sum;
-                }, 0);
-                efficiency = Math.round(((og - 1)*1000 / max_gravity) * 100)
-            }
+            var efficiency = ol.calc.computeEfficiency(og, volume, malts);
             this.brew.set({"brew_efficiency": efficiency});
             this.$el.find("#brew_efficiency").val(efficiency);
         },

@@ -175,6 +175,77 @@ describe("Brewsheet.Calculator", function() {
         });
     });
 
+    describe("efficiency calc", function(){
+
+        //example from "how to brew" pp. 194-195
+        beforeEach(function(){
+            this.malts = new ol.Malts(
+                [
+                    {
+                        "quantity": "2948.35041", //6.5 lbs
+                        "name": "2-row lager malt",
+                        "ppg": "36",
+                        "color": ""
+                    },
+                    {
+                        "quantity": "226.796185", //0.5 lbs
+                        "name": "caramel 15",
+                        "ppg": "34",
+                        "color": ""
+                    },
+                    {
+                        "quantity": "226.796185", //0.5 lbs
+                        "name": "caramel 75",
+                        "ppg": "35",
+                        "color": ""
+                    },
+                    {
+                        "quantity": "226.796185", //0.5 lbs
+                        "name": "chocolate malt",
+                        "ppg": "34",
+                        "color": ""
+                    },
+                    {
+                        "quantity": "226.796185", //0.5 lbs
+                        "name": "roasted barley",
+                        "ppg": "30",
+                        "color": ""
+                    }
+                ]
+            );
+
+            this.volume = 22.7124707; //6 gallons
+            this.og = 1.038;
+
+        });
+
+        it("should return blank when og not set", function() {
+            expect(calc.computeEfficiency("", this.volume, this.malts)).toBe("-");
+        });
+
+        it("should return blank when volume not set", function() {
+            expect(calc.computeEfficiency(this.og, "", this.malts)).toBe("-");
+        });
+
+        it("should return blank when malt quantity not set", function() {
+            this.malts.each(function(malt) {
+                malt.set("quantity", "");
+            });
+            expect(calc.computeEfficiency(this.og, this.volume, this.malts)).toBe("-");
+        });
+
+        it("should return blank when malt ppg not set", function() {
+            this.malts.each(function(malt) {
+                malt.set("ppg", "");
+            });
+            expect(calc.computeEfficiency(this.og, this.volume, this.malts)).toBe("-");
+        });
+
+        it("should compute Efficiency", function() {
+            expect(calc.computeEfficiency(this.og, this.volume, this.malts)).toBe(76);
+        });
+    });
+
     describe("FG calc", function(){
         //example from http://www.homebrewtalk.com/f13/estimate-final-gravity-32826/#post322639
         beforeEach(function(){
@@ -238,7 +309,6 @@ describe("Brewsheet.Calculator", function() {
 
             this.volume = 19;
         });
-
 
         it("should return blank when volume not set", function() {
             expect(calc.computeColor("", this.malts)).toBe("-")
