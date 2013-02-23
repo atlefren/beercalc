@@ -58,6 +58,33 @@ ol.calc = {};
             }
         }
         return bitterness;
+    };
+
+    //this is the "alternate formula" from http://www.brewersfriend.com/2011/06/16/alcohol-by-volume-calculator-updated/
+    ns.computeABV = function(og, fg) {
+        return (76.08 * (og-fg) / (1.775-og)) * (fg / 0.794)
+    };
+
+
+    ns.computeGravity = function(volume, efficiency, malts) {
+        var og = "-";
+        if(ol.calc.isNumber(volume)  && ol.calc.isNumber(efficiency) && malts.length > 0) {
+            var computed = malts.reduce(function(sum, malt) {
+                var amount = malt.get("quantity");
+                var ppg = malt.get("ppg");
+                if(ol.calc.isNumber(amount) && ol.calc.isNumber(ppg)) {
+                    return sum + ((efficiency / 100) * ppg) * (ol.calc.toLbs(amount) / ol.calc.toGallons(volume));
+                }
+                return sum;
+            }, 0);
+
+            if(computed !== 0){
+                //round and get from nn to 1.0nn
+                og = Math.round((1 + (computed / 1000)) * 1000) / 1000;
+            }
+
+        }
+        return og;
     }
 
 }(ol.calc));
@@ -65,10 +92,6 @@ ol.calc = {};
 (function(ns) {
 
 
-
-    var computeABV = function(og, fg) {
-        return (76.08 * (og-fg) / (1.775-og)) * (fg / 0.794)
-    };
 
     //taken from http://en.wikipedia.org/wiki/Standard_Reference_Method
     var mapEBC = function(input) {
@@ -365,7 +388,7 @@ ol.calc = {};
         }
     });
 
-    var Malts = Backbone.Collection.extend({
+    var Malts = ns.Malts = Backbone.Collection.extend({
 
         model: Malt,
 
@@ -867,22 +890,7 @@ ol.calc = {};
             var malts = this.brew.get("malts");
             var volume =  this.brew.get("batch_size");
             var efficiency = this.brew.get("brewhouse_efficiency");
-            var og = "-";
-            if(ol.calc.isNumber(volume)  && ol.calc.isNumber(efficiency) && malts.length > 0) {
-                var computed = malts.reduce(function(sum, malt) {
-                    var amount = malt.get("quantity");
-                    var ppg = malt.get("ppg");
-                    if(ol.calc.isNumber(amount) && ol.calc.isNumber(ppg)) {
-                        return sum + ((efficiency / 100) * ppg) * (ol.calc.toLbs(amount) / ol.calc.toGallons(volume));
-                    }
-                    return sum;
-                }, 0);
-
-                if(computed !== 0){
-                    //round and get from nn to 1.0nn
-                    og = Math.round((1 + (computed / 1000)) * 1000) / 1000;
-                }
-            }
+            var og = ol.calc.computeGravity(volume, efficiency, malts);
             this.brew.set({"computed_og": og});
             this.$el.find("#computed_og").text(og);
         },
@@ -953,7 +961,7 @@ ol.calc = {};
 
             var abv = "-";
             if(ol.calc.isNumber(og) && ol.calc.isNumber(fg)){
-                abv = Math.round(computeABV(og, fg) * 10) / 10;
+                abv = Math.round(ol.calc.computeABV(og, fg) * 10) / 10;
             }
             this.brew.set({"computed_abv": abv});
             this.$el.find("#computed_abv").text(abv);
@@ -965,7 +973,7 @@ ol.calc = {};
 
             var abv = "";
             if(ol.calc.isNumber(og) && ol.calc.isNumber(fg)){
-                abv = Math.round(computeABV(og, fg) * 10) / 10;
+                abv = Math.round(ol.calc.computeABV(og, fg) * 10) / 10;
             }
             this.brew.set({"actual_abv": abv});
             this.$el.find("#actual_abv").val(abv);
