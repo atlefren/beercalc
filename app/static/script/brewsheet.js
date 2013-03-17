@@ -856,7 +856,7 @@ ol.calc = {};
             }
             _.bindAll(this, "change", "changeDate", "save", "saved", "clone");
 
-            this.brew.on("change", function(brew) {console.log(brew);}, this);
+            //this.brew.on("change", function(brew) {console.log(brew);}, this);
 
             this.brew.get("malts").on("change", this.maltChange, this);
             this.brew.get("hops").on("change", this.hopChange, this);
@@ -996,7 +996,7 @@ ol.calc = {};
         colorChanged: function() {
             var ebc = this.brew.get("computed_color");
             var c = "rgb(" + ol.calc.getHexForEBC(ebc) + ")";
-            console.log(c);
+
             this.$el.find("#computed_color").text(ebc).css("background-color", c);
         },
 
