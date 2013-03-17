@@ -16,6 +16,7 @@ argparse==1.2.1
 blinker==1.2
 decorator==3.4.0
 distribute==0.6.24
+psycopg2==2.4.6
 pycrypto==2.6
 python-dateutil==1.5
 python-openid==2.2.5
