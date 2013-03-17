@@ -30,6 +30,12 @@ describe("Brewsheet.Calculator", function() {
         expect(Math.round(ol.calc.computeABV(1.05, 1.01) * 10) / 10).toBe(5.3);
     });
 
+    it("should get right hex colors for ebc", function() {
+        expect(calc.getHexForEBC(0)).toBe("#F8F753");
+        expect(calc.getHexForEBC(19)).toBe("#BF923B");
+        expect(calc.getHexForEBC(100)).toBe("#030403");
+    });
+
     describe("Bitterness calc", function(){
 
         //example from "how to brew" pp. 56-57

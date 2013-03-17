@@ -3,11 +3,11 @@ ol.calc = {};
 
 (function(ns) {
 
-    ns.toLbs = function(grams) {
+    var toLbs = ns.toLbs = function(grams) {
         return grams * 0.002205;
     };
 
-    ns.toGallons = function(liter) {
+    var toGallons = ns.toGallons = function(liter) {
         return liter * 0.264172051242;
     };
 
@@ -74,7 +74,7 @@ ol.calc = {};
                 var amount = malt.get("quantity");
                 var ppg = malt.get("ppg");
                 if(ol.calc.isNumber(amount) && ol.calc.isNumber(ppg)) {
-                    return sum + ((efficiency / 100) * ppg) * (ol.calc.toLbs(amount) / ol.calc.toGallons(volume));
+                    return sum + ((efficiency / 100) * ppg) * (toLbs(amount) / toGallons(volume));
                 }
                 return sum;
             }, 0);
@@ -140,13 +140,11 @@ ol.calc = {};
                 var amount = malt.get("quantity");
                 var ppg = malt.get("ppg");
                 if(ol.calc.isNumber(amount) && ol.calc.isNumber(ppg)) {
-                    var addition = ppg * (ol.calc.toLbs(amount) / ol.calc.toGallons(volume));
+                    var addition = ppg * (toLbs(amount) / toGallons(volume));
                     return sum + addition;
                 }
                 return sum;
             }, 0);
-
-            console.log(max_gravity);
 
             if(max_gravity > 0) {
                 efficiency = Math.round(((og - 1) * 1000 / max_gravity) * 100)
@@ -156,42 +154,67 @@ ol.calc = {};
         return efficiency;
     };
 
+
+    //taken from http://methodbrewery.com/srm.php
+    ns.getHexForEBC = function(input) {
+
+        var colors = [
+            {'rgb':'250,250,160','srm':1},
+            {'rgb':'250,250,105','srm':2},
+            {'rgb':'245,246,50','srm':3},
+            {'rgb':'235,228,47','srm':4},
+            {'rgb':'225,208,50','srm':5},
+            {'rgb':'215,188,52','srm':6},
+            {'rgb':'205,168,55','srm':7},
+            {'rgb':'198,148,56','srm':8},
+            {'rgb':'193,136,56','srm':9},
+            {'rgb':'192,129,56','srm':10},
+            {'rgb':'192,121,56','srm':11},
+            {'rgb':'192,114,56','srm':12},
+            {'rgb':'190,106,56','srm':13},
+            {'rgb':'180,99,56','srm':14},
+            {'rgb':'167,91,54','srm':15},
+            {'rgb':'152,84,51','srm':16},
+            {'rgb':'138,75,48','srm':17},
+            {'rgb':'124,68,41','srm':18},
+            {'rgb':'109,60,34','srm':19},
+            {'rgb':'95,53,23','srm':20},
+            {'rgb':'81,45,11','srm':21},
+            {'rgb':'67,38,12','srm':22},
+            {'rgb':'52,30,17','srm':23},
+            {'rgb':'38,23,22','srm':24},            ,
+            {'rgb':'33,19,18','srm':25},
+            {'rgb':'28,16,15','srm':26},
+            {'rgb':'23,13,12','srm':27},
+            {'rgb':'18,9,8','srm':28},
+            {'rgb':'13,6,5','srm':29},
+            {'rgb':'8,3,2','srm':30},
+            {'rgb':'6,2,1','srm':31}
+        ];
+
+        if(!isNumber(input)) {
+            return "255,255,255";
+        }
+
+        input = input/2;
+
+        if(input < 1) {
+            input = 1   ;
+        } else if(input > 62) {
+            input = 62;
+        }
+
+        input = Math.round(input);
+
+        return _.find(colors, function(c) {
+            return (c.srm == input);
+        }).rgb;
+    };
+
 }(ol.calc));
 
 (function(ns) {
 
-
-
-    //taken from http://en.wikipedia.org/wiki/Standard_Reference_Method
-    var mapEBC = function(input) {
-
-        var colors = {
-            4:'#F8F753',
-            6:'#F6F513',
-            8:'#ECE61A',
-            12:'#D5BC26',
-            16:'#BF923B',
-            20:'#BF813A',
-            26:'#BC6733',
-            33:'#8D4C32',
-            39:'#5D341A',
-            47:'#261716',
-            57:'#0F0B0A',
-            69:'#080707',
-            79:'#030403'
-        };
-
-        if(isNaN(input)){
-            return "#fff";
-        }
-        var found = _.find(colors, function(hex, ebc) {
-            return input <= ebc;
-        });
-        if(found) {
-            return found;
-        }
-        return colors["79"];
-    };
 
     var apiSearch = function(query, callback, model) {
         var params = {"filters": [{"name": "name", "op": "like", "val": query + "%"}]};
@@ -859,9 +882,6 @@ ol.calc = {};
         render: function() {
             this.$el.html("");
             var data = this.brew.asJSON();
-            if(this.brew.has("computed_color")){
-                data.color = mapEBC(this.brew.get("computed_color"));
-            }
             this.$el.append(_.template($("#brewsheet_template").html(), data));
 
             _.each(this.brew.defaults, function(value, key) {
@@ -896,6 +916,7 @@ ol.calc = {};
             }
 
             this.computeActualABV();
+            this.colorChanged();
             $('#brewsheet a:first').tab('show');
             return this;
         },
@@ -967,11 +988,16 @@ ol.calc = {};
         computeColor: function() {
             var malts = this.brew.get("malts");
             var volume =  this.brew.get("batch_size");
-
             var ebc = ol.calc.computeColor(volume, malts);
-
             this.brew.set({"computed_color": ebc});
-            this.$el.find("#computed_color").text(ebc).css("background-color", mapEBC(ebc));
+            this.colorChanged();
+        },
+
+        colorChanged: function() {
+            var ebc = this.brew.get("computed_color");
+            var c = "rgb(" + ol.calc.getHexForEBC(ebc) + ")";
+            console.log(c);
+            this.$el.find("#computed_color").text(ebc).css("background-color", c);
         },
 
         computeBitterness: function() {
