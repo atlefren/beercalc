@@ -576,8 +576,25 @@ ol.calc = {};
 
         model: Hop,
 
-        comparator: function(hop) {
-            return -parseInt(hop.get("boil_time"), 10);
+        comparator: function(hop_a, hop_b) {
+            var a = hop_a.get("boil_time");
+            var b = hop_b.get("boil_time");
+            if (!ol.calc.isNumber(a))  {
+                a = -1;
+            }
+            if (!ol.calc.isNumber(b))  {
+                b = -1;
+            }
+            a = parseInt(a, 10);
+            b = parseInt(b, 10);
+            if (a > b) {
+                return -1;
+            }
+            if (a < b) {
+                return 1;
+            }
+            return 0;
+
         }
     });
 
