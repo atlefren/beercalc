@@ -1085,6 +1085,9 @@ ol.calc = {};
         saved: function() {
             window.history.pushState("object or string", "Title", "/brews/" + this.brew.get("id"));
 
+            this.brew.set("data", null);
+            this.brew.set("user", null);
+
             this.$el.find("#save_results").html(_.template($("#success_alert_template").html(), {"type": "success", "message": "Brew saved!"}));
         },
 
@@ -1093,7 +1096,7 @@ ol.calc = {};
             this.brew.set("id", null);
             this.options.disabled = false;
             this.render();
-            this.$el.find("#clone").attr("id", "save").html("Save recipe");
+            //this.$el.find("#clone").attr("id", "save").html("Save recipe");
         }
     });
 }(ol));
