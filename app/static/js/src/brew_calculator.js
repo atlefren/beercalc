@@ -197,8 +197,8 @@ ol.calc = {};
 
         if(input < 1) {
             input = 1   ;
-        } else if(input > 62) {
-            input = 62;
+        } else if(input > 31) {
+            input = 31;
         }
 
         input = Math.round(input);
