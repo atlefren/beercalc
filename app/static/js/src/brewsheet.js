@@ -1,225 +1,11 @@
-var ol = {};
-ol.calc = {};
+var ol = window.ol || {};
 
-(function(ns) {
-
-    var toLbs = ns.toLbs = function(grams) {
-        return grams * 0.002205;
-    };
-
-    var toGallons = ns.toGallons = function(liter) {
-        return liter * 0.264172051242;
-    };
-
-    ns.isNumber = isNumber = function(val){
-        if(val === "") {
-            return false;
-        }
-        return !isNaN(val);
-    };
-
-    //Thinseth equation, Palmer "How to brew" p 58
-    var computeUtilization = function(G, T) {
-
-        var fG = function(g) {
-            return 1.65 * Math.pow(0.000125, (g-1));
-        };
-
-        var fT = function(t) {
-            return (1 - Math.pow(Math.E, (-0.04 * t)))/ 4.15;
-        };
-
-        return fG(G) * fT(T);
-    };
-
-    ns.computeBitterness= function(og, volume, hops) {
-        var bitterness = "-";
-        if(isNumber(og) && isNumber(volume) && hops.length > 0) {
-
-            var ibu = hops.reduce(function(total_ibu, hop) {
-                var quantity = hop.get("quantity");
-                var alpha_acid = hop.get("alpha_acid");
-                var boil_time = hop.get("boil_time");
-                if(isNumber(quantity) && isNumber(alpha_acid) && isNumber(boil_time)) {
-                    var aau = parseFloat(quantity) * parseFloat(alpha_acid);
-                    var utilization = computeUtilization(og, parseFloat(boil_time));
-                    var ibu = aau * utilization * (10 / volume );
-                    if(hop.get("form") === "pellets"){
-                        //according to "radical brewing" (pp 64) utilization is 24% higher for pellets
-                        ibu *= 1.24;
-                    }
-                    return total_ibu + ibu;
-                }
-                return total_ibu;
-            }, 0);
-
-            if(ibu > 0) {
-                bitterness = Math.round(ibu);
-            }
-        }
-        return bitterness;
-    };
-
-    //this is the "alternate formula" from http://www.brewersfriend.com/2011/06/16/alcohol-by-volume-calculator-updated/
-    ns.computeABV = function(og, fg) {
-        return (76.08 * (og-fg) / (1.775-og)) * (fg / 0.794)
-    };
-
-
-    //see "how to brew" pp. 194-195
-    ns.computeGravity = function(volume, efficiency, malts) {
-        var og = "-";
-        if(ol.calc.isNumber(volume)  && ol.calc.isNumber(efficiency) && malts.length > 0) {
-            var computed = malts.reduce(function(sum, malt) {
-                var amount = malt.get("quantity");
-                var ppg = malt.get("ppg");
-                if(ol.calc.isNumber(amount) && ol.calc.isNumber(ppg)) {
-                    return sum + ((efficiency / 100) * ppg) * (toLbs(amount) / toGallons(volume));
-                }
-                return sum;
-            }, 0);
-
-            if(computed !== 0){
-                //round and get from nn to 1.0nn
-                og = Math.round((1 + (computed / 1000)) * 1000) / 1000;
-            }
-
-        }
-        return og;
-    };
-
-    //taken from http://www.homebrewtalk.com/f13/estimate-final-gravity-32826/#post322639
-    ns.computeFG = function(og, yeasts) {
-        var fg = "-";
-        if(ol.calc.isNumber(og) && yeasts.length > 0) {
-            var avg_attenuation = yeasts.reduce(function(sum, yeast) {
-                var attenuation = yeast.get("attenuation");
-                if(ol.calc.isNumber(attenuation)) {
-                    return sum + attenuation;
-                }
-                return sum;
-            }, 0);
-
-            if(avg_attenuation > 0) {
-                avg_attenuation = avg_attenuation / yeasts.length;
-                fg = Math.round(((og - 1)-((og - 1) * (avg_attenuation / 100)) + 1) * 1000) / 1000;
-            }
-        }
-        return fg;
-    };
-
-    //see http://brewwiki.com/index.php/Estimating_Color
-    ns.computeColor = function(volume, malts) {
-        var ebc = "-";
-        if(ol.calc.isNumber(volume)  && malts.length > 0) {
-            var sum = malts.reduce(function(sum, malt) {
-                var amount = malt.get("quantity");
-                var ebc = malt.get("color");
-                if(ol.calc.isNumber(amount) && ol.calc.isNumber(ebc)) {
-                    return sum + (amount * 0.0022) * (ebc * 0.508);
-                }
-                return sum;
-            }, 0);
-            if (sum > 0 ) {
-                var total_mcu = sum / (volume * 0.2642);
-                //Moreys Formula
-                var srm = 1.4922 * Math.pow(total_mcu, 0.6859);
-                ebc = Math.round(srm * 1.97); //lovibond to ebc
-            }
-        }
-        return ebc;
-    };
-
-
-    //see "how to brew" pp. 192
-    ns.computeEfficiency = function(og, volume, malts) {
-        var efficiency = "-";
-        if(ol.calc.isNumber(og) && ol.calc.isNumber(volume) && malts.length > 0){
-
-            var max_gravity = malts.reduce(function(sum, malt){
-                var amount = malt.get("quantity");
-                var ppg = malt.get("ppg");
-                if(ol.calc.isNumber(amount) && ol.calc.isNumber(ppg)) {
-                    var addition = ppg * (toLbs(amount) / toGallons(volume));
-                    return sum + addition;
-                }
-                return sum;
-            }, 0);
-
-            if(max_gravity > 0) {
-                efficiency = Math.round(((og - 1) * 1000 / max_gravity) * 100)
-            }
-        }
-
-        return efficiency;
-    };
-
-
-    //taken from http://methodbrewery.com/srm.php
-    ns.getHexForEBC = function(input) {
-
-        var colors = [
-            {'rgb':'250,250,160','srm':1},
-            {'rgb':'250,250,105','srm':2},
-            {'rgb':'245,246,50','srm':3},
-            {'rgb':'235,228,47','srm':4},
-            {'rgb':'225,208,50','srm':5},
-            {'rgb':'215,188,52','srm':6},
-            {'rgb':'205,168,55','srm':7},
-            {'rgb':'198,148,56','srm':8},
-            {'rgb':'193,136,56','srm':9},
-            {'rgb':'192,129,56','srm':10},
-            {'rgb':'192,121,56','srm':11},
-            {'rgb':'192,114,56','srm':12},
-            {'rgb':'190,106,56','srm':13},
-            {'rgb':'180,99,56','srm':14},
-            {'rgb':'167,91,54','srm':15},
-            {'rgb':'152,84,51','srm':16},
-            {'rgb':'138,75,48','srm':17},
-            {'rgb':'124,68,41','srm':18},
-            {'rgb':'109,60,34','srm':19},
-            {'rgb':'95,53,23','srm':20},
-            {'rgb':'81,45,11','srm':21},
-            {'rgb':'67,38,12','srm':22},
-            {'rgb':'52,30,17','srm':23},
-            {'rgb':'38,23,22','srm':24},            ,
-            {'rgb':'33,19,18','srm':25},
-            {'rgb':'28,16,15','srm':26},
-            {'rgb':'23,13,12','srm':27},
-            {'rgb':'18,9,8','srm':28},
-            {'rgb':'13,6,5','srm':29},
-            {'rgb':'8,3,2','srm':30},
-            {'rgb':'6,2,1','srm':31}
-        ];
-
-        if(!isNumber(input)) {
-            return "255,255,255";
-        }
-
-        input = input/2;
-
-        if(input < 1) {
-            input = 1   ;
-        } else if(input > 62) {
-            input = 62;
-        }
-
-        input = Math.round(input);
-
-        return _.find(colors, function(c) {
-            return (c.srm == input);
-        }).rgb;
-    };
-
-}(ol.calc));
-
-(function(ns) {
-
+(function (ns) {
+    "use strict";
 
     var apiSearch = function(query, callback, model) {
         var params = {"filters": [{"name": "name", "op": "like", "val": query + "%"}]};
         $.get("/api/" + model + "?q=" + JSON.stringify(params) + "&results_per_page=200", function(res) {
-
             if(res.objects){
                 callback(res.objects);
             } else {
@@ -292,18 +78,6 @@ ol.calc = {};
         add: function(){
             this.collection.add(new this.collection.model());
         }
-    });
-
-
-    var MashTime = Backbone.Model.extend({
-        "defaults": {
-            "mash_time": "",
-            "mash_temperature": ""
-        }
-    });
-
-    var MashSchedule = Backbone.Collection.extend({
-        model: MashTime
     });
 
     var MashTimeView = ns.MashTimeView = BaseSectionView.extend({
@@ -385,14 +159,6 @@ ol.calc = {};
         }
     });
 
-    var Fermentation  = Backbone.Model.extend({
-        "defaults": {
-            "type": "",
-            "days": "",
-            "temperature": ""
-        }
-    });
-
     var AsciiView = Backbone.View.extend({
 
         tagName: "pre",
@@ -411,17 +177,6 @@ ol.calc = {};
             this.$el.html(JSON.stringify(this.options.data, undefined, 4));
             return this;
         }
-    });
-
-    var Fermentations = Backbone.Collection.extend({
-
-        initialize: function(models) {
-            if(!models){
-                this.add([{"type": "primary"}, {"type": "secondary"}, {"type": "storage"}]);
-            }
-        },
-
-        model: Fermentation
     });
 
     var FermentationView = BaseSectionView.extend({
@@ -461,31 +216,6 @@ ol.calc = {};
             this.$el.html(_.template($("#fermentation_row_template").html(), this.model.toJSON()));
             DynamicTableView.prototype.render.apply(this, arguments);
             return this;
-        }
-    });
-
-    var Malt = Backbone.Model.extend({
-        "defaults": {
-            "quantity": "",
-            "percentage": "",
-            "name": "",
-            "ppg": "",
-            "color": ""
-        },
-
-        validate: function(attrs) {
-            return _.reduce(attrs, function(ok, attr) {
-                return (this.get(attr) !== "" && !isNaN(this.get(attr)));
-            }, true, this);
-        }
-    });
-
-    var Malts = ns.Malts = Backbone.Collection.extend({
-
-        model: Malt,
-
-        comparator: function(malt) {
-            return -parseInt(malt.get("quantity"), 10);
         }
     });
 
@@ -555,49 +285,6 @@ ol.calc = {};
         }
     });
 
-    var Hop = Backbone.Model.extend({
-        "defaults": {
-            "quantity": "",
-            "name": "",
-            "form": "cones",
-            "alpha_acid": "",
-            "boil_time": ""
-        },
-
-        validate: function() {
-            return _.reduce(["quantity", "alpha_acid", "boil_time"], function(ok, attr) {
-                return (this.get(attr) !== "" && !isNaN(this.get(attr)));
-            }, true, this);
-
-        }
-    });
-
-    var Hops = ns.Hops = Backbone.Collection.extend({
-
-        model: Hop,
-
-        comparator: function(hop_a, hop_b) {
-            var a = hop_a.get("boil_time");
-            var b = hop_b.get("boil_time");
-            if (!ol.calc.isNumber(a))  {
-                a = -1;
-            }
-            if (!ol.calc.isNumber(b))  {
-                b = -1;
-            }
-            a = parseInt(a, 10);
-            b = parseInt(b, 10);
-            if (a > b) {
-                return -1;
-            }
-            if (a < b) {
-                return 1;
-            }
-            return 0;
-
-        }
-    });
-
     var HopSectionView = ns.HopSectionView = BaseSectionView.extend({
 
         events: {
@@ -653,25 +340,6 @@ ol.calc = {};
         }
     });
 
-    var Yeast = Backbone.Model.extend({
-        "defaults": {
-            "name": "",
-            "type": "none",
-            "attenuation": ""
-        }
-    });
-
-    var Yeasts = ns.Yeasts = Backbone.Collection.extend({
-
-        initialize: function(models) {
-            if(!models){
-                this.add(new Yeast());
-            }
-        },
-
-        model: Yeast
-    });
-
     var YeastSectionView = ns.YeastSectionView = BaseSectionView.extend({
 
         events: {
@@ -720,24 +388,6 @@ ol.calc = {};
         }
     });
 
-    var Additive = Backbone.Model.extend({
-        "defaults": {
-            "quantity": "",
-            "name": "",
-            "added_when": "",
-            "boil_time": ""
-        }
-    });
-
-    var Additives = Backbone.Collection.extend({
-
-        model: Additive,
-
-        comparator: function(additive) {
-            return -parseInt(additive.get("boil_time"), 10);
-        }
-    });
-
     var AdditiveSectionView = ns.AdditiveSectionView = BaseSectionView.extend({
 
         events: {
@@ -766,7 +416,6 @@ ol.calc = {};
         }
     });
 
-
     var AdditiveTableRowView = DynamicTableView.extend({
 
         tagName: "tr",
@@ -784,75 +433,6 @@ ol.calc = {};
         }
     });
 
-    var Brew = Backbone.Model.extend({
-        "defaults": {
-            "beer_name": "",
-            "brewer": "",
-            "beer_style": "",
-            "wort_size": "",
-            "batch_size": "",
-            "boil_time": "",
-            "brewhouse_efficiency": "75",
-            "brew_efficiency": "-",
-            "computed_color": "-",
-            "computed_ibu": "-",
-            "computed_og": "-",
-            "actual_og": "",
-            "computed_fg": "-",
-            "computed_abv": "-",
-            "actual_fg": "",
-            "brew_date": "",
-            "bottle_date": "",
-            "filtered": false,
-            "co2": "none",
-            "comment": "",
-            "mashing_water": "",
-            "sparging_water": "",
-            "mash_schedule": new MashSchedule(),
-            "malts": new Malts(),
-            "hops": new Hops(),
-            "additives": new Additives(),
-            "yeasts": new Yeasts(),
-            "fermentations": new Fermentations()
-        },
-
-        url: function() {
-            var base = "/api/brew";
-            if(this.has("id")){
-                return base + "/" + this.get("id");
-            }
-            return base
-        },
-
-        asJSON: function() {
-            return _.clone(this.attributes)
-        },
-
-        toJSON: function(){
-            //TODO: query user if this should be public
-            return {
-                "name": this.get("beer_name"),
-                "data": JSON.stringify(this.asJSON()),
-                "public": true
-            }
-        },
-
-        setData: function(data) {
-            _.each(data, function(value, key) {
-                if(this.get(key) instanceof Backbone.Collection) {
-                    this.get(key).reset(value);
-                } else if(this.get(key) instanceof Backbone.Model) {
-                    this.get(key).set(value);
-                } else {
-                    this.set(key, value);
-                }
-
-            }, this);
-        }
-    });
-
-
-
     ns.BrewSheet = Backbone.View.extend({
 
         events: {
@@ -863,12 +443,12 @@ ol.calc = {};
 
         initialize: function() {
             if(!this.options.brew) {
-                this.brew = new Brew();
+                this.brew = new ns.Brew();
                 if(this.options.name) {
                     this.brew.set({"brewer": this.options.name});
                 }
             } else {
-                this.brew = new Brew();
+                this.brew = new ns.Brew();
                 this.brew.setData(this.options.brew)
             }
             _.bindAll(this, "change", "changeDate", "save", "saved", "clone");
@@ -1101,77 +681,3 @@ ol.calc = {};
     });
 }(ol));
 
-ol.templateFunc = {};
-
-(function(ns){
-
-    ns.rpad = function(val, space) {
-        var str = String(val);
-        var add = space-str.length;
-        if(add > 0){
-            var pad = "";
-            for(var i = 0; i<add; i++){
-                pad += " ";
-            }
-            str = pad + str;
-        }
-        return str;
-    };
-
-    ns.lpad = function(val, space) {
-        var str = String(val);
-        var add = space-str.length;
-        if(add > 0){
-            var pad = "";
-            for(var i = 0; i<add; i++){
-                pad += " ";
-            }
-            str = str + pad;
-        }
-        return str;
-    };
-
-    ns.orNa = function(val){
-        if(val === ""){
-            return "-";
-        }
-        return val;
-    };
-
-    ns.yesNo = function(val){
-        if(val) {
-            return "ja";
-        }
-        return "nei";
-    };
-
-    ns.mapCo2 = function(val) {
-        if(val === "natural") {
-            return "naturlig";
-        } else if(val === "added") {
-            return "tilsatt";
-        }
-        return "-";
-    };
-
-    ns.mapHopForm = function(val) {
-        if(val === "pellets") {
-            return "pellets";
-        } else if(val === "cones") {
-            return "hel";
-        }
-        return "-";
-    };
-
-    ns.mapYeast = function(val) {
-        if(val === "liquid") {
-            return "flytende gjær";
-        } else if(val === "dry") {
-            return "tørrgjær";
-        } else if(val === "homgegrown") {
-            return "selvdyrket gjær";
-        }
-        return "-";
-    }
-
-}(ol.templateFunc));
