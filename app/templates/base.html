@@ -11,9 +11,10 @@
 
     {% block js %}
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='js/lib/underscore-min.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='js/lib/backbone-min.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='css/bootstrap/js/bootstrap.min.js') }}"></script>
+
+    {% assets "js_libs" %}
+    <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+    {% endassets %}
     {% endblock %}
 </head>
 <body>

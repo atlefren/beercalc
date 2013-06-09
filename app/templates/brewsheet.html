@@ -8,13 +8,11 @@
 
         {% block js %}
         {{ super() }}
-        <script type="text/javascript" src="{{ url_for('static', filename='js/lib/bootstrap-datepicker.js') }}"></script>
-        <script type="text/javascript" src="{{ url_for('static', filename='js/lib/typeahead.js') }}"></script>
-        <script type="text/javascript" src="{{ url_for('static', filename='js/lib/jquery.flot.js') }}"></script>
-        <script type="text/javascript" src="{{ url_for('static', filename='js/lib/jquery.flot.axislabels.js') }}"></script>
 
-        <script type="text/javascript" src="{{ url_for('static', filename='js/src/brewsheet.js') }}"></script>
 
+{% assets "brewsheet_js" %}
+<script type="text/javascript" src="{{ ASSET_URL }}"></script>
+{% endassets %}
 
         <script type="text/javascript">
             $(document).ready(function(){

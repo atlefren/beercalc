@@ -1,7 +1,9 @@
 {% extends "base.html" %}
 {% block js %}
 {{ super() }}
-<script type="text/javascript" src="{{ url_for('static', filename='js/src//ingredient_list.js') }}"></script>
+{% assets "js_ingredient_list" %}
+<script type="text/javascript" src="{{ ASSET_URL }}"></script>
+{% endassets %}
 {% endblock %}
 
 {% set active_page = "ingredients" %}
