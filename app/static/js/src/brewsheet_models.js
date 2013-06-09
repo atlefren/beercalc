@@ -22,6 +22,17 @@ var ol = window.ol || {};
         model: Fermentation
     });
 
+    var ScaleableIngredientCollection = Backbone.Collection.extend({
+        scale: function (factor) {
+            this.each(function (element) {
+                if (element.has("quantity")) {
+                    var new_quantity = Math.round(element.get("quantity") * factor * 100) / 100;
+                    element.set({"quantity": new_quantity});
+                }
+            });
+        }
+    });
+
     var Malt = Backbone.Model.extend({
         "defaults": {
             "quantity": "",
@@ -38,7 +49,7 @@ var ol = window.ol || {};
         }
     });
 
-    var Malts = ns.Malts = Backbone.Collection.extend({
+    var Malts = ns.Malts = ScaleableIngredientCollection.extend({
 
         model: Malt,
 
@@ -64,7 +75,7 @@ var ol = window.ol || {};
         }
     });
 
-    var Hops = ns.Hops = Backbone.Collection.extend({
+    var Hops = ns.Hops = ScaleableIngredientCollection.extend({
 
         model: Hop,
 
@@ -118,7 +129,7 @@ var ol = window.ol || {};
         }
     });
 
-    var Additives = Backbone.Collection.extend({
+    var Additives = ScaleableIngredientCollection.extend({
 
         model: Additive,
 
@@ -202,6 +213,15 @@ var ol = window.ol || {};
                 }
 
             }, this);
+        },
+
+        scale: function (new_volume) {
+            if (this.has("batch_size")) {
+                var factor = new_volume / this.get("batch_size");
+                this.get("hops").scale(factor);
+                this.get("malts").scale(factor);
+                this.get("additives").scale(factor);
+            }
         }
     });
 
