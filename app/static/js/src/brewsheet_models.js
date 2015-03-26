@@ -1,6 +1,7 @@
-var ol = window.ol || {};
+/*global Backbone: false*/
+var ol = this.ol || {};
 
-(function (ns, undefined) {
+(function (ns) {
     "use strict";
 
     var Fermentation  = Backbone.Model.extend({
@@ -44,12 +45,13 @@ var ol = window.ol || {};
 
         validate: function (attrs) {
             return _.reduce(attrs, function (ok, attr) {
-                return (this.get(attr) !== "" && !isNaN(this.get(attr)));
+                ok =  (this.get(attr) !== "" && !isNaN(this.get(attr)));
+                return ok;
             }, true, this);
         }
     });
 
-    var Malts = ns.Malts = ScaleableIngredientCollection.extend({
+    ns.Malts = ScaleableIngredientCollection.extend({
 
         model: Malt,
 
@@ -68,14 +70,16 @@ var ol = window.ol || {};
         },
 
         validate: function () {
-            return _.reduce(["quantity", "alpha_acid", "boil_time"], function (ok, attr) {
-                return (this.get(attr) !== "" && !isNaN(this.get(attr)));
+            var attrs = ["quantity", "alpha_acid", "boil_time"];
+            return _.reduce(attrs, function (ok, attr) {
+                ok = (this.get(attr) !== "" && !isNaN(this.get(attr)));
+                return ok;
             }, true, this);
 
         }
     });
 
-    var Hops = ns.Hops = ScaleableIngredientCollection.extend({
+    ns.Hops = ScaleableIngredientCollection.extend({
 
         model: Hop,
 
@@ -109,7 +113,7 @@ var ol = window.ol || {};
         }
     });
 
-    var Yeasts = ns.Yeasts = Backbone.Collection.extend({
+    ns.Yeasts = Backbone.Collection.extend({
 
         initialize: function (models) {
             if (!models) {
@@ -174,10 +178,10 @@ var ol = window.ol || {};
             "mashing_water": "",
             "sparging_water": "",
             "mash_schedule": new MashSchedule(),
-            "malts": new Malts(),
-            "hops": new Hops(),
+            "malts": new ns.Malts(),
+            "hops": new ns.Hops(),
             "additives": new Additives(),
-            "yeasts": new Yeasts(),
+            "yeasts": new ns.Yeasts(),
             "fermentations": new Fermentations()
         },
 

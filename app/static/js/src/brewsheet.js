@@ -1,12 +1,17 @@
-var ol = window.ol || {};
+/*global Backbone: false, window: false*/
+var ol = this.ol || {};
 
 (function (ns) {
     "use strict";
 
-    var apiSearch = function(query, callback, model) {
-        var params = {"filters": [{"name": "name", "op": "ilike", "val": query + "%"}]};
-        $.get("/api/" + model + "?q=" + JSON.stringify(params) + "&results_per_page=200", function(res) {
-            if(res.objects){
+    var apiSearch = function (query, callback, model) {
+        var params = {
+            "filters": [
+                {"name": "name", "op": "ilike", "val": query + "%"}
+            ]
+        };
+        $.get("/api/" + model + "?q=" + JSON.stringify(params) + "&results_per_page=200", function (res) {
+            if (res.objects) {
                 callback(res.objects);
             } else {
                 callback([]);
@@ -16,17 +21,19 @@ var ol = window.ol || {};
 
     var ToggleView = Backbone.View.extend({
 
-        initialize: function() {
+        initialize: function () {
             _.bindAll(this, "toggle");
         },
 
-        render: function() {
+        render: function () {
             this.$el.find(".toggle").on("click", this.toggle);
         },
 
-        toggle: function() {
+        toggle: function () {
             this.$el.find(".content").toggle();
-            this.$el.find(".toggle").toggleClass("icon-plus").toggleClass("icon-minus");
+            this.$el.find(".toggle")
+                .toggleClass("icon-plus")
+                .toggleClass("icon-minus");
         }
     });
 
@@ -38,25 +45,25 @@ var ol = window.ol || {};
             "click .icon-remove-circle": "remove"
         },
 
-        initialize: function() {
+        initialize: function () {
             ToggleView.prototype.initialize.apply(this, arguments);
             _.bindAll(this, "remove", "change");
         },
 
-        render: function() {
+        render: function () {
             ToggleView.prototype.render.apply(this, arguments);
-            _.each(this.listenOn, function(name) {
+            _.each(this.listenOn, function (name) {
                 this.$el.find("#" + name).on("change", this.change);
             }, this);
             return this;
         },
 
-        change: function(e){
+        change: function (e) {
             var target = $(e.currentTarget);
             this.model.set(target.attr("id"), target.val());
         },
 
-        remove: function() {
+        remove: function () {
             this.model.destroy();
         }
 
@@ -64,44 +71,39 @@ var ol = window.ol || {};
 
     var BaseSectionView = ToggleView.extend({
 
-        initialize: function() {
+        initialize: function () {
             ToggleView.prototype.initialize.apply(this, arguments);
             this.collection.on("add", this.render, this);
             this.collection.on("destroy", this.render, this);
         },
 
-        render: function() {
+        render: function () {
             ToggleView.prototype.render.apply(this, arguments);
             return this;
         },
 
-        add: function(){
+        add: function () {
             this.collection.add(new this.collection.model());
         }
     });
 
-    var MashTimeView = ns.MashTimeView = BaseSectionView.extend({
+    var MashScheduleRowView = DynamicTableView.extend({
 
-        events: {
-            "click #add_mash_time": "add"
+        tagName: "tr",
+
+        listenOn: ["mash_time", "mash_temperature"],
+
+        initialize: function () {
+            DynamicTableView.prototype.initialize.apply(this, arguments);
         },
 
-        initialize: function() {
-            _.bindAll(this, "add");
-            BaseSectionView.prototype.initialize.apply(this, arguments);
-            this.collection.on("destroy", this.render, this);
-            this.collection.on("add", this.render, this);
-        },
-
-        render: function() {
-            BaseSectionView.prototype.render.apply(this, arguments);
-            var table = this.$el.find("#mash_schedule_table").find("tbody");
-            table.html("");
-            this.collection.each(function(mashTime) {
-                table.append(new MashScheduleRowView({model: mashTime}).render().$el);
-            });
-
-            this.mashGraph = new MashGraph({collection: this.collection, el: this.$el.find("#mash_graph")}).render();
+        render: function () {
+            this.$el.html(_.template(
+                $("#mash_time_row_template").html(),
+                this.model.toJSON()
+            ));
+            DynamicTableView.prototype.render.apply(this, arguments);
+            return this;
         }
     });
 
@@ -111,20 +113,26 @@ var ol = window.ol || {};
             this.collection.on("change", this.render, this);
         },
 
-        render: function() {
+        render: function () {
 
-            var data = this.collection.reduce(function(res, time) {
-                if(!isNaN(parseFloat(time.get("mash_time"))) && !isNaN(parseFloat(time.get("mash_temperature")))) {
+            var data = this.collection.reduce(function (res, time) {
+                if (!isNaN(parseFloat(time.get("mash_time"))) && !isNaN(parseFloat(time.get("mash_temperature")))) {
                     var start = res.prev;
                     var stop = start + parseFloat(time.get("mash_time"));
                     res.prev = stop;
-                    res.arr.push([start, parseFloat(time.get("mash_temperature"))]);
-                    res.arr.push([stop, parseFloat(time.get("mash_temperature"))]);
+                    res.arr.push([
+                        start,
+                        parseFloat(time.get("mash_temperature"))
+                    ]);
+                    res.arr.push([
+                        stop,
+                        parseFloat(time.get("mash_temperature"))
+                    ]);
                 }
                 return res;
             }, {arr: [], "prev": 0}).arr;
 
-            if(data.length > 0) {
+            if (data.length > 0) {
                 this.$el.show();
                 $.plot(
                     this.$el,
@@ -135,37 +143,39 @@ var ol = window.ol || {};
                     }
                 );
                 return this;
-            } else {
-                this.$el.hide();
             }
+            this.$el.hide();
         }
 
     });
 
-    var MashScheduleRowView = DynamicTableView.extend({
+    ns.MashTimeView = BaseSectionView.extend({
 
-        tagName: "tr",
-
-        listenOn: ["mash_time", "mash_temperature"],
-
-        initialize: function() {
-            DynamicTableView.prototype.initialize.apply(this, arguments);
+        events: {
+            "click #add_mash_time": "add"
         },
 
-        render: function() {
-            this.$el.html(_.template($("#mash_time_row_template").html(), this.model.toJSON()));
-            DynamicTableView.prototype.render.apply(this, arguments);
-            return this;
-        }
-    });
+        initialize: function () {
+            _.bindAll(this, "add");
+            BaseSectionView.prototype.initialize.apply(this, arguments);
+            this.collection.on("destroy", this.render, this);
+            this.collection.on("add", this.render, this);
+        },
 
-    var AsciiView = Backbone.View.extend({
+        render: function () {
+            BaseSectionView.prototype.render.apply(this, arguments);
+            var table = this.$el.find("#mash_schedule_table").find("tbody");
+            table.html("");
+            this.collection.each(function (mashTime) {
+                table.append(
+                    new MashScheduleRowView({model: mashTime}).render().$el
+                );
+            });
 
-        tagName: "pre",
-
-        render: function() {
-            this.$el.html(_.template($("#ascii_template").html(), this.options.data.serialize()));
-            return this;
+            this.mashGraph = new MashGraph({
+                collection: this.collection,
+                el: this.$el.find("#mash_graph")
+            }).render();
         }
     });
 
@@ -173,8 +183,28 @@ var ol = window.ol || {};
 
         tagName: "pre",
 
-        render: function() {
+        render: function () {
             this.$el.html(JSON.stringify(this.options.data, undefined, 4));
+            return this;
+        }
+    });
+
+    var FermentationRowView = DynamicTableView.extend({
+
+        tagName: "tr",
+
+        listenOn: ["type", "days", "temperature"],
+
+        initialize: function () {
+            DynamicTableView.prototype.initialize.apply(this, arguments);
+        },
+
+        render: function () {
+            this.$el.html(_.template(
+                $("#fermentation_row_template").html(),
+                this.model.toJSON()
+            ));
+            DynamicTableView.prototype.render.apply(this, arguments);
             return this;
         }
     });
@@ -185,73 +215,22 @@ var ol = window.ol || {};
             "click #add_fermentation": "add"
         },
 
-        initialize: function() {
+        initialize: function () {
             _.bindAll(this, "add");
             BaseSectionView.prototype.initialize.apply(this, arguments);
             this.collection.on("destroy", this.render, this);
             this.collection.on("add", this.render, this);
         },
 
-        render: function() {
+        render: function () {
             BaseSectionView.prototype.render.apply(this, arguments);
             var table = this.$el.find("#fermentation_table").find("tbody");
             table.html("");
-            this.collection.each(function(fermentation) {
-                table.append(new FermentationRowView({model: fermentation}).render().$el);
+            this.collection.each(function (fermentation) {
+                table.append(
+                    new FermentationRowView({model: fermentation}).render().$el
+                );
             });
-        }
-    });
-
-    var FermentationRowView = DynamicTableView.extend({
-
-        tagName: "tr",
-
-        listenOn: ["type", "days", "temperature"],
-
-        initialize: function() {
-            DynamicTableView.prototype.initialize.apply(this, arguments);
-        },
-
-        render: function() {
-            this.$el.html(_.template($("#fermentation_row_template").html(), this.model.toJSON()));
-            DynamicTableView.prototype.render.apply(this, arguments);
-            return this;
-        }
-    });
-
-    var  MaltSectionView = ns.MaltSectionView = BaseSectionView.extend({
-
-        events: {
-            "click #add_malt": "add"
-        },
-
-        initialize: function() {
-            _.bindAll(this, "add");
-            BaseSectionView.prototype.initialize.apply(this, arguments);
-            this.collection.on("change:quantity", this.render, this);
-        },
-
-        render: function() {
-            BaseSectionView.prototype.render.apply(this, arguments);
-            this.adjustPercentages();
-            var table = this.$el.find("#malts_table").find("tbody");
-            table.html("");
-            this.collection.each(function(malt) {
-                table.append(new MaltTableRowView({model: malt}).render().$el);
-            });
-        },
-
-        adjustPercentages: function() {
-            var total = this.collection.reduce(function(total, malt) {return total += parseFloat(malt.get("quantity"));}, 0);
-            this.collection.each(function(malt) {
-                var percentage = (malt.get("quantity")/total) * 100;
-                var pow = Math.pow(10, 1);
-                percentage = Math.round(percentage * pow) / pow;
-                if(!(isNaN(percentage))) {
-                    malt.set({"percentage": percentage});
-                }
-            });
-            this.collection.sort();
         }
     });
 
@@ -261,55 +240,73 @@ var ol = window.ol || {};
 
         listenOn: ["quantity", "name", "ppg", "color"],
 
-        initialize: function() {
+        initialize: function () {
             DynamicTableView.prototype.initialize.apply(this, arguments);
             _.bindAll(this,  "setMalt");
             this.model.on("change:percentage", this.percentageChange, this);
         },
 
-        render: function() {
-            this.$el.html(_.template($("#malt_table_row_template").html(), this.model.toJSON()));
-            this.$el.find("#name").typeahead({source: apiSearch, selectCallback: this.setMalt, model: "malt"});
+        render: function () {
+            this.$el.html(_.template(
+                $("#malt_table_row_template").html(),
+                this.model.toJSON()
+            ));
+            this.$el.find("#name").typeahead({
+                source: apiSearch,
+                selectCallback: this.setMalt,
+                model: "malt"
+            });
             DynamicTableView.prototype.render.apply(this, arguments);
             return this;
         },
 
-        setMalt: function(malt) {
-            _.each(_.omit(malt, "id"), function(value, key) {
+        setMalt: function (malt) {
+            _.each(_.omit(malt, "id"), function (value, key) {
                 this.$el.find("#" + key).val(value).change();
             }, this);
         },
 
-        percentageChange: function() {
+        percentageChange: function () {
             this.$el.find("#percentage").val(this.model.get("percentage"));
         }
     });
 
-    var HopSectionView = ns.HopSectionView = BaseSectionView.extend({
+    ns.MaltSectionView = BaseSectionView.extend({
 
         events: {
-            "click #add_hop": "add"
+            "click #add_malt": "add"
         },
 
-        initialize: function() {
+        initialize: function () {
             _.bindAll(this, "add");
             BaseSectionView.prototype.initialize.apply(this, arguments);
-            this.collection.on("change:boil_time", this.changeBoilTime, this);
+            this.collection.on("change:quantity", this.render, this);
         },
 
-        render: function() {
+        render: function () {
             BaseSectionView.prototype.render.apply(this, arguments);
-            var table = this.$el.find("#hops_table").find("tbody");
+            this.adjustPercentages();
+            var table = this.$el.find("#malts_table").find("tbody");
             table.html("");
-            this.collection.each(function(hop) {
-                var view = new HopTableRowView({model: hop}).render();
-                table.append(view.$el);
+            this.collection.each(function (malt) {
+                table.append(new MaltTableRowView({model: malt}).render().$el);
             });
         },
 
-        changeBoilTime: function() {
+        adjustPercentages: function () {
+            var total = this.collection.reduce(function (total, malt) {
+                total = total + parseFloat(malt.get("quantity"));
+                return total;
+            }, 0);
+            this.collection.each(function (malt) {
+                var percentage = (malt.get("quantity") / total) * 100;
+                var pow = Math.pow(10, 1);
+                percentage = Math.round(percentage * pow) / pow;
+                if (!(isNaN(percentage))) {
+                    malt.set({"percentage": percentage});
+                }
+            });
             this.collection.sort();
-            this.render();
         }
     });
 
@@ -319,47 +316,59 @@ var ol = window.ol || {};
 
         listenOn: ["quantity", "name", "form", "alpha_acid", "boil_time"],
 
-        initialize: function() {
+        initialize: function () {
             _.bindAll(this, "setHop");
             DynamicTableView.prototype.initialize.apply(this, arguments);
         },
 
-        render: function() {
-            this.$el.html(_.template($("#hop_table_row_template").html(), this.model.toJSON()));
+        render: function () {
+            this.$el.html(_.template(
+                $("#hop_table_row_template").html(),
+                this.model.toJSON()
+            ));
 
-            this.$el.find("#name").typeahead({source: apiSearch, selectCallback: this.setHop, model : "hop"});
+            this.$el.find("#name").typeahead({
+                source: apiSearch,
+                selectCallback: this.setHop,
+                model : "hop"
+            });
 
             DynamicTableView.prototype.render.apply(this, arguments);
             return this;
         },
 
-        setHop: function(hop) {
-            _.each(_.omit(hop, "id"), function(value, key) {
+        setHop: function (hop) {
+            _.each(_.omit(hop, "id"), function (value, key) {
                 this.$el.find("#" + key).val(value).change();
             }, this);
         }
     });
 
-    var YeastSectionView = ns.YeastSectionView = BaseSectionView.extend({
+    ns.HopSectionView = BaseSectionView.extend({
 
         events: {
-            "click #add_yeast": "add"
+            "click #add_hop": "add"
         },
 
-        initialize: function() {
+        initialize: function () {
             _.bindAll(this, "add");
             BaseSectionView.prototype.initialize.apply(this, arguments);
+            this.collection.on("change:boil_time", this.changeBoilTime, this);
         },
 
-        render: function() {
+        render: function () {
             BaseSectionView.prototype.render.apply(this, arguments);
-            var table = this.$el.find("#yeasts_table").find("tbody");
+            var table = this.$el.find("#hops_table").find("tbody");
             table.html("");
-            this.collection.each(function(additive) {
-                table.append(new YeastTableRowView({model: additive}).render().$el);
+            this.collection.each(function (hop) {
+                var view = new HopTableRowView({model: hop}).render();
+                table.append(view.$el);
             });
+        },
 
-            return this;
+        changeBoilTime: function () {
+            this.collection.sort();
+            this.render();
         }
     });
 
@@ -369,50 +378,54 @@ var ol = window.ol || {};
 
         listenOn: ["name", "attenuation", "type"],
 
-        initialize: function() {
+        initialize: function () {
             _.bindAll(this, "setYeast");
             DynamicTableView.prototype.initialize.apply(this, arguments);
         },
 
-        render: function() {
-            this.$el.html(_.template($("#yeast_table_row_template").html(), this.model.toJSON()));
+        render: function () {
+            this.$el.html(_.template(
+                $("#yeast_table_row_template").html(),
+                this.model.toJSON()
+            ));
             DynamicTableView.prototype.render.apply(this, arguments);
-            this.$el.find("#name").typeahead({source: apiSearch, selectCallback: this.setYeast, model : "yeast"});
+            this.$el.find("#name").typeahead({
+                source: apiSearch,
+                selectCallback: this.setYeast,
+                model : "yeast"
+            });
             return this;
         },
 
-        setYeast: function(yeast) {
-            _.each(_.omit(yeast, "id"), function(value, key) {
+        setYeast: function (yeast) {
+            _.each(_.omit(yeast, "id"), function (value, key) {
                 this.$el.find("#" + key).val(value).change();
             }, this);
         }
     });
 
-    var AdditiveSectionView = ns.AdditiveSectionView = BaseSectionView.extend({
+    ns.YeastSectionView = BaseSectionView.extend({
 
         events: {
-            "click #add_additive": "add"
+            "click #add_yeast": "add"
         },
 
-        initialize: function() {
+        initialize: function () {
             _.bindAll(this, "add");
             BaseSectionView.prototype.initialize.apply(this, arguments);
-            this.collection.on("change:boil_time", this.changeBoilTime, this);
         },
 
-        render: function() {
+        render: function () {
             BaseSectionView.prototype.render.apply(this, arguments);
-            var table = this.$el.find("#additives_table").find("tbody");
+            var table = this.$el.find("#yeasts_table").find("tbody");
             table.html("");
-            this.collection.each(function(additive) {
-                table.append(new AdditiveTableRowView({model: additive}).render().$el);
+            this.collection.each(function (additive) {
+                table.append(
+                    new YeastTableRowView({model: additive}).render().$el
+                );
             });
-            return this;
-        },
 
-        changeBoilTime: function() {
-            this.collection.sort();
-            this.render();
+            return this;
         }
     });
 
@@ -422,14 +435,47 @@ var ol = window.ol || {};
 
         listenOn: ["quantity", "name", "boil_time", "added_when"],
 
-        initialize: function() {
+        initialize: function () {
             DynamicTableView.prototype.initialize.apply(this, arguments);
         },
 
-        render: function() {
-            this.$el.html(_.template($("#additive_table_row_template").html(), this.model.toJSON()));
+        render: function () {
+            this.$el.html(_.template(
+                $("#additive_table_row_template").html(),
+                this.model.toJSON()
+            ));
             DynamicTableView.prototype.render.apply(this, arguments);
             return this;
+        }
+    });
+
+    ns.AdditiveSectionView = BaseSectionView.extend({
+
+        events: {
+            "click #add_additive": "add"
+        },
+
+        initialize: function () {
+            _.bindAll(this, "add");
+            BaseSectionView.prototype.initialize.apply(this, arguments);
+            this.collection.on("change:boil_time", this.changeBoilTime, this);
+        },
+
+        render: function () {
+            BaseSectionView.prototype.render.apply(this, arguments);
+            var table = this.$el.find("#additives_table").find("tbody");
+            table.html("");
+            this.collection.each(function (additive) {
+                table.append(
+                    new AdditiveTableRowView({model: additive}).render().$el
+                );
+            });
+            return this;
+        },
+
+        changeBoilTime: function () {
+            this.collection.sort();
+            this.render();
         }
     });
 
@@ -441,15 +487,15 @@ var ol = window.ol || {};
             "click #clone": "clone"
         },
 
-        initialize: function() {
-            if(!this.options.brew) {
+        initialize: function () {
+            if (!this.options.brew) {
                 this.brew = new ns.Brew();
-                if(this.options.name) {
+                if (this.options.name) {
                     this.brew.set({"brewer": this.options.name});
                 }
             } else {
                 this.brew = new ns.Brew();
-                this.brew.setData(this.options.brew)
+                this.brew.setData(this.options.brew);
             }
             _.bindAll(this, "change", "changeDate", "save", "saved", "clone");
 
@@ -468,48 +514,57 @@ var ol = window.ol || {};
         },
 
         subviews: {
-            "malts": MaltSectionView,
-            "hops": HopSectionView,
-            "additives": AdditiveSectionView,
-            "yeasts": YeastSectionView,
-            "mash_schedule": MashTimeView,
+            "malts": ns.MaltSectionView,
+            "hops": ns.HopSectionView,
+            "additives": ns.AdditiveSectionView,
+            "yeasts": ns.YeastSectionView,
+            "mash_schedule": ns.MashTimeView,
             "fermentations": FermentationView
         },
 
-        render: function() {
+        render: function () {
             this.$el.html("");
             var data = this.brew.asJSON();
             this.$el.append(_.template($("#brewsheet_template").html(), data));
 
-            _.each(this.brew.defaults, function(value, key) {
+            _.each(this.brew.defaults, function (value, key) {
 
-                if(this.brew.get(key) instanceof Backbone.Collection) {
-                    if(this.subviews[key]) {
-                        new this.subviews[key]({"el": this.$el.find("#" + key), "collection": this.brew.get(key)}).render();
+                if (this.brew.get(key) instanceof Backbone.Collection) {
+                    if (this.subviews[key]) {
+                        new this.subviews[key]({
+                            "el": this.$el.find("#" + key),
+                            "collection": this.brew.get(key)
+                        }).render();
                     }
                 }
-                if(this.brew.get(key) instanceof Backbone.Model) {
-                    if(this.subviews[key]) {
-                        new this.subviews[key]({"el": this.$el.find("#" + key), "model": this.brew.get(key)}).render();
+                if (this.brew.get(key) instanceof Backbone.Model) {
+                    if (this.subviews[key]) {
+                        new this.subviews[key]({
+                            "el": this.$el.find("#" + key),
+                            "model": this.brew.get(key)
+                        }).render();
                     }
                 } else {
                     var el = this.$el.find("#" + key);
-                    if(el.length > 0) {
+                    if (el.length > 0) {
                         this.$el.find("#" + key).on("change", this.change);
                     }
                 }
             }, this);
-            if(this.options.disabled) {
+            if (this.options.disabled) {
                 this.$el.find("input").prop("disabled", true);
-                this.$el.find("button").each(function(){
-                    if(this.id !== "show_recipe" && this.id !== "show_json" && this.id !== "clone") {
+                this.$el.find("button").each(function () {
+                    if (this.id !== "show_recipe" && this.id !== "show_json" && this.id !== "clone") {
                         $(this).hide();
                     }
                 });
                 this.$el.find("select").prop("disabled", true);
                 this.$el.find("textarea").prop("disabled", true);
             } else {
-                this.$el.find(".date").datepicker().on('changeDate', this.changeDate);
+                this.$el.find(".date").datepicker().on(
+                    'changeDate',
+                    this.changeDate
+                );
             }
 
             this.computeActualABV();
@@ -518,21 +573,21 @@ var ol = window.ol || {};
             return this;
         },
 
-        changeDate: function (e){
+        changeDate: function (e) {
             var target = $(e.currentTarget);
             this.change({"currentTarget": target.find("input")});
         },
 
-        change: function(e) {
+        change: function (e) {
             var target = $(e.currentTarget);
             var key = target.attr("id");
-            if(!(this.brew.get(key) instanceof Backbone.Collection) && !(this.brew.get(key) instanceof Backbone.Model)) {
+            if (!(this.brew.get(key) instanceof Backbone.Collection) && !(this.brew.get(key) instanceof Backbone.Model)) {
                 this.brew.set(target.attr("id"), target.val());
             }
         },
 
-        batchSizeChanged: function(){
-            if(ol.calc.isNumber(this.brew.get("batch_size"))){
+        batchSizeChanged: function () {
+            if (ol.calc.isNumber(this.brew.get("batch_size"))) {
                 this.computeGravity();
                 this.computeColor();
                 this.computeBitterness();
@@ -540,40 +595,40 @@ var ol = window.ol || {};
             }
         },
 
-        efficiencyChanged: function(){
-            if(ol.calc.isNumber(this.brew.get("brewhouse_efficiency"))){
+        efficiencyChanged: function () {
+            if (ol.calc.isNumber(this.brew.get("brewhouse_efficiency"))) {
                 this.computeGravity();
             }
         },
 
-        gravityChanged: function() {
-            if(ol.calc.isNumber(this.brew.get("computed_og"))){
+        gravityChanged: function () {
+            if (ol.calc.isNumber(this.brew.get("computed_og"))) {
                 this.computeBitterness();
                 this.computeFG();
             }
         },
 
-        maltChange: function() {
-            if(this.brew.get("malts").length > 0) {
+        maltChange: function () {
+            if (this.brew.get("malts").length > 0) {
                 this.computeGravity();
                 this.computeColor();
                 this.computeEfficiency();
             }
         },
 
-        hopChange: function() {
-            if(this.brew.get("hops").length > 0) {
+        hopChange: function () {
+            if (this.brew.get("hops").length > 0) {
                 this.computeBitterness();
             }
         },
 
-        yeastChange: function() {
-            if(this.brew.get("yeasts").length > 0) {
+        yeastChange: function () {
+            if (this.brew.get("yeasts").length > 0) {
                 this.computeFG();
             }
         },
 
-        computeGravity: function() {
+        computeGravity: function () {
             var malts = this.brew.get("malts");
             var volume =  this.brew.get("batch_size");
             var efficiency = this.brew.get("brewhouse_efficiency");
@@ -582,7 +637,7 @@ var ol = window.ol || {};
             this.$el.find("#computed_og").text(og);
         },
 
-        computeColor: function() {
+        computeColor: function () {
             var malts = this.brew.get("malts");
             var volume =  this.brew.get("batch_size");
             var ebc = ol.calc.computeColor(volume, malts);
@@ -590,14 +645,16 @@ var ol = window.ol || {};
             this.colorChanged();
         },
 
-        colorChanged: function() {
+        colorChanged: function () {
             var ebc = this.brew.get("computed_color");
             var c = "rgb(" + ol.calc.getHexForEBC(ebc) + ")";
 
-            this.$el.find("#computed_color").text(ebc).css("background-color", c);
+            this.$el.find("#computed_color")
+                .text(ebc)
+                .css("background-color", c);
         },
 
-        computeBitterness: function() {
+        computeBitterness: function () {
             var og = this.brew.get("computed_og");
             var volume =  this.brew.get("batch_size");
             var hops = this.brew.get("hops");
@@ -607,7 +664,7 @@ var ol = window.ol || {};
             this.$el.find("#computed_ibu").text(bitterness);
         },
 
-        computeFG: function() {
+        computeFG: function () {
             var og = this.brew.get("computed_og");
             var yeasts = this.brew.get("yeasts");
 
@@ -618,31 +675,31 @@ var ol = window.ol || {};
 
         },
 
-        computeABV: function() {
+        computeABV: function () {
             var og = this.brew.get("computed_og");
             var fg = this.brew.get("computed_fg");
 
             var abv = "-";
-            if(ol.calc.isNumber(og) && ol.calc.isNumber(fg)){
+            if (ol.calc.isNumber(og) && ol.calc.isNumber(fg)) {
                 abv = Math.round(ol.calc.computeABV(og, fg) * 10) / 10;
             }
             this.brew.set({"computed_abv": abv});
             this.$el.find("#computed_abv").text(abv);
         },
 
-        computeActualABV: function() {
+        computeActualABV: function () {
             var og = this.brew.get("actual_og");
             var fg = this.brew.get("actual_fg");
 
             var abv = "";
-            if(ol.calc.isNumber(og) && ol.calc.isNumber(fg)){
+            if (ol.calc.isNumber(og) && ol.calc.isNumber(fg)) {
                 abv = Math.round(ol.calc.computeABV(og, fg) * 10) / 10;
             }
             this.brew.set({"actual_abv": abv});
             this.$el.find("#actual_abv").val(abv);
         },
 
-        computeEfficiency: function() {
+        computeEfficiency: function () {
             var og = this.brew.get("actual_og");
             var volume =  this.brew.get("batch_size");
             var malts = this.brew.get("malts");
@@ -652,31 +709,33 @@ var ol = window.ol || {};
             this.$el.find("#brew_efficiency").val(efficiency);
         },
 
-        showJSON: function() {
+        showJSON: function () {
             var modal = $('#modal');
             modal.find(".modal-body").html(new JsonView({data: this.brew.asJSON()}).render().$el);
             modal.modal('show');
         },
 
-        save: function() {
+        save: function () {
             this.brew.save({}, {"success": this.saved});
         },
 
-        saved: function() {
+        saved: function () {
             window.history.pushState("object or string", "Title", "/brews/" + this.brew.get("id"));
 
             this.brew.set("data", null);
             this.brew.set("user", null);
 
-            this.$el.find("#save_results").html(_.template($("#success_alert_template").html(), {"type": "success", "message": "Brew saved!"}));
+            this.$el.find("#save_results").html(_.template(
+                $("#success_alert_template").html(),
+                {"type": "success", "message": "Brew saved!"}
+            ));
         },
 
-        clone: function() {
+        clone: function () {
             window.history.pushState("object or string", "Title", "/brews/add");
             this.brew.set("id", null);
             this.options.disabled = false;
             this.render();
-            //this.$el.find("#clone").attr("id", "save").html("Save recipe");
         }
     });
 }(ol));

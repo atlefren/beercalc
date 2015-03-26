@@ -1,10 +1,12 @@
-var ol = ol || {};
-(function(ns) {
+/*global Backbone: false*/
+var ol = this.ol || {};
+(function (ns) {
+    'use strict';
 
     var Model = Backbone.Model.extend({
-        toJSON: function() {
-            return _.reduce(this.attributes, function(data, attr, key){
-                if(!isNaN(attr)) {
+        toJSON: function () {
+            return _.reduce(this.attributes, function (data, attr, key) {
+                if (!isNaN(attr)) {
                     data[key] = parseFloat(attr);
                 } else {
                     data[key] = attr;
@@ -25,14 +27,14 @@ var ol = ol || {};
             "click #delete": "delete"
         },
 
-        initialize: function() {
+        initialize: function () {
             _.bindAll(this, "edit", "save", "saved", "cancel", "saveError", "delete");
             this.model.on("destroy", this.remove, this);
         },
 
-        render: function() {
-            var fields = _.map(this.options.attr, function(attribute){
-                return {"value": this.model.get(attribute)}
+        render: function () {
+            var fields = _.map(this.options.attr, function (attribute) {
+                return {"value": this.model.get(attribute)};
             }, this);
 
             var data = {
@@ -48,8 +50,8 @@ var ol = ol || {};
             return this;
         },
 
-        edit: function() {
-            var fields = _.map(this.options.attr, function(attribute) {
+        edit: function () {
+            var fields = _.map(this.options.attr, function (attribute) {
                 return {"name": attribute, value: this.model.get(attribute)};
             }, this);
 
@@ -57,57 +59,57 @@ var ol = ol || {};
             this.$el.append(_.template($("#edit_row_template").html(), {"fields": fields}));
         },
 
-        save: function() {
+        save: function () {
 
             this.$el.find(".control-group").removeClass("error");
             this.$el.find(".help-inline").remove();
 
-            var values = _.reduce(this.options.attr, function(res, el) {
+            var values = _.reduce(this.options.attr, function (res, el) {
                 res[el] = this.$el.find("#" + el).val();
                 return res;
             }, {}, this);
             this.saveChanges(values);
         },
 
-        cancel: function() {
+        cancel: function () {
             this.render();
         },
 
-        saveChanges: function(values) {
+        saveChanges: function (values) {
             this.model.save(values, {"wait": true, "success": this.saved, "error": this.saveError});
         },
 
-        saved: function() {
+        saved: function () {
             this.render();
         },
 
-        saveError: function(model, xhr, options) {
+        saveError: function (model, xhr, options) {
             var errors = JSON.parse(xhr.responseText);
-            _.each(errors.message, function(error) {
+            _.each(errors.message, function (error) {
                 var parent = this.$el.find("#" + error.field).parent();
                 parent.append($("<span class='help-inline'>" + error.message +  "</span>"));
                 parent.addClass("error");
             }, this);
         },
 
-        delete: function() {
+        delete: function () {
             this.model.destroy();
         }
     });
 
     var IngredientTable = Backbone.View.extend({
 
-        initialize: function() {
+        initialize: function () {
             this.collection.on("reset", this.addAll, this);
             this.collection.on("add", this.addOne, this);
         },
 
-        addAll: function() {
+        addAll: function () {
             this.collection.each(this.addOne, this);
         },
 
-        addOne: function(model) {
-                this.$el.append(new IngredientRow({model: model, "attr": this.options.attributes}).render().$el);
+        addOne: function (model) {
+            this.$el.append(new IngredientRow({model: model, "attr": this.options.attributes}).render().$el);
         }
     });
 
@@ -119,34 +121,34 @@ var ol = ol || {};
             "click #save": "save"
         },
 
-        initialize: function(){
-            _.bindAll(this, "save")
+        initialize: function () {
+            _.bindAll(this, "save");
         },
 
-        render: function() {
-            var fields = _.map(this.options.form, function(el) {
-                return {"name": el, value:""};
+        render: function () {
+            var fields = _.map(this.options.form, function (el) {
+                return {"name": el, value: ""};
             }, this);
 
             this.$el.append(_.template($("#edit_row_template").html(), {"fields": fields}));
             return this;
         },
 
-        save: function(){
+        save: function () {
 
             this.$el.find(".control-group").removeClass("error");
             this.$el.find(".help-inline").remove();
 
-            var values = _.reduce(this.options.form, function(res, el) {
+            var values = _.reduce(this.options.form, function (res, el) {
                 res[el] = this.$el.find("#" + el).val();
                 return res;
             }, {}, this);
             this.options.callback(values);
         },
 
-        displayError: function(xhr) {
+        displayError: function (xhr) {
             var errors = JSON.parse(xhr.responseText);
-            _.each(errors.message, function(error) {
+            _.each(errors.message, function (error) {
                 var parent = this.$el.find("#" + error.field).parent();
                 parent.append($("<span class='help-inline'>" + error.message +  "</span>"));
                 parent.addClass("error");
@@ -160,35 +162,35 @@ var ol = ol || {};
             "click #add": "add"
         },
 
-        initialize: function() {
+        initialize: function () {
             _.bindAll(this, "add", "added", "saved", "saveError");
             this.collection = new this.collectionType();
-            new IngredientTable({"el": this.$el.find("tbody"), collection: this.collection, attributes: this.attributes})
+            new IngredientTable({"el": this.$el.find("tbody"), collection: this.collection, attributes: this.attributes});
         },
 
-        setData: function(data) {
+        setData: function (data) {
             this.collection.reset(data);
             return this;
         },
 
-        add: function() {
+        add: function () {
             this.adder = new Adder({"form": this.attributes, "callback": this.added}).render();
             this.$el.find("tbody").append(this.adder.$el);
         },
 
-        added: function(values) {
+        added: function (values) {
             var model = new this.collection.model();
             model.urlRoot = this.collection.url;
             model.save(values, {"wait": true, "success": this.saved, "error": this.saveError});
         },
 
-        saved: function(model) {
+        saved: function (model) {
             this.adder.$el.remove();
             this.collection.add(model);
         },
 
-        saveError: function(model, xhr, options) {
-           this.adder.displayError(xhr);
+        saveError: function (model, xhr, options) {
+            this.adder.displayError(xhr);
         }
     });
 

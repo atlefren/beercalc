@@ -1,4 +1,4 @@
-var ol = window.ol || {};
+var ol = this.ol || {};
 ol.templateFunc = {};
 
 (function (ns) {
@@ -48,7 +48,8 @@ ol.templateFunc = {};
     ns.mapCo2 = function (val) {
         if (val === "natural") {
             return "naturlig";
-        } else if (val === "added") {
+        }
+        if (val === "added") {
             return "tilsatt";
         }
         return "-";
@@ -57,7 +58,8 @@ ol.templateFunc = {};
     ns.mapHopForm = function (val) {
         if (val === "pellets") {
             return "pellets";
-        } else if (val === "cones") {
+        }
+        if (val === "cones") {
             return "hel";
         }
         return "-";
@@ -66,9 +68,11 @@ ol.templateFunc = {};
     ns.mapYeast = function (val) {
         if (val === "liquid") {
             return "flytende gjær";
-        } else if (val === "dry") {
+        }
+        if (val === "dry") {
             return "tørrgjær";
-        } else if (val === "homgegrown") {
+        }
+        if (val === "homgegrown") {
             return "selvdyrket gjær";
         }
         return "-";
