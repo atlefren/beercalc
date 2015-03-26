@@ -217,7 +217,7 @@ ol.calc = {};
 
 
     var apiSearch = function(query, callback, model) {
-        var params = {"filters": [{"name": "name", "op": "like", "val": query + "%"}]};
+        var params = {"filters": [{"name": "name", "op": "ilike", "val": query + "%"}]};
         $.get("/api/" + model + "?q=" + JSON.stringify(params) + "&results_per_page=200", function(res) {
 
             if(res.objects){
