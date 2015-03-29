@@ -22,8 +22,8 @@ brewsheet_js = Bundle(
     output='gen/js/brewsheet.js'
 )
 
-js_ingredient_list  = Bundle(
+js_ingredient_list = Bundle(
     'js/src/ingredient_list.js',
     filters='jsmin',
     output='gen/js/brewsheet.js'
-    )
+)
