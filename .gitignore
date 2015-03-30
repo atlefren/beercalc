@@ -6,3 +6,4 @@ db_repository
 app/static/.webassets-cache/
 app/static/gen/
 tmp/
+.env

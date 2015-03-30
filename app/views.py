@@ -1,15 +1,14 @@
-from flask import (render_template, flash, redirect, session, url_for, request,
-                   g, abort)
-from flask.ext.login import (login_user, logout_user, current_user,
-                             login_required)
-from app import app, db, lm, oid
-from models import Brew, User, Malt, Hop, Yeast, ROLE_USER
+from flask import (render_template, g, abort)
+from flask.ext.login import current_user, login_required
+from app import app
+from models import Brew, Malt, Hop, Yeast
 import simplejson
 
-
+'''
 @lm.user_loader
 def load_user(id):
     return User.query.get(int(id))
+'''
 
 
 @app.before_request
@@ -82,7 +81,7 @@ def browse_brews():
         show_brewer=True
     )
 
-
+'''
 @app.route('/login', methods=['GET', 'POST'])
 @oid.loginhandler
 def login():
@@ -135,3 +134,4 @@ def after_login(resp):
 def logout():
     logout_user()
     return redirect(url_for('index'))
+'''
