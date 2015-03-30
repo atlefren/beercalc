@@ -8,7 +8,6 @@ from models import User, ROLE_USER
 
 @app.route("/login")
 def login():
-    print "LOGIN"
     return redirect(
         googlelogin.login_url(scopes=[USERINFO_EMAIL_SCOPE])
     )
