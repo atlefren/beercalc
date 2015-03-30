@@ -2,16 +2,15 @@ var ol = this.ol || {};
 ol.templateFunc = {};
 
 (function (ns) {
-
-    "use strict";
+    'use strict';
 
     ns.rpad = function (val, space) {
         var str = String(val);
         var add = space - str.length;
         if (add > 0) {
-            var pad = "", i;
+            var pad = '', i;
             for (i = 0; i < add; i += 1) {
-                pad += " ";
+                pad += ' ';
             }
             str = pad + str;
         }
@@ -22,9 +21,9 @@ ol.templateFunc = {};
         var str = String(val);
         var add = space - str.length;
         if (add > 0) {
-            var pad = "", i;
+            var pad = '', i;
             for (i = 0; i < add; i += 1) {
-                pad += " ";
+                pad += ' ';
             }
             str = str + pad;
         }
@@ -32,49 +31,49 @@ ol.templateFunc = {};
     };
 
     ns.orNa = function (val) {
-        if (val === "") {
-            return "-";
+        if (val === '') {
+            return '-';
         }
         return val;
     };
 
     ns.yesNo = function (val) {
         if (val) {
-            return "ja";
+            return 'ja';
         }
-        return "nei";
+        return 'nei';
     };
 
     ns.mapCo2 = function (val) {
-        if (val === "natural") {
-            return "naturlig";
+        if (val === 'natural') {
+            return 'naturlig';
         }
-        if (val === "added") {
-            return "tilsatt";
+        if (val === 'added') {
+            return 'tilsatt';
         }
-        return "-";
+        return '-';
     };
 
     ns.mapHopForm = function (val) {
-        if (val === "pellets") {
-            return "pellets";
+        if (val === 'pellets') {
+            return 'pellets';
         }
-        if (val === "cones") {
-            return "hel";
+        if (val === 'cones') {
+            return 'hel';
         }
-        return "-";
+        return '-';
     };
 
     ns.mapYeast = function (val) {
-        if (val === "liquid") {
-            return "flytende gjær";
+        if (val === 'liquid') {
+            return 'flytende gjær';
         }
-        if (val === "dry") {
-            return "tørrgjær";
+        if (val === 'dry') {
+            return 'tørrgjær';
         }
-        if (val === "homgegrown") {
-            return "selvdyrket gjær";
+        if (val === 'homgegrown') {
+            return 'selvdyrket gjær';
         }
-        return "-";
+        return '-';
     };
 }(ol.templateFunc));

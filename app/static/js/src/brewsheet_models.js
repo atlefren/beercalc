@@ -2,13 +2,13 @@
 var ol = this.ol || {};
 
 (function (ns) {
-    "use strict";
+    'use strict';
 
     var Fermentation  = Backbone.Model.extend({
-        "defaults": {
-            "type": "",
-            "days": "",
-            "temperature": ""
+        'defaults': {
+            'type': '',
+            'days': '',
+            'temperature': ''
         }
     });
 
@@ -16,7 +16,11 @@ var ol = this.ol || {};
 
         initialize: function (models) {
             if (!models) {
-                this.add([{"type": "primary"}, {"type": "secondary"}, {"type": "storage"}]);
+                this.add([
+                    {'type': 'primary'},
+                    {'type': 'secondary'},
+                    {'type': 'storage'}
+                ]);
             }
         },
 
@@ -26,26 +30,26 @@ var ol = this.ol || {};
     var ScaleableIngredientCollection = Backbone.Collection.extend({
         scale: function (factor) {
             this.each(function (element) {
-                if (element.has("quantity")) {
-                    var new_quantity = Math.round(element.get("quantity") * factor * 100) / 100;
-                    element.set({"quantity": new_quantity});
+                if (element.has('quantity')) {
+                    var new_quantity = Math.round(element.get('quantity') * factor * 100) / 100;
+                    element.set({'quantity': new_quantity});
                 }
             });
         }
     });
 
     var Malt = Backbone.Model.extend({
-        "defaults": {
-            "quantity": "",
-            "percentage": "",
-            "name": "",
-            "ppg": "",
-            "color": ""
+        'defaults': {
+            'quantity': '',
+            'percentage': '',
+            'name': '',
+            'ppg': '',
+            'color': ''
         },
 
         validate: function (attrs) {
             return _.reduce(attrs, function (ok, attr) {
-                ok =  (this.get(attr) !== "" && !isNaN(this.get(attr)));
+                ok =  (this.get(attr) !== '' && !isNaN(this.get(attr)));
                 return ok;
             }, true, this);
         }
@@ -56,23 +60,23 @@ var ol = this.ol || {};
         model: Malt,
 
         comparator: function (malt) {
-            return -parseInt(malt.get("quantity"), 10);
+            return -parseInt(malt.get('quantity'), 10);
         }
     });
 
     var Hop = Backbone.Model.extend({
-        "defaults": {
-            "quantity": "",
-            "name": "",
-            "form": "cones",
-            "alpha_acid": "",
-            "boil_time": ""
+        'defaults': {
+            'quantity': '',
+            'name': '',
+            'form': 'cones',
+            'alpha_acid': '',
+            'boil_time': ''
         },
 
         validate: function () {
-            var attrs = ["quantity", "alpha_acid", "boil_time"];
+            var attrs = ['quantity', 'alpha_acid', 'boil_time'];
             return _.reduce(attrs, function (ok, attr) {
-                ok = (this.get(attr) !== "" && !isNaN(this.get(attr)));
+                ok = (this.get(attr) !== '' && !isNaN(this.get(attr)));
                 return ok;
             }, true, this);
 
@@ -84,8 +88,8 @@ var ol = this.ol || {};
         model: Hop,
 
         comparator: function (hop_a, hop_b) {
-            var a = hop_a.get("boil_time");
-            var b = hop_b.get("boil_time");
+            var a = hop_a.get('boil_time');
+            var b = hop_b.get('boil_time');
             if (!ol.calc.isNumber(a)) {
                 a = -1;
             }
@@ -106,10 +110,10 @@ var ol = this.ol || {};
     });
 
     var Yeast = Backbone.Model.extend({
-        "defaults": {
-            "name": "",
-            "type": "none",
-            "attenuation": ""
+        'defaults': {
+            'name': '',
+            'type': 'none',
+            'attenuation': ''
         }
     });
 
@@ -125,11 +129,11 @@ var ol = this.ol || {};
     });
 
     var Additive = Backbone.Model.extend({
-        "defaults": {
-            "quantity": "",
-            "name": "",
-            "added_when": "",
-            "boil_time": ""
+        'defaults': {
+            'quantity': '',
+            'name': '',
+            'added_when': '',
+            'boil_time': ''
         }
     });
 
@@ -138,14 +142,14 @@ var ol = this.ol || {};
         model: Additive,
 
         comparator: function (additive) {
-            return -parseInt(additive.get("boil_time"), 10);
+            return -parseInt(additive.get('boil_time'), 10);
         }
     });
 
     var MashTime = Backbone.Model.extend({
-        "defaults": {
-            "mash_time": "",
-            "mash_temperature": ""
+        'defaults': {
+            'mash_time': '',
+            'mash_temperature': ''
         }
     });
 
@@ -154,41 +158,41 @@ var ol = this.ol || {};
     });
 
     ns.Brew = Backbone.Model.extend({
-        "defaults": {
-            "beer_name": "",
-            "brewer": "",
-            "beer_style": "",
-            "wort_size": "",
-            "batch_size": "",
-            "boil_time": "",
-            "brewhouse_efficiency": "75",
-            "brew_efficiency": "-",
-            "computed_color": "-",
-            "computed_ibu": "-",
-            "computed_og": "-",
-            "actual_og": "",
-            "computed_fg": "-",
-            "computed_abv": "-",
-            "actual_fg": "",
-            "brew_date": "",
-            "bottle_date": "",
-            "filtered": false,
-            "co2": "none",
-            "comment": "",
-            "mashing_water": "",
-            "sparging_water": "",
-            "mash_schedule": new MashSchedule(),
-            "malts": new ns.Malts(),
-            "hops": new ns.Hops(),
-            "additives": new Additives(),
-            "yeasts": new ns.Yeasts(),
-            "fermentations": new Fermentations()
+        'defaults': {
+            'beer_name': '',
+            'brewer': '',
+            'beer_style': '',
+            'wort_size': '',
+            'batch_size': '',
+            'boil_time': '',
+            'brewhouse_efficiency': 75,
+            'brew_efficiency': '-',
+            'computed_color': '-',
+            'computed_ibu': '-',
+            'computed_og': '-',
+            'actual_og': '',
+            'computed_fg': '-',
+            'computed_abv': '-',
+            'actual_fg': '',
+            'brew_date': '',
+            'bottle_date': '',
+            'filtered': false,
+            'co2': 'none',
+            'comment': '',
+            'mashing_water': '',
+            'sparging_water': '',
+            'mash_schedule': new MashSchedule(),
+            'malts': new ns.Malts(),
+            'hops': new ns.Hops(),
+            'additives': new Additives(),
+            'yeasts': new ns.Yeasts(),
+            'fermentations': new Fermentations()
         },
 
         url: function () {
-            var base = "/api/brew";
-            if (this.has("id")) {
-                return base + "/" + this.get("id");
+            var base = '/api/brew';
+            if (this.has('id')) {
+                return base + '/' + this.get('id');
             }
             return base;
         },
@@ -200,9 +204,9 @@ var ol = this.ol || {};
         toJSON: function () {
             //TODO: query user if this should be public
             return {
-                "name": this.get("beer_name"),
-                "data": JSON.stringify(this.asJSON()),
-                "public": true
+                'name': this.get('beer_name'),
+                'data': JSON.stringify(this.asJSON()),
+                'public': true
             };
         },
 
@@ -220,11 +224,11 @@ var ol = this.ol || {};
         },
 
         scale: function (new_volume) {
-            if (this.has("batch_size")) {
-                var factor = new_volume / this.get("batch_size");
-                this.get("hops").scale(factor);
-                this.get("malts").scale(factor);
-                this.get("additives").scale(factor);
+            if (this.has('batch_size')) {
+                var factor = new_volume / this.get('batch_size');
+                this.get('hops').scale(factor);
+                this.get('malts').scale(factor);
+                this.get('additives').scale(factor);
             }
         }
     });
