@@ -1,294 +1,215 @@
 {% extends "base.html" %}
-        {% block css %}
-        {{ super() }}
-        <link rel="stylesheet" type="text/css" media="all" href="{{ url_for('static', filename='css/bootstrap/css/bootstrap.min.css') }}" />
-        <link rel="stylesheet" type="text/css" media="all" href="{{ url_for('static', filename='css/style.css') }}" />
-        <link rel="stylesheet" type="text/css" media="all" href="{{ url_for('static', filename='css/datepicker.css') }}" />
-        {% endblock %}
+{% block css %}
+    
+    {{ super() }}
+    <link rel="stylesheet" type="text/css" media="all" href="{{ url_for('static', filename='css/bootstrap/css/bootstrap.min.css') }}" />
+    <link rel="stylesheet" type="text/css" media="all" href="{{ url_for('static', filename='css/style.css') }}" />
+    <link rel="stylesheet" type="text/css" media="all" href="{{ url_for('static', filename='css/datepicker.css') }}" />
+{% endblock %}
 
-        {% block js %}
-        {{ super() }}
+{% block js %}
+{{ super() }}
 
 
 {% assets "brewsheet_js" %}
-<script type="text/javascript" src="{{ ASSET_URL }}"></script>
+    <script type="text/javascript" src="{{ ASSET_URL }}"></script>
 {% endassets %}
 
-        <script type="text/javascript">
-            $(document).ready(function(){
-                var name = "{{g.user.name}}";
-                var brew;
-                var disabled = false;
-                {% if brew %}
-                    brew = {{brew|safe}};
-                    {% if not is_own %}
-                        disabled = true;
-                    {% endif %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var name = "{{g.user.name}}";
+            var brew;
+            var disabled = false;
+            {% if brew %}
+                brew = {{brew|safe}};
+                {% if not is_own %}
+                    disabled = true;
                 {% endif %}
+            {% endif %}
 
-                var brewSheet = new ol.BrewSheet({"brew": brew, "el": $("#content"), "name": name, "disabled": disabled}).render();
-            });
-        </script>
-        {% endblock %}
-
-        {% block body %}
-        <h2>Brewsheet</h2>
-        <div id="brewsheet" class="tabbable">
-            <ul class="nav nav-tabs">
-                <li class="active"><a href="#tab1" data-toggle="tab">Plan recipe</a></li>
-                <li><a href="#tab2" data-toggle="tab">Brewing</a></li>
-                <li><a href="#tab3" data-toggle="tab">Results</a></li>
-            </ul>
-            <div id="content"></div>
-        </div>
-
-        <script type="text/template" id="brewsheet_template">
-            <div class="tab-content">
-                <div class="tab-pane active" id="tab1">
-                    {% include 'brewsheet_sections/general_information.html' %}
-                    {% include 'brewsheet_sections/malts_section.html' %}
-                    {% include 'brewsheet_sections/hops_section.html' %}
-                    {% include 'brewsheet_sections/yeasts_section.html' %}
-                    {% include 'brewsheet_sections/additives_section.html' %}
-                </div>
-                <div class="tab-pane" id="tab2">
-                    {% include 'brewsheet_sections/water_section.html' %}
-                    {% include 'brewsheet_sections/mashing_section.html' %}
-                    {% include 'brewsheet_sections/fermentation_section.html' %}
-                </div>
-                <div class="tab-pane" id="tab3">
-                    {% include 'brewsheet_sections/additional_information.html' %}
-
-                </div>
-                <section id="save_section">
-                    <form class="form-horizontal">
-                        <fieldset>
-                            <legend>Save</legend>
-                            <div id="controls">
-                                <div id="save_results"></div>
-                                <button type="button" class="btn" id="show_recipe">Show recipe</button>
-                                <button type="button" class="btn" id="show_json">Show JSON</button>
-                                {% if is_own %}<button type="button" class="btn" id="save">Save recipe</button>{% endif %}
-                                {% if g.user.is_authenticated() %}<button type="button" class="btn" id="clone">Clone</button>{% endif %}
-                            </div>
-                        </fieldset>
-                    </form>
-                </section>
-            </div>
-        </script>
+            var brewSheet = new ol.BrewSheet({
+                "brew": brew,
+                "el": $("#content"),
+                "name": name,
+                "disabled": disabled
+            }).render();
+        });
+    </script>
 {% endblock %}
-    <!-- TEMPLATES: -->
-        {% block templates %}
 
-        <script type="text/template" id="success_alert_template">
-            <div id="success" class="alert alert-<%= type %>">
-                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                <%= message%>
-            </div>
-        </script>
-
-        <script type="text/template" id="malt_table_row_template">
-            <td>
-                <input id="quantity" type="text" class="input-mini" value="<%= quantity %>">
-            </td>
-            <td>
-                <input id="percentage" type="text" class="input-mini" readonly="readonly" value="<%= percentage %>">
-            </td>
-            <td>
-                <input id="name" type="text" class="input-large" value="<%= name %>">
-            </td>
-            <td>
-                <input id="ppg" type="text" class="input-mini" value="<%= ppg %>">
-            </td>
-            <td>
-                <input id="color" type="text" class="input-mini" value="<%= color %>">
-            </td>
-            <td class="remove"><i class="icon-remove-circle"></i></td>
-        </script>
-
-        <script type="text/template" id="hop_table_row_template">
-            <td>
-                <input id="quantity" type="text" class="input-mini" value="<%= quantity %>">
-            </td>
-            <td>
-                <input id="name" type="text" class="input-large" value="<%= name %>">
-            </td>
-            <td>
-                <input id="alpha_acid" type="text" class="input-mini" value="<%= alpha_acid %>">
-            </td>
-            <td>
-                <select id="form" class="small">
-                    <option value="pellets" <% if( form == 'pellets') { %> selected  <% } %>>Pellets</option>
-                    <option value="cones" <% if( form == 'cones') { %> selected  <% } %>>Cones</option>
-                </select>
-            </td>
-            <td>
-                <input id="boil_time" type="text" class="input-medium" value="<%= boil_time %>">
-            </td>
-            <td class="remove"><i class="icon-remove-circle"></i></td>
-        </script>
-
-        <script type="text/template" id="additive_table_row_template">
-            <td>
-                <input id="quantity" type="text" class="input-mini" value="<%= quantity %>">
-            </td>
-            <td>
-                <input id="name" type="text" class="input-large" value="<%= name %>">
-            </td>
-            <td>
-                <input id="added_when" type="text" class="input-medium" value="<%= added_when %>"> <!-- todo: make select -->
-            </td>
-            <td>
-                <input id="boil_time" type="text" class="input-medium" value="<%= boil_time %>">
-            </td>
-            <td class="remove"><i class="icon-remove-circle"></i></td>
-        </script>
-
-        <script type="text/template" id="yeast_table_row_template">
-            <td>
-                <input id="name" type="text" class="input-large" value="<%= name %>">
-            </td>
-            <td>
-                <input id="attenuation" type="text" class="input-medium" value="<%= attenuation %>">
-            </td>
-            <td>
-                <select id="type" class="small">
-                    <option value="liquid" <% if( type == 'liquid') { %> selected  <% } %>>Liquid</option>
-                    <option value="dry" <% if( type == 'dry') { %> selected  <% } %>>Dry</option>
-                    <option value="homegrown" <% if( type == 'homegrown') { %> selected  <% } %>>Homegrown</option>
-                </select>
-            </td>
-            <td class="remove"><i class="icon-remove-circle"></i></td>
-        </script>
-
-        <script type="text/template" id="mash_time_row_template">
-
-            <td class="medium">
-                <input id="mash_time" type="text" class="input-mini" value="<%= mash_time %>">
-            </td>
-            <td class="medium">
-                <input id="mash_temperature" type="text" class="input-mini" value="<%= mash_temperature %>">
-            </td>
-            <td class="remove"><i class="icon-remove-circle"></i></td>
-        </script>
-
-        <script type="text/template" id="fermentation_row_template">
-
-            <td class="medium">
-                <input id="type" type="text" class="input-medium" value="<%= type %>">
-            </td>
-            <td class="medium">
-                <input id="days" type="text" class="input-mini" value="<%= days %>">
-            </td>
-            <td class="mini">
-                days
-            </td>
-            <td class="mini">
-                at
-            </td>
-            <td class="medium">
-                <input id="temperature" type="text" class="input-mini" value="<%= temperature %>">
-            </td>
-            <td class="mini">
-                &deg;C
-            </td>
-            <td class="remove"><i class="icon-remove-circle"></i></td>
-        </script>
-
-
-<script type="text/template" id="ascii_template">
-[tt][size=10pt][b]Generell informasjon[/b]
-Navn på brygget: <%= ol.templateFunc.orNa(generalInformation.beer_name) %>
-Øltype: <%= ol.templateFunc.orNa(generalInformation.beer_style) %>
-OG: <%= ol.templateFunc.rpad(ol.templateFunc.orNa(generalInformation.actual_og), 3) %>
-FG: <%= ol.templateFunc.rpad(ol.templateFunc.orNa(generalInformation.fg), 3) %>
-Farve (beregnet): <%= ol.templateFunc.rpad(ol.templateFunc.orNa(generalInformation.computed_color), 3) %> EBC
-Beregnet bitter:  <%= ol.templateFunc.rpad(ol.templateFunc.orNa(generalInformation.computed_ibu), 3) %> IBU
-Vørtermengde: <%= ol.templateFunc.rpad(ol.templateFunc.orNa(generalInformation.wort_size), 3) %> l
-Sluttvolum:   <%= ol.templateFunc.rpad(ol.templateFunc.orNa(generalInformation.batch_size), 3) %> l
-
-<%
-    if(malts.length > 0) {
-
-        print("[b]Malt & sukker[/b]\n");
-
-        var iSpace = _.max(_.pluck(malts, "name"), function(i) {return i.length; }).length;
-        _.each(malts, function(malt) {  
-            print(ol.templateFunc.rpad(ol.templateFunc.orNa(malt.quantity), 4) + " gram       ");
-            print(ol.templateFunc.rpad(ol.templateFunc.orNa(malt.percentage), 4) + " %      ");
-            print(ol.templateFunc.lpad(ol.templateFunc.orNa(malt.name), iSpace) + "         ");
-            print(ol.templateFunc.rpad(ol.templateFunc.orNa(malt.color), 4) + " EBC");
-            print("\n");
-        }); 
-    }
-%>
-[b]Vann[/b]
-<%= ol.templateFunc.rpad(ol.templateFunc.orNa(water.mashing_water), 3) %> liter til innmesking
-<%= ol.templateFunc.rpad(ol.templateFunc.orNa(water.sparging_water), 3) %> liter til skylling
-
-<%
-    if(mashSchedule.length > 0) {
-        print("[b]Meskeskjema[/b]\n");
-        _.each(mashSchedule, function(time) {
-            print(ol.templateFunc.rpad(ol.templateFunc.orNa(time.mash_time), 3) + " min    ");
-            print(ol.templateFunc.rpad(ol.templateFunc.orNa(time.mash_temperature), 3) + " gr C");
-            print("\n");
-        });
-    }
-
-    if(hops.length > 0) {
-        print("\n");
-        print("[b]Humle[/b]\n");
-        var iSpace = _.max(_.pluck(hops, "name"), function(i) {return i.length; }).length;
-        _.each(hops, function(hop) {
-            print(ol.templateFunc.rpad(ol.templateFunc.orNa(hop.quantity), 3)+ " gram    ");
-            print(ol.templateFunc.lpad(ol.templateFunc.orNa(hop.name), iSpace) + "    ");
-            print(ol.templateFunc.rpad(hop.alpha_acid , 4) + " % alfa  ");
-            print(ol.templateFunc.lpad(ol.templateFunc.mapHopForm(hop.form), 7) + "     ");
-            print("koketid " + ol.templateFunc.rpad(hop.boil_time, 3) + " min");
-            print("\n");
-        });
-    }
-
-    if(additives.length > 0) {
-        print("\n");
-        print("[b]Krydder og andre tilsetninger[/b]\n");
-        var iSpace = _.max(_.pluck(additives, "name"), function(i) {return i.length; }).length;
-        _.each(additives, function(additive) {
-            print(ol.templateFunc.rpad(ol.templateFunc.orNa(additive.quantity), 3)+ " gram    ");
-            print(ol.templateFunc.lpad(ol.templateFunc.orNa(additive.name), iSpace) + "          ");
-            print("koketid " + ol.templateFunc.rpad(additive.boil_time, 3) + " min");
-            print("\n");
-        });
-    }
-%>
-[b]Koketid[/b]
-Total koketid vørter: <%= ol.templateFunc.rpad(ol.templateFunc.orNa(boil.boil_time), 3) %> min
-
-[b]Gjær[/b]
-Betegnelsen på gjæren:   <%= ol.templateFunc.rpad(ol.templateFunc.orNa(fermentation.name), 3) %>            <%= ol.templateFunc.mapYeast(fermentation.yeast_type) %>
-
-[b]Gjæringstemperatur og -tid[/b]
-Gjæring/primærgjæring    <%= ol.templateFunc.rpad(ol.templateFunc.orNa(fermentation.primary_fermentation_days), 3) %> dager ved <%= ol.templateFunc.rpad(ol.templateFunc.orNa(fermentation.primary_fermentation_temp), 3) %> gr C
-Modning/sekundærgjæring  <%= ol.templateFunc.rpad(ol.templateFunc.orNa(fermentation.secondary_fermentation_days), 3) %> dager ved <%= ol.templateFunc.rpad(ol.templateFunc.orNa(fermentation.secondary_fermentation_temp), 3) %> gr C
-lagring       <%= ol.templateFunc.rpad(ol.templateFunc.orNa(fermentation.storage_days), 3) %> dager ved <%= ol.templateFunc.rpad(ol.templateFunc.orNa(fermentation.storage_temp), 3) %> gr C
-
-[b]Øvrig informasjon[/b]
-Filtrert: <%= ol.templateFunc.yesNo(additionalInformation.filtered) %>
-CO2: <%= ol.templateFunc.mapCo2(additionalInformation.co2) %>
-Bryggedato: <%= ol.templateFunc.rpad(ol.templateFunc.orNa(additionalInformation.brew_date), 10) %>
-Tappedato:  <%= ol.templateFunc.rpad(ol.templateFunc.orNa(additionalInformation.bottle_date), 10) %>
-
-[b]Kommentar:[/b] <%= ol.templateFunc.orNa(additionalInformation.comment) %>[/size][/tt]
-</script>
-
-<div id="modal" class="modal hide fade">
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-        &nbsp;
+{% block body %}
+    <h2>Brewsheet</h2>
+    <div id="brewsheet" class="tabbable">
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#tab1" data-toggle="tab">Plan recipe</a></li>
+            <li><a href="#tab2" data-toggle="tab">Brewing</a></li>
+            <li><a href="#tab3" data-toggle="tab">Results</a></li>
+        </ul>
+        <div id="content"></div>
     </div>
-    <div class="modal-body"></div>
-</div>
-
 {% endblock %}
 
+{% block modal %}
+    <div id="modal" class="modal hide fade">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            &nbsp;
+        </div>
+        <div class="modal-body"></div>
+    </div>
+{% endblock %}
+    
+<!-- TEMPLATES: -->
+{% block templates %}
+    <script type="text/template" id="brewsheet_template">
+        <div class="tab-content">
+            <div class="tab-pane active" id="tab1">
+                {% include 'brewsheet_sections/general_information.html' %}
+                {% include 'brewsheet_sections/malts_section.html' %}
+                {% include 'brewsheet_sections/hops_section.html' %}
+                {% include 'brewsheet_sections/yeasts_section.html' %}
+                {% include 'brewsheet_sections/additives_section.html' %}
+            </div>
+            <div class="tab-pane" id="tab2">
+                {% include 'brewsheet_sections/water_section.html' %}
+                {% include 'brewsheet_sections/mashing_section.html' %}
+                {% include 'brewsheet_sections/fermentation_section.html' %}
+            </div>
+            <div class="tab-pane" id="tab3">
+                {% include 'brewsheet_sections/additional_information.html' %}
+            </div>
+            <section id="save_section">
+                <form class="form-horizontal">
+                    <fieldset>
+                        <legend>Save</legend>
+                        <div id="controls">
+                            <div id="save_results"></div>
+                            <button type="button" class="btn" id="show_json">Show JSON</button>
+                            {% if is_own %}
+                                <button type="button" class="btn" id="save">Save recipe</button>
+                            {% endif %}
+                            {% if g.user.is_authenticated() %}
+                                <button type="button" class="btn" id="clone">Clone</button>
+                            {% endif %}
+                        </div>
+                    </fieldset>
+                </form>
+            </section>
+        </div>
+    </script>
+
+    <script type="text/template" id="success_alert_template">
+        <div id="success" class="alert alert-<%= type %>">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <%= message%>
+        </div>
+    </script>
+
+    <script type="text/template" id="malt_table_row_template">
+        <td>
+            <input id="quantity" type="text" class="input-mini" value="<%= quantity %>">
+        </td>
+        <td>
+            <input id="percentage" type="text" class="input-mini" readonly="readonly" value="<%= percentage %>">
+        </td>
+        <td>
+            <input id="name" type="text" class="input-large" value="<%= name %>">
+        </td>
+        <td>
+            <input id="ppg" type="text" class="input-mini" value="<%= ppg %>">
+        </td>
+        <td>
+            <input id="color" type="text" class="input-mini" value="<%= color %>">
+        </td>
+        <td class="remove"><i class="icon-remove-circle"></i></td>
+    </script>
+
+    <script type="text/template" id="hop_table_row_template">
+        <td>
+            <input id="quantity" type="text" class="input-mini" value="<%= quantity %>">
+        </td>
+        <td>
+            <input id="name" type="text" class="input-large" value="<%= name %>">
+        </td>
+        <td>
+            <input id="alpha_acid" type="text" class="input-mini" value="<%= alpha_acid %>">
+        </td>
+        <td>
+            <select id="form" class="small">
+                <option value="pellets" <% if( form == 'pellets') { %> selected  <% } %>>Pellets</option>
+                <option value="cones" <% if( form == 'cones') { %> selected  <% } %>>Cones</option>
+            </select>
+        </td>
+        <td>
+            <input id="boil_time" type="text" class="input-medium" value="<%= boil_time %>">
+        </td>
+        <td class="remove"><i class="icon-remove-circle"></i></td>
+    </script>
+
+    <script type="text/template" id="additive_table_row_template">
+        <td>
+            <input id="quantity" type="text" class="input-mini" value="<%= quantity %>">
+        </td>
+        <td>
+            <input id="name" type="text" class="input-large" value="<%= name %>">
+        </td>
+        <td>
+            <input id="added_when" type="text" class="input-medium" value="<%= added_when %>"> <!-- todo: make select -->
+        </td>
+        <td>
+            <input id="boil_time" type="text" class="input-medium" value="<%= boil_time %>">
+        </td>
+        <td class="remove"><i class="icon-remove-circle"></i></td>
+    </script>
+
+    <script type="text/template" id="yeast_table_row_template">
+        <td>
+            <input id="name" type="text" class="input-large" value="<%= name %>">
+        </td>
+        <td>
+            <input id="attenuation" type="text" class="input-medium" value="<%= attenuation %>">
+        </td>
+        <td>
+            <select id="type" class="small">
+                <option value="liquid" <% if( type == 'liquid') { %> selected  <% } %>>Liquid</option>
+                <option value="dry" <% if( type == 'dry') { %> selected  <% } %>>Dry</option>
+                <option value="homegrown" <% if( type == 'homegrown') { %> selected  <% } %>>Homegrown</option>
+            </select>
+        </td>
+        <td class="remove"><i class="icon-remove-circle"></i></td>
+    </script>
+
+    <script type="text/template" id="mash_time_row_template">
+
+        <td class="medium">
+            <input id="mash_time" type="text" class="input-mini" value="<%= mash_time %>">
+        </td>
+        <td class="medium">
+            <input id="mash_temperature" type="text" class="input-mini" value="<%= mash_temperature %>">
+        </td>
+        <td class="remove"><i class="icon-remove-circle"></i></td>
+    </script>
+
+    <script type="text/template" id="fermentation_row_template">
+
+        <td class="medium">
+            <input id="type" type="text" class="input-medium" value="<%= type %>">
+        </td>
+        <td class="medium">
+            <input id="days" type="text" class="input-mini" value="<%= days %>">
+        </td>
+        <td class="mini">
+            days
+        </td>
+        <td class="mini">
+            at
+        </td>
+        <td class="medium">
+            <input id="temperature" type="text" class="input-mini" value="<%= temperature %>">
+        </td>
+        <td class="mini">
+            &deg;C
+        </td>
+        <td class="remove"><i class="icon-remove-circle"></i></td>
+    </script>
+{% endblock %}
