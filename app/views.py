@@ -71,7 +71,6 @@ def add_brew():
 @app.route('/brews/<int:brew_id>/')
 def show_brew(brew_id):
     brew = Brew.query.get(brew_id)
-    styles = Style.query.all()
     is_own = (g.user.is_authenticated() and brew.user_id == g.user.id)
     if brew.public or is_own:
         return render_template(

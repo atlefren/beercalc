@@ -19,6 +19,10 @@ ol.calc = {};
         return !isNaN(val);
     };
 
+    ns.srmToEbc = function (srm) {
+        return Math.round(srm * 1.97);
+    };
+
     //Thinseth equation, Palmer "How to brew" p 58
     var computeUtilization = function (G, T) {
 
@@ -127,7 +131,7 @@ ol.calc = {};
                 var total_mcu = sum / (volume * 0.2642);
                 //Moreys Formula
                 var srm = 1.4922 * Math.pow(total_mcu, 0.6859);
-                ebc = Math.round(srm * 1.97); //lovibond to ebc
+                ebc = ns.srmToEbc(srm); //lovibond to ebc
             }
         }
         return ebc;

@@ -495,7 +495,6 @@ var ol = this.ol || {};
         },
 
         getStyleConformance: function () {
-
             var lookups = {
                 srm: 'computed_color',
                 ibu: 'computed_ibu',
@@ -512,12 +511,29 @@ var ol = this.ol || {};
             }
 
             return _.map(style.stats, function (stat) {
-                var value = brew.get(lookups[stat.name]);
-                if (!ol.calc.isNumber(value)) {
-                    return _.extend({match: null}, stat);
+                var high = stat.high;
+                var low = stat.low;
+                var name = stat.name;
+                if (name === 'srm') {
+                    name = 'ebc';
+                    high = ns.calc.srmToEbc(high);
+                    low = ns.calc.srmToEbc(low);
                 }
-                var match = value >= stat.low && value <= stat.high;
-                return _.extend({match: match, value: value}, stat);
+
+                var value = brew.get(lookups[stat.name]);
+                var match = null
+                if (ol.calc.isNumber(value)) {
+                    match = value >= low && value <= high;
+                } else {
+                    value = '-';
+                }
+                return {
+                    name: name,
+                    high: high,
+                    low: low,
+                    match: match,
+                    value: value
+                };
             });
         }
     });
@@ -525,26 +541,35 @@ var ol = this.ol || {};
     var StyleConformanceView = Backbone.View.extend({
 
         initialize: function () {
-            //this.style = this.getStyle(this.options.styleId);
-            this.model.on('change:style', this.render, this);
+            this.model.on('change:styleId', this.render, this);
+            this.model.get('brew').on('change', this.render, this);
         },
 
         render: function () {
             var conformance = this.model.getStyleConformance();
-            console.log(conformance);
-            /*var data = _.map(this.style.stats, function (stat) {
-                return _.template('stat <%= name %>, low: <%= low %>, high: <%= high %>', stat);
+            var template = _.template('<li title="<%= desc %>"><strong><%= title %></strong>: <%= value %> <%= isOk %></li>')
+            var elements = _.map(conformance, function (conf) {
+                var isOk = '';
+                if (conf.match === true) {
+                    isOk = '<i class="icon-thumbs-up"></i>';
+                } else if (conf.match === false) {
+                    isOk = '<i class="icon-thumbs-down"></i>';
+                }
+
+                return template({
+                    title: conf.name.toUpperCase(),
+                    value: conf.value,
+                    isOk: isOk,
+                    desc: _.template('Range is <%= low %> -- <%= high %>', conf)
+                });
             });
-            this.$el.html(data);
-            */
+
+            var el = $('<ul class="unstyled"></ul>');
+            el.append(elements);
+            this.$el.html(el);
+            
             return this;
         }
-/*
-        getStyle: function (styleId) {
-            return _.find(this.options.styles, function (style) {
-                return style.id === styleId;
-            });
-        }*/
 
     });
 
@@ -576,8 +601,6 @@ var ol = this.ol || {};
             this.styleConformance = new StyleConformanceView({
                 model: this.styleModel
             });
-
-            //this.brew.on("change", function(brew) {console.log(brew);}, this);
 
             this.brew.get("malts").on("change", this.maltChange, this);
             this.brew.get("hops").on("change", this.hopChange, this);
@@ -649,7 +672,7 @@ var ol = this.ol || {};
             this.computeActualABV();
             this.colorChanged();
             $('#brewsheet a:first').tab('show');
-            this.$el.append(this.styleConformance.render().$el);
+            this.styleConformance.setElement(this.$('#style_conformance')).render();
             return this;
         },
 
