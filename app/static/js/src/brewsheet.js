@@ -479,6 +479,69 @@ var ol = this.ol || {};
         }
     });
 
+    var StyleModel = Backbone.Model.extend({
+
+        initialize: function () {
+            this.get('brew').on('change:beer_style', this.styleChanged, this);
+            this.styleChanged();
+        },
+
+        styleChanged: function () {
+            var styleId = this.get('brew').get('beer_style');
+            var style = _.find(this.get('styles'), function (style) {
+                return style.id === styleId;
+            });
+            this.set('style', style);
+        },
+
+        getStyleConformance: function () {
+
+            var lookups = {
+                srm: 'computed_color',
+                ibu: 'computed_ibu',
+                og: 'computed_og',
+                fg: 'computed_fg',
+                abv: 'computed_abv'
+            };
+
+            var brew = this.get('brew');
+            return _.map(this.get('style').stats, function (stat) {
+                var value = brew.get(lookups[stat.name]);
+                if (!ol.calc.isNumber(value)) {
+                    return _.extend({match: null}, stat);
+                }
+                var match = value >= stat.low && value <= stat.high;
+                return _.extend({match: match, value: value}, stat);
+            });
+        }
+    });
+
+    var StyleConformanceView = Backbone.View.extend({
+
+        initialize: function () {
+            //this.style = this.getStyle(this.options.styleId);
+            this.model.on('change:style', this.render, this);
+        },
+
+        render: function () {
+            var conformance = this.model.getStyleConformance();
+            console.log(conformance);
+            /*var data = _.map(this.style.stats, function (stat) {
+                return _.template('stat <%= name %>, low: <%= low %>, high: <%= high %>', stat);
+            });
+            this.$el.html(data);
+            */
+            return this;
+        }
+/*
+        getStyle: function (styleId) {
+            return _.find(this.options.styles, function (style) {
+                return style.id === styleId;
+            });
+        }*/
+
+    });
+
     ns.BrewSheet = Backbone.View.extend({
 
         events: {
@@ -499,6 +562,14 @@ var ol = this.ol || {};
                 this.brew.setData(this.options.brew);
             }
             _.bindAll(this, "change", "changeDate", "save", "saved", "clone", "changeStyle");
+
+            this.styleModel = new StyleModel({
+                styles: this.options.styles,
+                brew: this.brew
+            });
+            this.styleConformance = new StyleConformanceView({
+                model: this.styleModel
+            });
 
             //this.brew.on("change", function(brew) {console.log(brew);}, this);
 
@@ -526,7 +597,7 @@ var ol = this.ol || {};
         render: function () {
             this.$el.html("");
             var data = this.brew.asJSON();
-            data.styles = this.options.styles;
+            data.styles = this.styleModel.get('styles');
             this.$el.append(_.template($("#brewsheet_template").html(), data));
 
             _.each(this.brew.defaults, function (value, key) {
@@ -572,13 +643,13 @@ var ol = this.ol || {};
             this.computeActualABV();
             this.colorChanged();
             $('#brewsheet a:first').tab('show');
+            this.$el.append(this.styleConformance.render().$el);
             return this;
         },
 
         changeStyle: function (e) {
-            var style = $(e.currentTarget).val();
-
-            this.brew.set({"beer_style": style});
+            var styleId = $(e.currentTarget).val();
+            this.brew.set({"beer_style": styleId});
         },
 
         changeDate: function (e) {

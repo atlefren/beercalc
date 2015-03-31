@@ -54,16 +54,13 @@ class Style(db.Model):
         return {
             'id': self.id,
             'name': self.name,
-            'og_high': self.og_high,
-            'og_low': self.og_low,
-            'fg_low': self.fg_low,
-            'fg_high': self.fg_high,
-            'abv_low': self.abv_low,
-            'abv_high': self.abv_high,
-            'ibu_low': self.ibu_low,
-            'ibu_high': self.ibu_high,
-            'srm_low': self.srm_low,
-            'srm_high': self.srm_high
+            'stats': [
+                {'name': 'og', 'low': self.og_low, 'high': self.og_high},
+                {'name': 'fg', 'low': self.fg_low, 'high': self.fg_high},
+                {'name': 'abv', 'low': self.abv_low, 'high': self.abv_high},
+                {'name': 'ibu', 'low': self.ibu_low, 'high': self.ibu_high},
+                {'name': 'srm', 'low': self.srm_low, 'high': self.srm_high},
+            ]
         }
 
 
