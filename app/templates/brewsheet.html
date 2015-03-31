@@ -17,6 +17,7 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
+            var styles = {{styles|safe}};
             var name = "{{g.user.name}}";
             var brew;
             var disabled = false;
@@ -31,7 +32,8 @@
                 "brew": brew,
                 "el": $("#content"),
                 "name": name,
-                "disabled": disabled
+                "disabled": disabled,
+                "styles": styles
             }).render();
         });
     </script>

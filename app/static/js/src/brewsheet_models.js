@@ -161,7 +161,7 @@ var ol = this.ol || {};
         'defaults': {
             'beer_name': '',
             'brewer': '',
-            'beer_style': '',
+            'beer_style': -1,
             'wort_size': '',
             'batch_size': '',
             'boil_time': '',

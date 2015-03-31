@@ -1,7 +1,7 @@
 from flask import (render_template, g, abort)
 from flask.ext.login import current_user, login_required
 from app import app
-from models import Brew, Malt, Hop, Yeast
+from models import Brew, Malt, Hop, Yeast, Style
 import simplejson
 
 '''
@@ -45,6 +45,11 @@ def yeast():
     return render_template('yeast_list.html', yeasts=yeasts)
 
 
+def serialize_styles():
+    styles = Style.query.all()
+    return simplejson.dumps([style.serialize for style in styles])
+
+
 @app.route('/brews/my/')
 @login_required
 def my_brews():
@@ -55,17 +60,24 @@ def my_brews():
 @app.route('/brews/add/')
 @login_required
 def add_brew():
-    return render_template('brewsheet.html', brew=None, is_own=True)
+    return render_template(
+        'brewsheet.html',
+        brew=None,
+        is_own=True,
+        styles=serialize_styles()
+    )
 
 
 @app.route('/brews/<int:brew_id>/')
 def show_brew(brew_id):
     brew = Brew.query.get(brew_id)
+    styles = Style.query.all()
     is_own = (g.user.is_authenticated() and brew.user_id == g.user.id)
     if brew.public or is_own:
         return render_template(
             'brewsheet.html',
             brew=simplejson.dumps(brew.serialize),
+            styles=serialize_styles(),
             is_own=is_own
         )
     abort(404)

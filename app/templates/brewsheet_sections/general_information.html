@@ -13,8 +13,10 @@
                 <div class="span4">
                     <label for="beer_style">Beer Style</label>
                     <select id="beer_style" class="input-xlarge">
-                        <option value="--">--</option>
-                        <option value="1">1</option>
+                        <option value="-1">--</option>
+                        <% _.each(styles, function (style) { %>
+                            <option value="<%= style.id %>" <% if (style.id === beer_style) { print('selected') } %>><%= style.name %></option>
+                        <% }) %>
                     </select>
                 </div>
             </div>

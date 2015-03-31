@@ -484,7 +484,8 @@ var ol = this.ol || {};
         events: {
             "click #show_json": "showJSON",
             "click #save": "save",
-            "click #clone": "clone"
+            "click #clone": "clone",
+            "change #beer_style": "changeStyle"
         },
 
         initialize: function () {
@@ -497,7 +498,7 @@ var ol = this.ol || {};
                 this.brew = new ns.Brew();
                 this.brew.setData(this.options.brew);
             }
-            _.bindAll(this, "change", "changeDate", "save", "saved", "clone");
+            _.bindAll(this, "change", "changeDate", "save", "saved", "clone", "changeStyle");
 
             //this.brew.on("change", function(brew) {console.log(brew);}, this);
 
@@ -525,6 +526,7 @@ var ol = this.ol || {};
         render: function () {
             this.$el.html("");
             var data = this.brew.asJSON();
+            data.styles = this.options.styles;
             this.$el.append(_.template($("#brewsheet_template").html(), data));
 
             _.each(this.brew.defaults, function (value, key) {
@@ -571,6 +573,12 @@ var ol = this.ol || {};
             this.colorChanged();
             $('#brewsheet a:first').tab('show');
             return this;
+        },
+
+        changeStyle: function (e) {
+            var style = $(e.currentTarget).val();
+
+            this.brew.set({"beer_style": style});
         },
 
         changeDate: function (e) {
