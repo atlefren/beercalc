@@ -46,8 +46,9 @@ def yeast():
 
 
 def serialize_styles():
-    styles = Style.query.all()
-    return simplejson.dumps([style.serialize for style in styles])
+    #styles = Style.query.all()
+    #return simplejson.dumps([style.serialize for style in styles])
+    return []
 
 
 @app.route('/brews/my/')

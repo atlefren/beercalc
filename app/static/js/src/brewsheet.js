@@ -505,7 +505,13 @@ var ol = this.ol || {};
             };
 
             var brew = this.get('brew');
-            return _.map(this.get('style').stats, function (stat) {
+
+            var style = this.get('style');
+            if (!style) {
+                return [];
+            }
+
+            return _.map(style.stats, function (stat) {
                 var value = brew.get(lookups[stat.name]);
                 if (!ol.calc.isNumber(value)) {
                     return _.extend({match: null}, stat);
