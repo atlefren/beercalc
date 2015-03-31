@@ -2,7 +2,6 @@
 venv
 beercalc.conf
 app.db
-db_repository
 app/static/.webassets-cache/
 app/static/gen/
 tmp/
