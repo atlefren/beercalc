@@ -53,7 +53,7 @@ def serialize_styles():
 @app.route('/brews/my/')
 @login_required
 def my_brews():
-    brews = Brew.query.filter_by(user=g.user).all()
+    brews = Brew.query.filter_by(user=g.user).order_by(Brew.name).all()
     return render_template('brew_list.html', brews=brews, title='My brews')
 
 
@@ -84,7 +84,7 @@ def show_brew(brew_id):
 
 @app.route('/brews/browse/')
 def browse_brews():
-    brews = Brew.query.filter_by(public=True).all()
+    brews = Brew.query.filter_by(public=True).order_by(Brew.name).all()
     return render_template(
         'brew_list.html',
         brews=brews,
