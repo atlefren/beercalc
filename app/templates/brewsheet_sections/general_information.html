@@ -2,30 +2,23 @@
     <form>
         <fieldset>
             <div class="row">
-                <div class="span10">
+                <div class="span8">
 
                     <div class="row">
                         <div class="span4">
                             <label for="beer_name">Beer Name</label>
                             <input type="text" id="beer_name" class="input-xlarge" value="<%= beer_name %>">
                         </div>
-                        <div class="span3">
+                        <div class="span4">
                             <label for="brewer">Brewer</label>
-                            <input type="text" id="brewer" class="input-large" value="<%= brewer %>">
+                            <input type="text" id="brewer" class="input-xlarge" value="<%= brewer %>">
                         </div>
-                        <div class="span3">
-                            <label for="beer_style">Beer Style</label>
-                            <select id="beer_style" class="input-large">
-                                <option value="-1">--</option>
-                                <% _.each(styles, function (style) { %>
-                                    <option value="<%= style.id %>" <% if (style.id === beer_style) { print('selected') } %>><%= style.name %></option>
-                                <% }) %>
-                            </select>
-                        </div>
+                        <!--
+                    -->
                     </div>
 
                     <div class="row">
-                        <div class="span4">
+                        <div class="span3">
                             <label>Batch size</label>
                             <div class="input-append">
                                 <input id="batch_size" class="span1" type="text" value="<%= batch_size %>">
@@ -39,7 +32,7 @@
                                 <span class="add-on">min</span>
                             </div>
                         </div>
-                        <div class="span3">
+                        <div class="span2">
                             <label>Brewhouse Efficiency</label>
                             <div class="input-append">
                                 <input id="brewhouse_efficiency" class="span1" type="text"  value="<%= brewhouse_efficiency %>">
@@ -48,10 +41,24 @@
                         </div>
                     </div>
                 </div>
-                <div class="span2">
-                    <h5>Style conformance</h5>
-                    <div id="style_conformance">
+                <div class="span4">
+                    <div class="row">
+                        <div class="span4">
+                            <label for="beer_style">Beer Style</label>
+                            <select id="beer_style" class="input-large">
+                                <option value="-1">--</option>
+                                <% _.each(styles, function (style) { %>
+                                    <option value="<%= style.id %>" <% if (style.id === beer_style) { print('selected') } %>><%= style.name %></option>
+                                <% }) %>
+                            </select>
+                        </div>
                     </div>
+                
+                    <div class="row">
+                        <div class="span4">
+                            <h5>Style conformance</h5>
+                            <div id="style_conformance" class="styleconf"></div>
+                        </div>
                 </div>
             </div>
 

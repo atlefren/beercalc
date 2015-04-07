@@ -1,0 +1,53 @@
+.styleconf .range-bg {
+    background: #ddd;
+    width: 80%;
+    height: 20px;
+    position: absolute;
+    margin-left: 35px;
+}
+
+.styleconf .range-bg.nodata {
+    background: none !important;
+}
+
+.styleconf .style-label {
+    width: 25px;
+    position: absolute;
+}
+
+.styleconf .range {
+    position: absolute;
+    height: 100%;
+    background: green;
+}
+
+.styleconf .value-marker {
+    margin-left: -8px;
+    position: absolute;
+    top: -20px;
+}
+
+.styleconf .value {
+    position: absolute;
+    height: 100%;
+    width: 1.1px;
+    background: red;
+}
+
+.styleconf .label-left {
+  position: absolute;
+  bottom: -20px;
+  left: -5px;
+}
+
+.styleconf .label-right {
+  position: absolute;
+  bottom: -20px;
+  right: -5px;
+}
+
+.styleconf .wrapper {
+    height: 40px;
+    position: relative;
+    padding-top: 20px;
+}

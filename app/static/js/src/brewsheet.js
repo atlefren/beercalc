@@ -545,7 +545,32 @@ var ol = this.ol || {};
             this.model.get('brew').on('change', this.render, this);
         },
 
+        createRangeSliders: function (parent) {
+            var ranges = {
+                og: {min: 1.02, max: 1.15},
+                fg: {min: 0.9, max: 1.6},
+                abv: {min: 2, max: 15},
+                ibu: {min: 0, max: 120},
+                ebc: {min: 4, max: 80}
+            };
+            return _.reduce(ranges, function (acc, value, key) {
+                acc[key] = ns.getRange(key.toUpperCase(), value.min, value.max, parent);
+                return acc;
+            }, {});
+        },
+
+
         render: function () {
+            if (!this.rangeSliders) {
+                this.rangeSliders = this.createRangeSliders(this.$el);
+            }
+            var conformance = this.model.getStyleConformance();
+            _.each(conformance, function (conf) {
+                console.log(conf);
+                this.rangeSliders[conf.name](conf);
+            }, this);
+
+            /*
             var conformance = this.model.getStyleConformance();
             var template = _.template('<li title="<%= desc %>"><strong><%= title %></strong>: <%= value %> <%= isOk %></li>')
             var elements = _.map(conformance, function (conf) {
@@ -567,7 +592,8 @@ var ol = this.ol || {};
             var el = $('<ul class="unstyled"></ul>');
             el.append(elements);
             this.$el.html(el);
-            
+            */
+            //this.$el.html("test");
             return this;
         }
 

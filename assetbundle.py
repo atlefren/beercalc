@@ -17,6 +17,7 @@ brewsheet_js = Bundle(
     'js/src/template_functions.js',
     'js/src/brew_calculator.js',
     'js/src/brewsheet_models.js',
+    'js/src/style_conf.js',
     'js/src/brewsheet.js',
     filters='jsmin',
     output='gen/js/brewsheet.js'
