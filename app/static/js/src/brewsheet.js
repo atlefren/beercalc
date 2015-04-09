@@ -171,11 +171,11 @@ var ol = this.ol || {};
                     new MashScheduleRowView({model: mashTime}).render().$el
                 );
             });
-
+            /*
             this.mashGraph = new MashGraph({
                 collection: this.collection,
                 el: this.$el.find("#mash_graph")
-            }).render();
+            }).render();*/
         }
     });
 

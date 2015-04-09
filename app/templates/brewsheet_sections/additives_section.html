@@ -1,27 +1,25 @@
-<section id="additives_section">
-    <form>
+<section class="container-fluid" id="additives_section">
+    <form autocomplete="off">
         <fieldset>
             <legend>Other additives</legend>
-            <form>
-                <div class="row">
-                    <div id="additives" class="span10">
-                        <table id="additives_table" class="table table-bordered table-ingredients">
-                            <thead>
-                            <tr>
-                                <th class="mini-td">Qty (g)</th>
-                                <th class="large-td">Additive name</th>
-                                <th class="medium-td">Added</th>
-                                <th class="medium-td">Boil Time (m)</th>
-                                <th class="ex-small"></th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                        <button type="button" id="add_additive" class="btn pull-right">Add Additive</button>
-                    </div>
+            <div class="row">
+                <div class="col-md-10" id="additives">
+                    <table id="additives_table" class="table table-bordered table-ingredients">
+                        <thead>
+                        <tr>
+                            <th class="mini-td">Qty (g)</th>
+                            <th class="large-td">Additive name</th>
+                            <th class="medium-td">Added</th>
+                            <th class="medium-td">Boil Time (m)</th>
+                            <th class="ex-small"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                    <button type="button" id="add_additive" class="btn pull-right">Add Additive</button>
                 </div>
-            </form>
+            </div>
         </fieldset>
     </form>
 </section>

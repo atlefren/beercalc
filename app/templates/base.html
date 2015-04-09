@@ -5,7 +5,7 @@
     <title>BeerCalc</title>
 
     {% block css %}
-    <link rel="stylesheet" type="text/css" media="all" href="{{ url_for('static', filename='css/bootstrap/css/bootstrap.min.css') }}" />
+    <link rel="stylesheet" type="text/css" media="all" href="{{ url_for('static', filename='css/bs3/dist/css/bootstrap.css') }}" />
     <link rel="stylesheet" type="text/css" media="all" href="{{ url_for('static', filename='css/style.css') }}" />
     {% endblock %}
 
@@ -18,6 +18,7 @@
     {% endblock %}
 </head>
 <body>
+    <!--
 <div class="navbar">
     <div class="navbar-inner">
         <a class="brand" href="#">BeerCalc Beta</a>
@@ -61,14 +62,12 @@
         </ul>
     </div>
 </div>
+-->
+<div class="container-fluid">
 
-<div class="container">
-    <div class="row">
-        <div class="span12 main">
             {% block body %}
             {% endblock %}
-        </div>
-    </div>
+
 </div>
 
 {% block templates %}{% endblock %}

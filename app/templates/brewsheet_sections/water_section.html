@@ -1,27 +1,45 @@
-<section id="water_section">
-    <form class="form-horizontal">
+<section class="container-fluid" id="additives_section"  class="container-fluid">
+    <form autocomplete="off">
         <fieldset>
             <legend>Water</legend>
             <div class="row">
-                <div class="span3">
-                    <label for="mashing_water">Mashing Water</label>
-                    <div class="input-append">
-                        <input id="mashing_water" class="span1" type="text" value="<%= mashing_water %>">
-                        <span class="add-on">l</span>
+                <div class="col-md-1">
+                    <div class="form-group">
+                        <label for="mashing_water">Mashing Water</label>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <input id="mashing_water" class="form-control" type="text" value="<%= mashing_water %>" aria-describedby="mashing_water_addon">
+                                    <span class="input-group-addon" id="mashing_water_addon">l</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="span3">
-                    <label for="sparging_water">Sparging Water</label>
-                    <div class="input-append">
-                        <input id="sparging_water" class="span1" type="text" value="<%= sparging_water %>">
-                        <span class="add-on">l</span>
+                <div class="col-md-1">
+                    <div class="form-group">
+                        <label for="sparging_water">Sparging Water</label>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <input id="sparging_water" class="form-control" type="text" value="<%= sparging_water %>" aria-describedby="sparging_water_addon">
+                                    <span class="input-group-addon" id="sparging_water_addon">l</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="span3">
-                    <label for="wort_size">Wort Volume</label>
-                    <div class="input-append">
-                        <input id="wort_size" class="span1" type="text" value="<%= wort_size %>">
-                        <span class="add-on">l</span>
+                <div class="col-md-1">
+                    <div class="form-group">
+                        <label for="wort_size">Wort Volume</label>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <input id="wort_size" class="form-control" type="text" value="<%= wort_size %>" aria-describedby="wort_size_addon">
+                                    <span class="input-group-addon" id="wort_size_addon">l</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

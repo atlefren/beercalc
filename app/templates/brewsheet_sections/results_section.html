@@ -1,7 +1,99 @@
+<section class="container-fluid">
+    <form>
+        <fieldset>
+            <legend>Results</legend>
+            <div id="additional_desc" class="content">
+                <div class="row">
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            <label for="actual_og">Measured OG</label>
+                            <input id="actual_og" class="form-control" type="text" value="<%= actual_og %>">
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            <label for="actual_fg">Measured FG</label>
+                            <input id="actual_fg" class="form-control" type="text" value="<%= actual_fg %>">
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            <label for="actual_abv">Actual ABV</label>
+                            <div class="input-group">
+                                <input id="actual_abv" class="form-control" type="text" value="<%= actual_abv %>" aria-describedby="actual_abv_addon" disabled>
+                                <span class="input-group-addon" id="actual_abv_addon">%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            <label for="brew_efficiency">Efficiency</label>
+                            <div class="input-group">
+                                <input id="brew_efficiency" class="form-control" type="text" value="<%= brew_efficiency %>" aria-describedby="brew_efficiency_addon" disabled>
+                                <span class="input-group-addon" id="brew_efficiency_addon">%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                    </div>
+                    <div class="col-md-1">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            <label for="brew_date">Brew Date</label>
+                            <input type="text" id="brew_date" class="form-control" value="<%= brew_date %>">
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            <label for="bottle_date">Bottle Date</label>
+                            <input type="text" id="bottle_date" class="form-control" value="<%= bottle_date %>">
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            <label for="co2">CO<sub>2</sub></label>
+                            <select id="co2" class="form-control">
+                                <option value="none" <% if( co2 == 'none') { %> selected  <% } %>>
+                                    --
+                                </option>
+                                <option value="natural" <% if( co2 == 'natural') { %> selected  <% } %>>
+                                    Natural
+                                </option>
+                                <option value="added" <% if( co2 == 'added') { %> selected  <% } %>>
+                                    Added
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            <label for="filtered">Filtered</label><br />
+                            <input id="filtered" type="checkbox" <% if( filtered) { %> checked  <% } %>>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        Additional comments (max 200 words)
+                        <textarea class="form-control" rows="3"></textarea>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+</section>
+
+
+
+<!--
+
 <section id="additional_info_section">
     <form class="form-horizontal">
         <fieldset>
-            <legend>Other information</legend>
+            <legend>Results</legend>
             <div id="additional_desc" class="content">
                 <div class="row">
                     <div class="span5">
@@ -105,3 +197,4 @@
         </fieldset>
     </form>
 </section>
+-->
