@@ -7,7 +7,7 @@ Flask-Restless==0.9.3
 Flask-SQLAlchemy==0.16
 Flask-WTF==0.8.2
 Flask-WhooshAlchemy==0.55a
-Jinja2==2.7.3
+Jinja2==2.10.1
 MarkupSafe==0.23
 SQLAlchemy==0.7.9
 Tempita==0.5.1
