@@ -19,7 +19,7 @@ blinker==1.2
 decorator==3.4.0
 itsdangerous==0.24
 jsmin==2.1.0
-psycopg2==2.5.4
+psycopg2==2.8.6
 pycrypto==2.6.1
 python-dateutil==1.5
 requests[security]==2.6.0
