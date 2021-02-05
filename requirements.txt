@@ -27,4 +27,3 @@ simplejson==3.6.5
 sqlalchemy-migrate==0.7.2
 webassets==0.10.1
 wsgiref==0.1.2
-yuicompressor==2.4.7
